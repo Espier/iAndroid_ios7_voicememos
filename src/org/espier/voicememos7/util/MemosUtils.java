@@ -19,7 +19,7 @@ package org.espier.voicememos7.util;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.espier.voicememos6.R;
+import org.espier.voicememos7.R;
 
 import android.content.Context;
 import android.content.Intent;
