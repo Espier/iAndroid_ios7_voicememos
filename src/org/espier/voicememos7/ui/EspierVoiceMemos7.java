@@ -1,4 +1,4 @@
-package org.espier.voicememos7;
+package org.espier.voicememos7.ui;
 
 import android.app.Activity;
 import android.graphics.Rect;
@@ -12,8 +12,13 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-//import org.espier.ios7.ui.IosLikeScrollView;
+
+import org.espier.voicememos7.R;
 import org.espier.voicememos7.ui.SlideCutListView;
+
+
+import org.espier.ios7.ui.IosLikeListView;
+import org.espier.ios7.ui.IosLikeScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
