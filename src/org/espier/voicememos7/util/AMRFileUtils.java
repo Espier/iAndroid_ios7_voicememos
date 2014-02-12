@@ -186,7 +186,7 @@ public class AMRFileUtils {
     stream.read(frameTypeHeader, 0, 1);
     mOffset += 1;
     int frameType = ((0xff & frameTypeHeader[0]) >> 3) % 0x0F;
-    int frameQuality = ((0xff & frameTypeHeader[0]) >> 2) & 0x01;
+    //int frameQuality = ((0xff & frameTypeHeader[0]) >> 2) & 0x01;
     int blockSize = BLOCK_SIZES[frameType];
 
     if (blockSize + 1 > maxLen) {
