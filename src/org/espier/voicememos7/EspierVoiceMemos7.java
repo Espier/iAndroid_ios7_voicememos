@@ -6,16 +6,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
-
-import org.espier.ios7.ui.IosLikeListView;
-import org.espier.ios7.ui.IosLikeScrollView;
+//import org.espier.ios7.ui.IosLikeScrollView;
+import org.espier.voicememos7.ui.SlideCutListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,21 +25,24 @@ public class EspierVoiceMemos7 extends Activity
     private LinearLayout ll2;
     private List<String> dataSourceList = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
-
+    SlideCutListView list;
+    View view ;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memo_main);
         ll1 = (RelativeLayout) findViewById(R.id.ll_1);
         ll2 = (LinearLayout) findViewById(R.id.ll_2);
-        IosLikeListView list = (IosLikeListView)findViewById(R.id.listView);
+        LinearLayout layout =(LinearLayout)findViewById(R.id.layout);
+        view = layout.getChildAt(0);
+        
+        
+         list = (SlideCutListView)findViewById(R.id.listView);
         for(int i=0; i<20; i++){
             dataSourceList.add("滑动删除" + i); 
         }
         adapter = new ArrayAdapter<String>(this, R.layout.listview_item, R.id.list_item, dataSourceList);
         list.setAdapter(adapter);
-//        sv_base_view = (IosLikeScrollView) findViewById(R.id.sv_base_view);
-//        sv_base_view.setOnTouchListener(scroolListener);
     }
     int height;
     @Override
@@ -67,63 +68,59 @@ public class EspierVoiceMemos7 extends Activity
         
     }
     
-    /**
-     * ScrollView��OnTouch�¼�
-     */
-    private OnTouchListener scroolListener = new OnTouchListener() {
-        private float y;
-        private boolean isScroll2Top= false;
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            // TODO Auto-generated method stub
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                y = event.getY();     
-                break;
-            case MotionEvent.ACTION_UP:
-                if(event.getY()<y&&(y-event.getY())>height/2){
-                        scroll2Buttom();
-                    
-                }else{
-                    scroll2Top();
-                }
-
-                break;
-            case MotionEvent.ACTION_MOVE:
-//                System.out.println(event.getY());
-//                scrollTo((int) (event.getY()-y));
-                if(isScroll2Top){
-                    scroll2Top();
-                    isScroll2Top = false;
-                }
-                break;
-            }
-            return false;
-        }
-        private void scroll2Top() {
-            // TODO Auto-generated method stub
-//            sv_base_view.scrollTo(0, 0);
-            isScroll2Top = true;
-        }
-        private void scroll2Buttom() {
-            // TODO Auto-generated method stub
-//            sv_base_view.scrollTo(0, (int) (height*0.9));
-        }
-    };
-   
-    
-
-    
-
-    
-
     Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             // TODO Auto-generated method stub
-
+            switch (msg.what) {}
             return false;
         }
     });
+    float downy = 0;
+    private VelocityTracker velocityTracker=VelocityTracker.obtain();
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        velocityTracker.addMovement(event);
+        int y = (int) event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                downy = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                
+                int deltaY = (int) (downy - y);
+                downy = y;
+                view.scrollBy(0, deltaY);
+                System.out.println(view.getTop());
+                
+                break;
+            case MotionEvent.ACTION_UP:
+                int velocityY = getScrollVelocity();
+                if(velocityY>0){
+                    System.out.println("向下 ");
+                    if(view.getScrollY()<0){
+                        view.scrollTo(0, 0);
+                    }
+                    System.out.println(view.getScrollY());
+                }else if(velocityY<0){
+                    System.out.println("向上");
+                    System.out.println(view.getScrollY()+"　　"+height*1.7);
+                    view.scrollTo(0, (int) (height*0.8));
+                }else{
+                    
+                }
+                
+                break;
 
+            default:
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+    
+    private int getScrollVelocity() {
+        velocityTracker.computeCurrentVelocity(1000);
+        int velocity = (int) velocityTracker.getYVelocity();
+        return velocity;
+    }
 }
