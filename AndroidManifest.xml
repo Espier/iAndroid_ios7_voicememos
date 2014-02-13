@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.espier.voicememos7"
+      package="org.espier.voicememos7.ui"
       android:versionCode="1"
       android:versionName="1.0.0">
     <application android:label="@string/evm7_app_name" android:icon="@drawable/icon">

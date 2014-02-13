@@ -13,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import org.espier.voicememos7.R;
 import org.espier.voicememos7.ui.SlideCutListView;
 
 
