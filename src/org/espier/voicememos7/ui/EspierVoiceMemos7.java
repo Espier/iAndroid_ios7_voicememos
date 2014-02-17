@@ -11,6 +11,8 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -79,6 +81,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
     private ArrayAdapter<String> adapter;    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_memo_main);
         ll1 = (RelativeLayout) findViewById(R.id.ll_1);
         ll2 = (LinearLayout) findViewById(R.id.ll_2);
@@ -148,6 +151,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
     float downy = 0;
     private VelocityTracker velocityTracker=VelocityTracker.obtain();
     private boolean isTobottom = false;
+    private boolean isfirstdown = true;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         velocityTracker.addMovement(event);
@@ -160,8 +164,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
                 if(!isTobottom){
                     int deltaY = (int) (downy - y);
                     downy = y;
+                    if(deltaY <0&& isfirstdown ){
+                        return true;
+                    }
+                    if(deltaY>0){
+                        isfirstdown = false;
+                    }
                     view.scrollBy(0, deltaY);
-                    System.out.println(view.getTop());
+                    System.out.println(deltaY);
                 }else{
                     return true;
                 }
