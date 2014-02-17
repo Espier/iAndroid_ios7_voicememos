@@ -11,17 +11,23 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Scroller;
 
+/**
+ * @blog http://blog.csdn.net/xiaanming
+ * 
+ * @author xiaanming
+ * 
+ */
 public class SlideCutListView extends ListView {
 	/**
 	 * 当前滑动的ListView　position
 	 */
 	private int slidePosition;
 	/**
-	 * 手指按下Y的坐标
+	 * 手指按下X的坐标
 	 */
 	private int downY;
 	/**
-	 * 手指按下X的坐标
+	 * 手指按下Y的坐标
 	 */
 	private int downX;
 	/**
@@ -279,6 +285,7 @@ public class SlideCutListView extends ListView {
 	 * 当ListView item滑出屏幕，回调这个接口
 	 * 我们需要在回调方法removeItem()中移除该Item,然后刷新ListView
 	 * 
+	 * @author xiaanming
 	 *
 	 */
 	public interface RemoveListener {
