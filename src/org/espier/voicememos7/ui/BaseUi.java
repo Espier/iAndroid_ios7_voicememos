@@ -16,6 +16,7 @@
 package org.espier.voicememos7.ui;
 
 import org.espier.ios7.ui.IPhoneDialogUtil;
+import org.espier.voicememos7.R;
 
 import android.app.Activity;
 import android.widget.Toast;

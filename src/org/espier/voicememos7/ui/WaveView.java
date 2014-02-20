@@ -1,6 +1,4 @@
-
 package org.espier.voicememos7.ui;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -101,11 +99,9 @@ public class WaveView extends View {
         // Log.e("all time", all_time+"");
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(2.0f);
-        
+
         greenPaint.setColor(Color.GREEN);
         greenPaint.setStrokeWidth(3.0f);
-
-        
 
         Thread thread = new Thread(new Runnable() {
 
@@ -113,13 +109,15 @@ public class WaveView extends View {
             public void run() {
                 // TODO Auto-generated method stub
                 while (true) {
+                    // Log.e("info", "thread is running");
 
-                    while (mRecorder != null && mRecorder.getState() == Recorder.RECORDING_STATE) {
+                    while (mRecorder != null &&
+                            mRecorder.getState() == Recorder.RECORDING_STATE) {
                         try {
                             int m = mRecorder.getMaxAmplitude();
                             AudioData data = new AudioData();
                             data.setAmplitude(m);
-                            if (audioDatas.size() == getWidth() / 2) {
+                            if (audioDatas.size() == getWidth() / 2 && audioDatas.size() > 0) {
 
                                 isMiddle = true;
 
@@ -131,6 +129,7 @@ public class WaveView extends View {
                             }
 
                             audioDatas.add(data);
+                            // Log.e("ausi size", audioDatas.size()+"");
                             try {
                                 Thread.sleep(get_amp_interval);
                             } catch (InterruptedException e) {
@@ -138,7 +137,7 @@ public class WaveView extends View {
                                 e.printStackTrace();
                             }
                         } catch (Exception e) {
-                            // TODO: handle exception
+                            Log.e("err", "get amp err in thread ");
                         }
 
                     }
@@ -156,57 +155,42 @@ public class WaveView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        // canvas.drawLine(0, 0, getWidth(), getHeight(), paint);
-        // canvas.drawLine(0, 0, getWidth(), 0, paint);
-        // canvas.drawLine(0, getHeight()-100, getWidth(), getHeight(), paint);
-        // power_per_pixel = 32768/getHeight();
-
-        // Log.e("w,h",getWidth()+","+getHeight());
+        
         power_per_pixel = 65535 / getHeight();
-        // Log.e("power_per_pixel", power_per_pixel+"");
         drawTime(canvas, 0);
-        
-        
 
-        if (audioDatas == null || audioDatas.size()==0) {
-          //draw green line 
-            canvas.drawLine(0, 70, 0, getHeight()-100, greenPaint);
-            return;
+        if (audioDatas == null || audioDatas.size() == 0) {
+            // draw green line
+            canvas.drawLine(0, 70, 0, getHeight() - 100, greenPaint);
         }
- 
 
-        for (int i = 0; i < audioDatas.size(); i++)
-        {
-            // Log.e(""+i,audioDatas.get(i).getAmplitude()/300+"" );
-            // long time = System.currentTimeMillis();
-            float x;
-            x = i;
+        else {
+            // Log.e("audio size", audioDatas.size()+"");
+            for (int i = 0; i < audioDatas.size(); i++)
+            {
+                float x;
+                x = i;
 
-            // float amp = audioDatas.get(i).getAmplitude()/3;
-            float amp = 0;
-            // amp = audioDatas.get(i).getDb();
-            amp = audioDatas.get(i).getAmplitude() / (power_per_pixel * 2);
+                // float amp = audioDatas.get(i).getAmplitude()/3;
+                float amp = 0;
+                // amp = audioDatas.get(i).getDb();
+                amp = audioDatas.get(i).getAmplitude() / (power_per_pixel * 2);
 
-            // Log.e("db:", amp+"");
-            // amp*=20;
-            // amp = (float)Math.sqrt(amp);
-            float y_top = getHeight() / 2 - amp;
-            float y_bottom = getHeight() / 2 + amp;
-            canvas.drawLine(x, y_top, x, y_bottom, paint);
-           
-            // drawSlideLine(canvas);
-            if (i == audioDatas.size() - 1) {
-                
-                canvas.drawLine(i, 70, i, getHeight()-100, greenPaint);
+                // Log.e("db:", amp+"");
+                // amp*=20;
+                // amp = (float)Math.sqrt(amp);
+                float y_top = getHeight() / 2 - amp;
+                float y_bottom = getHeight() / 2 + amp;
+                canvas.drawLine(x, y_top, x, y_bottom, paint);
+
+                // drawSlideLine(canvas);
+                if (i == audioDatas.size() - 1) {
+                    canvas.drawLine(i, 70, i, getHeight() - 100, greenPaint);
+                }
             }
-
         }
 
-        if (audioDatas != null && mRecorder.getState() == Recorder.RECORDING_STATE) {
-
-            postInvalidateDelayed(get_amp_interval);
-
-        }
+        postInvalidateDelayed(50);
 
     }
 
@@ -274,11 +258,11 @@ public class WaveView extends View {
         // }
 
     }
-    
-    //draw time  textview
+
+    // draw time textview
     private void drawTimeText(Canvas canvas)
     {
-        
+
     }
 
     // private void drawSlideLine(Canvas canvas)

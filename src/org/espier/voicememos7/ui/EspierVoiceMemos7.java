@@ -1,8 +1,16 @@
 package org.espier.voicememos7.ui;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,6 +18,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -18,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -27,22 +37,29 @@ import android.widget.AdapterView.OnItemClickListener;
 
 
 
-import org.espier.voicememos7.ui.EspierVoiceMemos7.MyTimerTask;
+import org.espier.voicememos7.R;
+import org.espier.voicememos7.model.VoiceMemo;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveDirection;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
+import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 
 
 
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class EspierVoiceMemos7 extends Activity implements RemoveListener
+public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItemClickListener
 {
     
+    public static int LABEL_TYPE_NONE = 0;
+    private MediaPlayer mCurrentMediaPlayer;
     Handler handler = new Handler()
     {
 
@@ -72,6 +89,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
         
     };
     private RelativeLayout ll1;
+    private boolean isCurrentPosition = false;
     private LinearLayout ll2;
     private List<String> dataSourceList = new ArrayList<String>();
     View view ;
@@ -125,6 +143,40 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
             if (timerTask!=null) {
                 timerTask.cancel();
             }
+            
+            
+            // mRecorder.clear();
+            insertVoiceMemo();
+            mVoiceMemoListAdapter.notifyDataSetChanged();
+        }
+        private void insertVoiceMemo() {
+            // TODO Auto-generated method stub
+
+            Resources res = getResources();
+            ContentValues cv = new ContentValues();
+            long current = System.currentTimeMillis();
+            File file = mRecorder.sampleFile();
+            long modDate = file.lastModified();
+            Date date = new Date(current);
+            SimpleDateFormat formatter = new SimpleDateFormat(res.getString(R.string.time_format));
+            String title = formatter.format(date);
+            // long sampleLengthMillis = mRecorder.sampleLength() * 1000L;
+            String filepath = file.getAbsolutePath();
+            MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(filepath);
+            int duration = mediaPlayer.getDuration();
+            mRecorder.stopPlayback();
+            if(duration < 1000){
+              return;
+            }
+
+            cv.put(VoiceMemo.Memos.DATA, filepath);
+            cv.put(VoiceMemo.Memos.LABEL, title);
+            cv.put(VoiceMemo.Memos.LABEL_TYPE, LABEL_TYPE_NONE);
+            cv.put(VoiceMemo.Memos.CREATE_DATE, current);
+            cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
+            cv.put(VoiceMemo.Memos.DURATION, duration);
+            getContentResolver().insert(VoiceMemo.Memos.CONTENT_URI, cv);
+          
         }
         Timer    timer = new Timer();
         private void start() {
@@ -150,7 +202,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
     private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
     private ArrayAdapter<String> adapter;
     private org.espier.voicememos7.ui.WaveView waveView;
-    private org.espier.voicememos7.util.Recorder mRecorder;  
+    private org.espier.voicememos7.util.Recorder mRecorder;
+    private org.espier.voicememos7.ui.EspierVoiceMemos7.VoiceMemoListAdapter mVoiceMemoListAdapter;  
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,24 +231,36 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
         
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         slideCutListView.setRemoveListener(this);
+        listViewaddData();
+//        for(int i=0; i<20; i++){
+//            dataSourceList.add("滑动删除" + i); 
+//        }
         
-        for(int i=0; i<20; i++){
-            dataSourceList.add("滑动删除" + i); 
-        }
+//        adapter = new ArrayAdapter<String>(this, R.layout.listview_item, R.id.list_item, dataSourceList);
+//        slideCutListView.setAdapter(adapter);
+//        
+//        slideCutListView.setOnItemClickListener(new OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                    int position, long id) {
+//                Toast.makeText(EspierVoiceMemos7.this, dataSourceList.get(position), Toast.LENGTH_SHORT).show();
+//            }
+//        });
         
-        adapter = new ArrayAdapter<String>(this, R.layout.listview_item, R.id.list_item, dataSourceList);
-        slideCutListView.setAdapter(adapter);
+       
         
-        slideCutListView.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
-                Toast.makeText(EspierVoiceMemos7.this, dataSourceList.get(position), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
     
+    private void listViewaddData() {
+        // TODO Auto-generated method stub
+        Cursor cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
+        mVoiceMemoListAdapter =
+            new VoiceMemoListAdapter(EspierVoiceMemos7.this, R.layout.listview_item, cs, new String[] {},
+                new int[] {});
+        slideCutListView.setAdapter(mVoiceMemoListAdapter);
+    }
+
     int height;
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -235,6 +300,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
     public int ms;
     public int second;
     public int miniute;
+    public int mCurrentPosition=-1;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         velocityTracker.addMovement(event);
@@ -354,4 +420,181 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
         }
         
     }
+    
+    class VoiceMemoListAdapter extends SimpleCursorAdapter {
+
+        private Context mContext;
+        private int mMemoIdx;
+        private int mPathIdx;
+        private int mLabelIdx;
+        private int mLabelTypeIdx;
+        private int mDurationIdx;
+        private int mCreateDateIdx;
+        private int mCurrentBgColor;
+
+        public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
+          super(context, layout, c, from, to);
+          mContext = context;
+          mCurrentBgColor = Color.WHITE;
+          setupColumnIndices(c);
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+          Log.d("memo", "getView, mCurrentPosition:" + mCurrentPosition);
+          if (mCurrentPosition == position) {
+            isCurrentPosition = true;
+          } else {
+            isCurrentPosition = false;
+          }
+          return super.getView(position, convertView, parent);
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+          View v = super.newView(context, cursor, parent);
+
+          ViewHolder vh = new ViewHolder();
+          vh.playControl = (ImageView) v.findViewById(R.id.memos_item_play);
+          vh.tag = (TextView) v.findViewById(R.id.memos_item_title);
+          vh.createDate = (TextView) v.findViewById(R.id.memos_item_create_date);
+          vh.duration = (TextView) v.findViewById(R.id.memos_item_duration);
+          vh.id = (TextView) v.findViewById(R.id.memos_item__id);
+          vh.path = (TextView) v.findViewById(R.id.memos_item_path);
+
+          v.setTag(vh);
+
+          return v;
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+
+          final ViewHolder vh = (ViewHolder) view.getTag();
+          vh.tag.setText(cursor.getString(mLabelIdx));
+
+          int secs = cursor.getInt(mDurationIdx);
+          if (secs == 0) {
+            vh.duration.setText("");
+          } else {
+            vh.duration.setText(MemosUtils.makeTimeString(context, secs / 1000));
+            vh.duration.setTag(secs);
+          }
+
+          Long date = cursor.getLong(mCreateDateIdx);
+          String dateFormat = getString(R.string.date_time_format);
+          int labelType = cursor.getInt(mLabelTypeIdx);
+          if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE ) {
+            dateFormat = getString(R.string.date_format);
+          }
+          SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+          Date d = new Date(date);
+          String dd = format.format(d);
+          vh.createDate.setText(dd);
+
+          final String path = cursor.getString(mPathIdx);
+          final Integer id = cursor.getInt(mMemoIdx);
+          vh.path.setTag(path);
+          vh.id.setTag(id);
+         
+
+          File file = new File(path);
+          if (!file.exists()) {
+            if (isCurrentPosition) {
+              view.setBackgroundColor(mCurrentBgColor);
+              vh.playControl.setVisibility(View.VISIBLE);
+              vh.tag.setTextColor(Color.WHITE);
+              vh.createDate.setTextColor(Color.WHITE);
+              vh.duration.setTextColor(Color.WHITE);
+            }else{
+              view.setBackgroundColor(Color.LTGRAY);
+              vh.playControl.setVisibility(View.VISIBLE);
+              vh.tag.setTextColor(Color.BLACK);
+              vh.createDate.setTextColor(Color.GRAY);
+              vh.duration.setTextColor(Color.BLUE);
+            }
+          } else {
+            if (isCurrentPosition) {
+              vh.playControl.setVisibility(View.VISIBLE);
+              vh.tag.setTextColor(Color.WHITE);
+              vh.createDate.setTextColor(Color.WHITE);
+              vh.duration.setTextColor(Color.WHITE);
+            } else {
+              vh.tag.setTextColor(Color.BLACK);
+              vh.createDate.setTextColor(Color.GRAY);
+              vh.duration.setTextColor(Color.BLUE);
+              vh.playControl.setImageResource(R.drawable.play);
+            }
+            
+            view.setBackgroundColor(mCurrentBgColor);
+           
+
+            vh.playControl.setOnClickListener(new View.OnClickListener() {
+
+              @Override
+              public void onClick(View arg0) {
+                int state = mRecorder.getState();
+                if (state == Recorder.IDLE_STATE) {
+                  mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
+                  mRecorder.startPlayback();
+                  vh.playControl.setImageResource(R.drawable.pause);
+                } else if (state == Recorder.PLAYER_PAUSE_STATE) {
+                  mRecorder.startPlayback();
+                  vh.playControl.setImageResource(R.drawable.pause);
+                } else if (state == Recorder.PLAYING_STATE) {
+                  mRecorder.pausePlayback();
+                  vh.playControl.setImageResource(R.drawable.play);
+                }
+
+                mCurrentMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+
+                  @Override
+                  public void onCompletion(MediaPlayer mp) {
+                    vh.playControl.setImageResource(R.drawable.play);
+                    mRecorder.stopPlayback();
+                  }
+                });
+
+//                long next = refreshNow();
+//                queueNextRefresh(next);
+
+              }
+            });
+          }
+        }
+
+        @Override
+        public void changeCursor(Cursor cursor) {
+
+        }
+
+        class ViewHolder {
+          ImageView playControl;
+          TextView tag;
+          TextView createDate;
+          TextView duration;
+          TextView path;
+          TextView id;
+        }
+
+        private void setupColumnIndices(Cursor cursor) {
+          if (cursor != null) {
+            mLabelIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.LABEL);
+            mLabelTypeIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.LABEL_TYPE);
+            mDurationIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.DURATION);
+            mCreateDateIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.CREATE_DATE);
+            mMemoIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos._ID);
+            mPathIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.DATA);
+          }else{
+              System.out.println("cursor is null");
+          }
+        }
+
+      }
+
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        // TODO Auto-generated method stub
+        
+    }
+    
 }

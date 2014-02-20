@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.espier.voicememos7.ui"
+      package="org.espier.voicememos7"
       android:versionCode="1"
       android:versionName="1.0.0">
       
@@ -10,7 +10,11 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application android:label="@string/evm7_app_name" android:icon="@drawable/icon">
-        <activity android:name="EspierVoiceMemos7"
+        
+        <provider android:name="org.espier.voicememos7.db.MemosProvider"
+			android:authorities="org.espier.voicememos7.Memo" />
+        
+        <activity android:name="org.espier.voicememos7.ui.EspierVoiceMemos7"
                   android:label="@string/evm7_app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

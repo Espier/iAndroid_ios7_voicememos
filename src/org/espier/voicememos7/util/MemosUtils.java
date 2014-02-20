@@ -24,7 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import org.espier.voicememos7.ui.R;
+import org.espier.voicememos7.R;
 
 
 public class MemosUtils {
