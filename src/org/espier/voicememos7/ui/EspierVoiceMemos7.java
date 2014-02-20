@@ -310,6 +310,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
                 downy = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                
                 if(!isTobottom){
                     int deltaY = (int) (downy - y);
                     downy = y;
@@ -319,7 +320,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
                     if(deltaY>0){
                         isfirstdown = false;
                     }
+                    //control page scroll to top limit
+                    if (view.getScrollY()+deltaY<0)
+                        deltaY = -view.getScrollY();
+                        
                     view.scrollBy(0, deltaY);
+                    
                     System.out.println(deltaY);
                 }else{
                     return true;
