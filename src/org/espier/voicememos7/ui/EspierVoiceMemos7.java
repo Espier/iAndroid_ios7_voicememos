@@ -13,34 +13,72 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 
+
+
+
+
+import org.espier.voicememos7.ui.EspierVoiceMemos7.MyTimerTask;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveDirection;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
+import org.espier.voicememos7.util.Recorder;
 
 
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EspierVoiceMemos7 extends Activity implements RemoveListener
 {
+    
+    Handler handler = new Handler()
+    {
 
+        /* (non-Javadoc)
+         * @see android.os.Handler#handleMessage(android.os.Message)
+         */
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    //waveView.invalidate();
+                    TextView textView = (TextView)findViewById(R.id.textView1);
+                    textView.setText(miniute+":"+second+":"+ms);
+                    break;
+                case 2:
+                    
+                    
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        
+        
+    };
     private RelativeLayout ll1;
     private LinearLayout ll2;
     private List<String> dataSourceList = new ArrayList<String>();
     View view ;
     private SlideCutListView listview;
     ImageView start;
+    protected MyTimerTask myTimerTask;
+    protected TimerTask timerTask;
     private OnTouchListener startTouchListener = new View.OnTouchListener() {
         public final float[] BT_SELECTED = new float[] {1,0,0,0,-100,0,1,0,0,-100,0,0,1,0,-100,0,0,0,1,0};
         public final float[] BT_NOT_SELECTED = new float[] {1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0};
@@ -64,9 +102,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
                    if(!isdown){
                        start.setBackgroundResource(R.drawable.start_down);
                        isdown = true;
+                       //start
+                       start();
                    }else{
                        start.setBackgroundResource(R.drawable.circular);
                        isdown = false;
+                       //pause
+                       pause();
                    }
                     
                     break;
@@ -76,10 +118,40 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
             }
             return true;
         }
+        private void pause() {
+            // TODO Auto-generated method stub
+            mRecorder.stopRecording();
+            Log.e("state", mRecorder.mState+"");
+            if (timerTask!=null) {
+                timerTask.cancel();
+            }
+        }
+        Timer    timer = new Timer();
+        private void start() {
+            // TODO Auto-generated method stub
+            if (mRecorder.mState == Recorder.RECORDING_STATE) {
+                return;
+            }
+            mRecorder.startRecording(EspierVoiceMemos7.this);
+            
+            if (mRecorder.mState == Recorder.RECORDING_STATE) {
+                //timeThread.start();
+                myTimerTask = new MyTimerTask(ms, second, miniute);
+                timer.schedule(myTimerTask, 10, 10);
+
+                Log.e("state", "start ok!");
+            }
+            else {
+                Log.e("state", "start failed!");
+            }
+        }
     };
 
     private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
-    private ArrayAdapter<String> adapter;    @Override
+    private ArrayAdapter<String> adapter;
+    private org.espier.voicememos7.ui.WaveView waveView;
+    private org.espier.voicememos7.util.Recorder mRecorder;  
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -97,6 +169,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
     }
     
     private void init() {
+        
+        waveView = (WaveView)findViewById(R.id.waveView);
+        waveView.setMinimumWidth(500);
+        waveView.setMinimumHeight(500);
+        mRecorder = new Recorder();
+        waveView.setRecorder(mRecorder);
+        
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         slideCutListView.setRemoveListener(this);
         
@@ -153,6 +232,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
     private VelocityTracker velocityTracker=VelocityTracker.obtain();
     private boolean isTobottom = false;
     private boolean isfirstdown = true;
+    public int ms;
+    public int second;
+    public int miniute;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         velocityTracker.addMovement(event);
@@ -229,6 +311,52 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
 
         default:
             break;
+        }
+        
+    }
+    public class MyTimerTask extends TimerTask implements Runnable
+    {
+        private int m_ms;
+        private int m_sec;
+        private int m_min;
+
+        public MyTimerTask(int ms,int sec,int min)
+        {
+            this.m_ms = ms;
+            this.m_sec = sec;
+            this.m_min = min;
+            Log.e("time", min+":"+sec+":"+ms);
+        }
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            m_ms+=1;
+            if (m_ms==100) {
+                m_ms=0;
+                m_sec +=1;
+                
+               
+            }
+            if (m_sec==60) {
+                m_min+=1;
+                m_sec=0;
+            }
+            if (m_min==60) {
+                m_min=0;
+            }
+            ms = this.m_ms;
+            second = this.m_sec;
+            miniute = this.m_min;
+            //lastDataTime+=1;
+            TimeFormat timeFormat = new TimeFormat();
+            timeFormat.setMs(ms);
+            timeFormat.setSecond(second);
+            timeFormat.setMinute(miniute);
+            waveView.setTimeFormat(timeFormat);
+           
+            Message msg = new Message();
+            msg.what = 1;
+            handler.sendMessage(msg);
         }
         
     }

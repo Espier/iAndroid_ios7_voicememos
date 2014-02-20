@@ -46,7 +46,7 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
     public static final int RECORDER_PAUSE_STATE = 3;
     public static final int PLAYER_PAUSE_STATE = 4;
 
-    int mState = IDLE_STATE;
+    public int mState = IDLE_STATE;
 
     public static final int NO_ERROR = 0;
     public static final int SDCARD_ACCESS_ERROR = 1;
