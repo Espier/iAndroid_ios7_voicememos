@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -161,6 +162,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
                 downy = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                
                 if(!isTobottom){
                     int deltaY = (int) (downy - y);
                     downy = y;
@@ -170,7 +172,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener
                     if(deltaY>0){
                         isfirstdown = false;
                     }
+                    //control page scroll to top limit
+                    if (view.getScrollY()+deltaY<0)
+                        deltaY = -view.getScrollY();
+                        
                     view.scrollBy(0, deltaY);
+                    
                     System.out.println(deltaY);
                 }else{
                     return true;
