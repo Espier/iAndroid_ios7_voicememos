@@ -11,6 +11,7 @@
     <!-- Do not translate. Duration format for duration >= 1 hour -->
     <string name="durationformatlong" translatable="false">%1$d:%3$02d:%5$02d</string>
     <string name="detail_date_time_format">yyyy-MM-dd E kk:mm</string>
+    <string name="detail_time_format">yyyy年MM月dd日 E kk:mm</string>
     <string name="detail_date_format">yyyy-MM-dd E</string>
     <string name="record_time_prefix">Recorded on </string>
     <string name="recording">Recording</string>
