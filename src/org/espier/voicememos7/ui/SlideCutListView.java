@@ -92,7 +92,7 @@ public class SlideCutListView extends ListView {
 	public void setRemoveListener(RemoveListener removeListener) {
 		this.mRemoveListener = removeListener;
 	}
-
+	
 	/**
 	 * 分发事件，主要做的是判断点击的是那个item, 以及通过postDelayed来设置响应左右滑动事件
 	 */
@@ -176,7 +176,7 @@ public class SlideCutListView extends ListView {
 		}
 
 	}
-
+	
 	/**
 	 * 处理我们拖动ListView item的逻辑
 	 */
@@ -292,4 +292,11 @@ public class SlideCutListView extends ListView {
 		public void removeItem(RemoveDirection direction, int position);
 	}
 
+    @Override
+    public void setItemChecked(int position, boolean value) {
+        // TODO Auto-generated method stub
+        super.setItemChecked(position, value);
+    }
+	
+	
 }
