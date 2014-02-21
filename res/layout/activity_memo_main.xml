@@ -28,7 +28,7 @@
                 android:background="#00ff00">
 
                 <TextView
-                    android:id="@+id/textView1"
+                    android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -37,29 +37,21 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
              
-                 <org.espier.voicememos7.ui.WaveView
+                 <org.espier.voicememos7.ui.VoiceWaveView
 			        android:id="@+id/waveView"
-			         android:layout_below="@+id/textView1"
+			         android:layout_below="@+id/textView11"
 			        android:layout_width="fill_parent"
-			        android:layout_height="200dip"
+			        android:layout_height="300dip"
 			        android:layout_centerHorizontal="true"
 			        android:layout_marginLeft="1dp" />
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/waveView"
-                    android:text="Large Text"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/textView2"
+                    android:layout_below="@+id/waveView"
                     android:text="Large Text"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -78,21 +70,24 @@
                     android:layout_below="@+id/textView4"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/frame"
-				    > <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/circular" /></LinearLayout>
+				    > 
+				    <ImageView
+	                    android:id="@+id/imageView2"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:background="@drawable/circular" />
+				</LinearLayout>
                
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/finished"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/imageLayout"
                     android:layout_marginBottom="19dp"
+                    android:layout_marginLeft="10dip"
                     android:layout_toRightOf="@+id/imageLayout"
-                    android:text="Large Text"
+                    android:text="完成"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
             </RelativeLayout>

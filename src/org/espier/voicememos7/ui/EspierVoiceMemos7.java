@@ -14,23 +14,28 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 
 
@@ -55,26 +60,21 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItemClickListener
+public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItemClickListener,OnClickListener
 {
     
+    public static final int REFRESH = 1;
     public static int LABEL_TYPE_NONE = 0;
     private MediaPlayer mCurrentMediaPlayer;
+    TextView finished;
     Handler handler = new Handler()
     {
-
-        /* (non-Javadoc)
-         * @see android.os.Handler#handleMessage(android.os.Message)
-         */
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    //waveView.invalidate();
-                    TextView textView = (TextView)findViewById(R.id.textView1);
-                    textView.setText(miniute+":"+second+":"+ms);
                     break;
                 case 2:
                     
@@ -93,7 +93,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
     private LinearLayout ll2;
     private List<String> dataSourceList = new ArrayList<String>();
     View view ;
-    private SlideCutListView listview;
     ImageView start;
     protected MyTimerTask myTimerTask;
     protected TimerTask timerTask;
@@ -138,46 +137,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         }
         private void pause() {
             // TODO Auto-generated method stub
-            mRecorder.stopRecording();
-            Log.e("state", mRecorder.mState+"");
-            if (timerTask!=null) {
-                timerTask.cancel();
-            }
-            
-            
-            // mRecorder.clear();
-            insertVoiceMemo();
-            mVoiceMemoListAdapter.notifyDataSetChanged();
+            mRecorder.pauseRecording();
+            waveView.pause();
         }
-        private void insertVoiceMemo() {
-            // TODO Auto-generated method stub
-
-            Resources res = getResources();
-            ContentValues cv = new ContentValues();
-            long current = System.currentTimeMillis();
-            File file = mRecorder.sampleFile();
-            long modDate = file.lastModified();
-            Date date = new Date(current);
-            SimpleDateFormat formatter = new SimpleDateFormat(res.getString(R.string.time_format));
-            String title = formatter.format(date);
-            // long sampleLengthMillis = mRecorder.sampleLength() * 1000L;
-            String filepath = file.getAbsolutePath();
-            MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(filepath);
-            int duration = mediaPlayer.getDuration();
-            mRecorder.stopPlayback();
-            if(duration < 1000){
-              return;
-            }
-
-            cv.put(VoiceMemo.Memos.DATA, filepath);
-            cv.put(VoiceMemo.Memos.LABEL, title);
-            cv.put(VoiceMemo.Memos.LABEL_TYPE, LABEL_TYPE_NONE);
-            cv.put(VoiceMemo.Memos.CREATE_DATE, current);
-            cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
-            cv.put(VoiceMemo.Memos.DURATION, duration);
-            getContentResolver().insert(VoiceMemo.Memos.CONTENT_URI, cv);
-          
-        }
+      
         Timer    timer = new Timer();
         private void start() {
             // TODO Auto-generated method stub
@@ -185,7 +148,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
                 return;
             }
             mRecorder.startRecording(EspierVoiceMemos7.this);
-            
+            waveView.start();
             if (mRecorder.mState == Recorder.RECORDING_STATE) {
                 //timeThread.start();
                 myTimerTask = new MyTimerTask(ms, second, miniute);
@@ -201,7 +164,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
 
     private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
     private ArrayAdapter<String> adapter;
-    private org.espier.voicememos7.ui.WaveView waveView;
+    private org.espier.voicememos7.ui.VoiceWaveView waveView;
     private org.espier.voicememos7.util.Recorder mRecorder;
     private org.espier.voicememos7.ui.EspierVoiceMemos7.VoiceMemoListAdapter mVoiceMemoListAdapter;  
     @Override
@@ -213,7 +176,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         ll2 = (LinearLayout) findViewById(R.id.ll_2);
         LinearLayout layout =(LinearLayout)findViewById(R.id.layout);
         start = (ImageView)findViewById(R.id.imageView2);
-        
         start.setOnTouchListener(startTouchListener );
         
         view = layout.getChildAt(0);
@@ -223,33 +185,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
     
     private void init() {
         
-        waveView = (WaveView)findViewById(R.id.waveView);
+        waveView = (VoiceWaveView)findViewById(R.id.waveView);
         waveView.setMinimumWidth(500);
         waveView.setMinimumHeight(500);
         mRecorder = new Recorder();
         waveView.setRecorder(mRecorder);
-        
+        finished = (TextView)findViewById(R.id.finished);
+        finished.setOnClickListener(this);
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         slideCutListView.setRemoveListener(this);
+        slideCutListView.setOnItemClickListener(this);
         listViewaddData();
-//        for(int i=0; i<20; i++){
-//            dataSourceList.add("滑动删除" + i); 
-//        }
-        
-//        adapter = new ArrayAdapter<String>(this, R.layout.listview_item, R.id.list_item, dataSourceList);
-//        slideCutListView.setAdapter(adapter);
-//        
-//        slideCutListView.setOnItemClickListener(new OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                    int position, long id) {
-//                Toast.makeText(EspierVoiceMemos7.this, dataSourceList.get(position), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-        
-       
-        
     }
     
     private void listViewaddData() {
@@ -285,14 +231,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         
     }
     
-    Handler mHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            switch (msg.what) {}
-            return false;
-        }
-    });
+    
     float downy = 0;
     private VelocityTracker velocityTracker=VelocityTracker.obtain();
     private boolean isTobottom = false;
@@ -301,6 +240,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
     public int second;
     public int miniute;
     public int mCurrentPosition=-1;
+    protected int mCurrentDuration;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         velocityTracker.addMovement(event);
@@ -418,7 +358,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
             timeFormat.setMs(ms);
             timeFormat.setSecond(second);
             timeFormat.setMinute(miniute);
-            waveView.setTimeFormat(timeFormat);
            
             Message msg = new Message();
             msg.what = 1;
@@ -437,6 +376,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         private int mDurationIdx;
         private int mCreateDateIdx;
         private int mCurrentBgColor;
+        private final Handler mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+              switch (msg.what) {
+                case REFRESH:
+                  long next = refreshNow((ViewHolder) msg.obj);
+                  queueNextRefresh(next,(ViewHolder) msg.obj);
+                  break;
+              }
+            }
+          };
 
         public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
           super(context, layout, c, from, to);
@@ -444,7 +394,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
           mCurrentBgColor = Color.WHITE;
           setupColumnIndices(c);
         }
-
+        
         public View getView(int position, View convertView, ViewGroup parent) {
           Log.d("memo", "getView, mCurrentPosition:" + mCurrentPosition);
           if (mCurrentPosition == position) {
@@ -466,9 +416,37 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
           vh.duration = (TextView) v.findViewById(R.id.memos_item_duration);
           vh.id = (TextView) v.findViewById(R.id.memos_item__id);
           vh.path = (TextView) v.findViewById(R.id.memos_item_path);
-
+          vh.bar = (SeekBar)v.findViewById(android.R.id.progress);
+          vh.mCurrentRemain = (TextView)v.findViewById(R.id.current_remain);
+          vh.mCurrentTime = (TextView)v.findViewById(R.id.current_positon);
+         // mCurrentDuration = (Integer)v.findViewById(R.id.memos_item_duration).getTag();
+          if (vh.bar instanceof SeekBar) {
+              SeekBar seeker = (SeekBar) vh.bar;
+              seeker.setOnSeekBarChangeListener(mSeekListener);
+            }
+          vh.bar.setMax(1000);
           v.setTag(vh);
-
+          v.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                LinearLayout layout = (LinearLayout)v.findViewById(R.id.playlayout);
+                if(layout.getVisibility() == View.GONE){
+                    layout.setVisibility(View.VISIBLE);
+                }else{
+                    layout.setVisibility(View.GONE);
+                }
+                RelativeLayout sharelayout = (RelativeLayout)v.findViewById(R.id.sharelayout);
+                if(sharelayout.getVisibility() == View.GONE){
+                    sharelayout.setVisibility(View.VISIBLE);
+                }else{
+                    sharelayout.setVisibility(View.GONE);
+                }
+                
+                System.out.println("item click");
+            }
+        });
           return v;
         }
 
@@ -476,6 +454,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         public void bindView(View view, Context context, Cursor cursor) {
 
           final ViewHolder vh = (ViewHolder) view.getTag();
+          
+          
           vh.tag.setText(cursor.getString(mLabelIdx));
 
           int secs = cursor.getInt(mDurationIdx);
@@ -539,6 +519,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
               @Override
               public void onClick(View arg0) {
                 int state = mRecorder.getState();
+//                if (state == Recorder.PLAYING_STATE) {
+//                  mRecorder.stopPlayback();
+//                }
                 if (state == Recorder.IDLE_STATE) {
                   mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
                   mRecorder.startPlayback();
@@ -559,14 +542,60 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
                     mRecorder.stopPlayback();
                   }
                 });
-
-//                long next = refreshNow();
-//                queueNextRefresh(next);
+                mCurrentDuration = (Integer) ((View)(vh.duration)).getTag();
+                long next = refreshNow(vh);
+                queueNextRefresh(next,vh);
 
               }
             });
           }
         }
+
+        protected void queueNextRefresh(long delay,ViewHolder vh) {
+            if (mRecorder.getState() == Recorder.PLAYING_STATE) {
+                Message msg =new Message();
+                msg.what = 1;
+                msg.obj = vh;
+                mHandler.removeMessages(REFRESH);
+                mHandler .sendMessageDelayed(msg, delay);
+              }
+            }
+
+        protected long refreshNow(ViewHolder view) {
+            if (mCurrentMediaPlayer == null || mRecorder.getState() != Recorder.PLAYING_STATE) {
+
+                return 500;
+              }
+
+              // try {
+              long pos = mCurrentMediaPlayer.getCurrentPosition();
+              if ((pos >= 0) && (mCurrentDuration > 0)) {
+                  view.mCurrentTime.setText(MemosUtils.makeTimeString(EspierVoiceMemos7.this, pos / 1000));
+                  view.mCurrentRemain.setText("-"
+                    + MemosUtils.makeTimeString(EspierVoiceMemos7.this, ((mCurrentDuration - pos) / 1000)));
+                int progress = (int) (1000 * pos / mCurrentDuration);
+                view.bar.setProgress(progress);
+
+              } else {
+                  view. mCurrentTime.setText("0:00");
+                  view.bar.setProgress(1000);
+              }
+              // calculate the number of milliseconds until the next full second,
+              // so
+              // the counter can be updated at just the right time
+              long remaining = 1000 - (pos % 1000);
+
+              // approximate how often we would need to refresh the slider to
+              // move it smoothly
+              int width = view.bar.getWidth();
+              if (width == 0) width = 320;
+              long smoothrefreshtime = mCurrentDuration / width;
+
+              if (smoothrefreshtime > remaining) return remaining;
+              if (smoothrefreshtime < 20) return 20;
+              return smoothrefreshtime;
+              // return 500;
+            }
 
         @Override
         public void changeCursor(Cursor cursor) {
@@ -580,6 +609,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
           TextView duration;
           TextView path;
           TextView id;
+          TextView mCurrentTime;
+          TextView mCurrentRemain;
+          SeekBar bar;
         }
 
         private void setupColumnIndices(Cursor cursor) {
@@ -600,7 +632,67 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         // TODO Auto-generated method stub
-        
+        System.out.println(arg2+"SSSSSSSS");
     }
-    
+    private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
+        public void onStartTrackingTouch(SeekBar bar) {}
+
+        public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
+          if (!fromuser) return;
+          int pos = mCurrentDuration * progress / 1000;
+          mRecorder.seekTo(pos);
+        }
+
+        public void onStopTrackingTouch(SeekBar bar) {}
+      };
+    @Override
+    public void onClick(View v) {
+        // TODO Auto-generated method stub
+        switch (v.getId()) {
+            case R.id.finished:
+                stop();
+                break;
+            case R.id.imageView2:
+                System.out.println("image be clicked");
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void stop() {
+        // TODO Auto-generated method stub
+        mRecorder.stopRecording();
+        insertVoiceMemo();
+        mVoiceMemoListAdapter.notifyDataSetChanged();
+    }
+    private void insertVoiceMemo() {
+        // TODO Auto-generated method stub
+
+        Resources res = getResources();
+        ContentValues cv = new ContentValues();
+        long current = System.currentTimeMillis();
+        File file = mRecorder.sampleFile();
+        long modDate = file.lastModified();
+        Date date = new Date(current);
+        SimpleDateFormat formatter = new SimpleDateFormat(res.getString(R.string.time_format));
+        String title = formatter.format(date);
+        // long sampleLengthMillis = mRecorder.sampleLength() * 1000L;
+        String filepath = file.getAbsolutePath();
+        MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(filepath);
+        int duration = mediaPlayer.getDuration();
+        mRecorder.stopPlayback();
+        if(duration < 1000){
+          return;
+        }
+
+        cv.put(VoiceMemo.Memos.DATA, filepath);
+        cv.put(VoiceMemo.Memos.LABEL, title);
+        cv.put(VoiceMemo.Memos.LABEL_TYPE, LABEL_TYPE_NONE);
+        cv.put(VoiceMemo.Memos.CREATE_DATE, current);
+        cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
+        cv.put(VoiceMemo.Memos.DURATION, duration);
+        getContentResolver().insert(VoiceMemo.Memos.CONTENT_URI, cv);
+      
+    }
 }
