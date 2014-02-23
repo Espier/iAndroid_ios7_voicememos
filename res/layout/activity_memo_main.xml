@@ -25,12 +25,13 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical" 
-                android:background="#00ff00">
+               >
 
                 <TextView
                     android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:text="录制" 
@@ -52,22 +53,25 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@+id/waveView"
+                    android:layout_marginLeft="20dip"
                     android:text="Large Text"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dip"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@+id/textView3"
                     android:text="Large Text"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    />
 				<LinearLayout 
 				    android:id="@+id/imageLayout"
+				    android:layout_marginTop="20dip"
 				    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textView4"
+                    android:layout_below="@+id/date"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/frame"
 				    > 
@@ -85,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/imageLayout"
                     android:layout_marginBottom="19dp"
-                    android:layout_marginLeft="10dip"
+                    android:layout_marginLeft="30dip"
                     android:layout_toRightOf="@+id/imageLayout"
                     android:text="完成"
                     android:textAppearance="?android:attr/textAppearanceLarge" />

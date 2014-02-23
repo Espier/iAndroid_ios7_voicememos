@@ -87,6 +87,7 @@ public class VoiceWaveView extends View {
         slideLinePaint.setColor(Color.BLUE);
         slideLinePaint.setStrokeWidth(2.0f);
         timeTextPaint = new Paint();
+        timeTextPaint.setColor(Color.WHITE);
         timeTextPaint.setTextSize(30);
         grayLinePaint = new Paint();
         grayLinePaint.setColor(Color.GRAY);
@@ -197,6 +198,7 @@ public class VoiceWaveView extends View {
         {
             float x = i * w / time_axix_len - v
                     * invalidate_rate * second_index;
+            voiceLinePaint.setColor(Color.WHITE);
             canvas.drawText(timeAxisFormat(time_list.get(i)), x, 50, voiceLinePaint);
         }
     }
@@ -215,7 +217,7 @@ public class VoiceWaveView extends View {
 //        layout.layout(0, 0, canvas.getWidth(), canvas.getHeight());
 //       
 //        layout.draw(canvas);
-
+        timeTextPaint.setColor(Color.WHITE);
         canvas.drawText(timeFormat(time), offset, getHeight() - 70, timeTextPaint);
     }
 
