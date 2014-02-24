@@ -16,34 +16,26 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Layout;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-
-
-
-
-
 
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.VoiceMemo;
@@ -52,18 +44,12 @@ import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 
-
-
-
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Timer;
 import java.util.TimerTask;
 
-public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItemClickListener,OnClickListener
+public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClickListener
 {
     float downy = 0;
     private VelocityTracker velocityTracker=VelocityTracker.obtain();
@@ -80,35 +66,21 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
     private static final int DEL_REQUEST = 2;
     TextView date;
     TextView finished;
-    Handler handler = new Handler()
-    {
-        @Override
-        public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 1:
-                    break;
-                case 2:
-                    
-                    
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        
-        
-    };
+    
     private RelativeLayout ll1;
     private boolean isCurrentPosition = false;
     private RelativeLayout ll2;
-    private List<String> dataSourceList = new ArrayList<String>();
     View view ;
     ImageView start;
-    protected MyTimerTask myTimerTask;
     protected TimerTask timerTask;
+    private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
+    private ArrayAdapter<String> adapter;
+    private org.espier.voicememos7.ui.VoiceWaveView waveView;
+    private org.espier.voicememos7.util.Recorder mRecorder;
+    private org.espier.voicememos7.ui.EspierVoiceMemos7.VoiceMemoListAdapter mVoiceMemoListAdapter;  
+    int height;
+    public String mCurrentPath;
+    public Integer mCurrentMemoId=-1;
     private OnTouchListener startTouchListener = new View.OnTouchListener() {
         public final float[] BT_SELECTED = new float[] {1,0,0,0,-100,0,1,0,0,-100,0,0,1,0,-100,0,0,0,1,0};
         public final float[] BT_NOT_SELECTED = new float[] {1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0};
@@ -154,33 +126,18 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
             waveView.pause();
         }
       
-        Timer    timer = new Timer();
         private void start() {
             // TODO Auto-generated method stub
+            waveView.clearData();
             if (mRecorder.mState == Recorder.RECORDING_STATE) {
                 return;
             }
             mRecorder.startRecording(EspierVoiceMemos7.this);
             waveView.start();
-            if (mRecorder.mState == Recorder.RECORDING_STATE) {
-                //timeThread.start();
-                myTimerTask = new MyTimerTask(ms, second, miniute);
-                timer.schedule(myTimerTask, 10, 10);
-
-                Log.e("state", "start ok!");
-            }
-            else {
-                Log.e("state", "start failed!");
-            }
         }
     };
 
-    private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
-    private ArrayAdapter<String> adapter;
-    private org.espier.voicememos7.ui.VoiceWaveView waveView;
-    private org.espier.voicememos7.util.Recorder mRecorder;
-    private org.espier.voicememos7.ui.EspierVoiceMemos7.VoiceMemoListAdapter mVoiceMemoListAdapter;  
-    @Override
+      @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -278,7 +235,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         finished.setOnClickListener(this);
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         slideCutListView.setRemoveListener(this);
-        slideCutListView.setOnItemClickListener(this);
         date = (TextView)findViewById(R.id.date);
         String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
         date.setText(datetime);
@@ -293,8 +249,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
                 new int[] {});
         slideCutListView.setAdapter(mVoiceMemoListAdapter);
     }
-
-    int height;
+    
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         // TODO Auto-generated method stub
@@ -317,69 +272,63 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         ll2.setLayoutParams(lp2);
         
     }
-    
-    
 
-    public String mCurrentPath;
-    public Integer mCurrentMemoId=-1;
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        velocityTracker.addMovement(event);
+        int y = (int) event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                downy = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                
+                if(!isTobottom){
+                    int deltaY = (int) (downy - y);
+                    downy = y;
+                    if(deltaY <0&& isfirstdown ){
+                        return true;
+                    }
+                    if(deltaY>0){
+                        isfirstdown = false;
+                    }
+                    //control page scroll to top limit
+                    if (view.getScrollY()+deltaY<0)
+                        deltaY = -view.getScrollY();
+                        
+                    view.scrollBy(0, deltaY);
+                    
+                    System.out.println(deltaY);
+                }else{
+                    return true;
+                }
+                
+                
+                break;
+            case MotionEvent.ACTION_UP:
+                int velocityY = getScrollVelocity();
+                if(velocityY>0){
+                    System.out.println("向下 ");
+                    if(view.getScrollY()<0){
+                        view.scrollTo(0, 0);
+                    }
+                    System.out.println(view.getScrollY());
+                }else if(velocityY<0){
+                    System.out.println("向上");
+                    System.out.println(view.getScrollY()+"　　"+height*1.7);
+                    view.scrollTo(0, (int) (height*0.8));
+                    isTobottom =true;
+                }else{
+                    
+                }
+                
+                break;
 
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        velocityTracker.addMovement(event);
-//        int y = (int) event.getY();
-//        switch (event.getAction()) {
-//            case MotionEvent.ACTION_DOWN:
-//                downy = event.getY();
-//                break;
-//            case MotionEvent.ACTION_MOVE:
-//                
-//                if(!isTobottom){
-//                    int deltaY = (int) (downy - y);
-//                    downy = y;
-//                    if(deltaY <0&& isfirstdown ){
-//                        return true;
-//                    }
-//                    if(deltaY>0){
-//                        isfirstdown = false;
-//                    }
-//                    //control page scroll to top limit
-//                    if (view.getScrollY()+deltaY<0)
-//                        deltaY = -view.getScrollY();
-//                        
-//                    view.scrollBy(0, deltaY);
-//                    
-//                    System.out.println(deltaY);
-//                }else{
-//                    return true;
-//                }
-//                
-//                
-//                break;
-//            case MotionEvent.ACTION_UP:
-//                int velocityY = getScrollVelocity();
-//                if(velocityY>0){
-//                    System.out.println("向下 ");
-//                    if(view.getScrollY()<0){
-//                        view.scrollTo(0, 0);
-//                    }
-//                    System.out.println(view.getScrollY());
-//                }else if(velocityY<0){
-//                    System.out.println("向上");
-//                    System.out.println(view.getScrollY()+"　　"+height*1.7);
-//                    view.scrollTo(0, (int) (height*0.8));
-//                    isTobottom =true;
-//                }else{
-//                    
-//                }
-//                
-//                break;
-//
-//            default:
-//                break;
-//        }
-//        return super.onTouchEvent(event);
-//    }
+            default:
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
     
     private int getScrollVelocity() {
         velocityTracker.computeCurrentVelocity(1000);
@@ -400,51 +349,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
 
         default:
             break;
-        }
-        
-    }
-    public class MyTimerTask extends TimerTask implements Runnable
-    {
-        private int m_ms;
-        private int m_sec;
-        private int m_min;
-
-        public MyTimerTask(int ms,int sec,int min)
-        {
-            this.m_ms = ms;
-            this.m_sec = sec;
-            this.m_min = min;
-            Log.e("time", min+":"+sec+":"+ms);
-        }
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            m_ms+=1;
-            if (m_ms==100) {
-                m_ms=0;
-                m_sec +=1;
-                
-               
-            }
-            if (m_sec==60) {
-                m_min+=1;
-                m_sec=0;
-            }
-            if (m_min==60) {
-                m_min=0;
-            }
-            ms = this.m_ms;
-            second = this.m_sec;
-            miniute = this.m_min;
-            //lastDataTime+=1;
-            TimeFormat timeFormat = new TimeFormat();
-            timeFormat.setMs(ms);
-            timeFormat.setSecond(second);
-            timeFormat.setMinute(miniute);
-           
-            Message msg = new Message();
-            msg.what = 1;
-            handler.sendMessage(msg);
         }
         
     }
@@ -569,33 +473,30 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
           vh.id.setTag(id);
          
 
-          File file = new File(path);
-          if (!file.exists()) {
-            if (isCurrentPosition) {
-              view.setBackgroundColor(mCurrentBgColor);
-              vh.playControl.setVisibility(View.VISIBLE);
-              vh.tag.setTextColor(Color.WHITE);
-              vh.createDate.setTextColor(Color.WHITE);
-              vh.duration.setTextColor(Color.WHITE);
-            }else{
-              view.setBackgroundColor(Color.LTGRAY);
-              vh.playControl.setVisibility(View.VISIBLE);
-              vh.tag.setTextColor(Color.BLACK);
-              vh.createDate.setTextColor(Color.GRAY);
-              vh.duration.setTextColor(Color.BLUE);
-            }
-          } else {
-            if (isCurrentPosition) {
-              vh.playControl.setVisibility(View.VISIBLE);
-              vh.tag.setTextColor(Color.WHITE);
-              vh.createDate.setTextColor(Color.WHITE);
-              vh.duration.setTextColor(Color.WHITE);
-            } else {
-              vh.tag.setTextColor(Color.BLACK);
-              vh.createDate.setTextColor(Color.GRAY);
-              vh.duration.setTextColor(Color.BLUE);
-              vh.playControl.setImageResource(R.drawable.play);
-            }
+//          File file = new File(path);
+//          if (!file.exists()) {
+//            if (isCurrentPosition) {
+//              vh.playControl.setVisibility(View.VISIBLE);
+//              vh.tag.setTextColor(Color.WHITE);
+//              vh.createDate.setTextColor(Color.WHITE);
+//              vh.duration.setTextColor(Color.WHITE);
+//            }else{
+//              vh.playControl.setVisibility(View.VISIBLE);
+//              vh.tag.setTextColor(Color.BLACK);
+//              vh.createDate.setTextColor(Color.GRAY);
+//              vh.duration.setTextColor(Color.BLUE);
+//            }
+//          } else {
+//            if (isCurrentPosition) {
+//              vh.playControl.setVisibility(View.VISIBLE);
+//              vh.tag.setTextColor(Color.WHITE);
+//              vh.createDate.setTextColor(Color.WHITE);
+//              vh.duration.setTextColor(Color.WHITE);
+//            } else {
+//              vh.tag.setTextColor(Color.BLACK);
+//              vh.createDate.setTextColor(Color.GRAY);
+//              vh.duration.setTextColor(Color.BLUE);
+//            }
            // mCurrentDuration = (Integer) view.findViewById(R.id.memos_item_duration).getTag();
             mCurrentMemoId = (Integer) view.findViewById(R.id.memos_item__id).getTag();
             mCurrentPath = (String) view.findViewById(R.id.memos_item_path).getTag();
@@ -656,7 +557,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
 
               }
             });
-          }
+//          }
         }
 
         protected void queueNextRefresh(long delay,ViewHolder vh) {
@@ -740,11 +641,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
 
       }
 
-    @Override
-    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        // TODO Auto-generated method stub
-        System.out.println(arg2+"SSSSSSSS");
-    }
     private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
         public void onStartTrackingTouch(SeekBar bar) {}
 
@@ -756,7 +652,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
 
         public void onStopTrackingTouch(SeekBar bar) {}
       };
-    @Override
+   
+      @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
@@ -775,8 +672,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         // TODO Auto-generated method stub
         mRecorder.stopRecording();
         insertVoiceMemo();
+        waveView.clearData();
         mVoiceMemoListAdapter.notifyDataSetChanged();
     }
+    
     private void insertVoiceMemo() {
         // TODO Auto-generated method stub
 
@@ -806,6 +705,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         getContentResolver().insert(VoiceMemo.Memos.CONTENT_URI, cv);
       
     }
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       // TODO Auto-generated method stub
