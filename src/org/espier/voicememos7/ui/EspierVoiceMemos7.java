@@ -1,6 +1,7 @@
 package org.espier.voicememos7.ui;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +12,12 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Layout;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -74,6 +77,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
     public static final int REFRESH = 1;
     public static int LABEL_TYPE_NONE = 0;
     private MediaPlayer mCurrentMediaPlayer;
+    private static final int DEL_REQUEST = 2;
+    TextView date;
     TextView finished;
     Handler handler = new Handler()
     {
@@ -266,6 +271,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         slideCutListView.setRemoveListener(this);
         slideCutListView.setOnItemClickListener(this);
+        date = (TextView)findViewById(R.id.date);
+        String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
+        date.setText(datetime);
         listViewaddData();
     }
     
@@ -296,13 +304,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         ll1.setLayoutParams(lp1);
         
         LayoutParams lp2 = ll2.getLayoutParams();
-        lp2.height = (int) (height * 0.8);
+        lp2.height = (int) (height * 0.9);
         lp2.width = width;
         ll2.setLayoutParams(lp2);
         
     }
     
     
+
+    public String mCurrentPath;
+    public Integer mCurrentMemoId=-1;
+
 
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {
@@ -482,6 +494,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
           vh.bar = (SeekBar)v.findViewById(android.R.id.progress);
           vh.mCurrentRemain = (TextView)v.findViewById(R.id.current_remain);
           vh.mCurrentTime = (TextView)v.findViewById(R.id.current_positon);
+          vh.share = (ImageView)v.findViewById(R.id.share);
+          vh.del = (ImageView)v.findViewById(R.id.del);
+          vh.edit = (TextView)v.findViewById(R.id.edit);
          // mCurrentDuration = (Integer)v.findViewById(R.id.memos_item_duration).getTag();
           if (vh.bar instanceof SeekBar) {
               SeekBar seeker = (SeekBar) vh.bar;
@@ -573,10 +588,32 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
               vh.duration.setTextColor(Color.BLUE);
               vh.playControl.setImageResource(R.drawable.play);
             }
-            
+           // mCurrentDuration = (Integer) view.findViewById(R.id.memos_item_duration).getTag();
+            mCurrentMemoId = (Integer) view.findViewById(R.id.memos_item__id).getTag();
+            mCurrentPath = (String) view.findViewById(R.id.memos_item_path).getTag();
             view.setBackgroundColor(mCurrentBgColor);
-           
+            vh.share.setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    MemosUtils.shareMemo(EspierVoiceMemos7.this, mCurrentPath);
+                }
+            });
+        
+            vh.del.setEnabled(true);
+            vh.del.setOnClickListener(new View.OnClickListener() {
 
+              @Override
+              public void onClick(View arg0) {
+                  if (mRecorder.getState() != Recorder.IDLE_STATE) {
+                      mRecorder.stopPlayback();
+                    }
+                    Intent delIntent = new Intent(EspierVoiceMemos7.this, MemoDelete.class);
+                    delIntent.putExtra("memoname", vh.tag.getText());
+                    startActivityForResult(delIntent, DEL_REQUEST);
+              }
+            });
             vh.playControl.setOnClickListener(new View.OnClickListener() {
 
               @Override
@@ -675,6 +712,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
           TextView mCurrentTime;
           TextView mCurrentRemain;
           SeekBar bar;
+          ImageView share;
+          ImageView del;
+          TextView edit;
         }
 
         private void setupColumnIndices(Cursor cursor) {
@@ -757,5 +797,33 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         cv.put(VoiceMemo.Memos.DURATION, duration);
         getContentResolver().insert(VoiceMemo.Memos.CONTENT_URI, cv);
       
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      // TODO Auto-generated method stub
+      super.onActivityResult(requestCode, resultCode, data);
+
+      if (resultCode == Activity.RESULT_OK) {
+        if (requestCode == DEL_REQUEST) {
+          deleteMemo(mCurrentMemoId);
+          mVoiceMemoListAdapter.notifyDataSetChanged();
+          mCurrentDuration = 0;
+//          resetPlayer();
+        }
+      }
+    }
+
+    private void deleteMemo(int memoId) {
+        // TODO Auto-generated method stub
+
+        Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI, memoId);
+        getContentResolver().delete(memoUri, null, null);
+        File file = new File(mCurrentPath);
+        if (file.exists()) {
+          file.delete();
+        }
+        mCurrentPosition = -1;
+      
+        
     }
 }

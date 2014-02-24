@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dip"
                 android:text="录制"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -55,20 +56,31 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/waveView"
+                android:layout_marginLeft="20dip"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/textView3"
-                android:text="Large Text"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:layout_marginLeft="20dip"
+                android:text="Large Text" />
 
             <LinearLayout
                 android:id="@+id/imageLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView4"
+                android:layout_below="@+id/date"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dip"
                 android:background="@drawable/frame" >
 
                 <ImageView
@@ -77,6 +89,17 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/circular" />
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageLayout"
+                android:layout_marginBottom="19dp"
+                android:layout_marginLeft="30dip"
+                android:layout_toRightOf="@+id/imageLayout"
+                android:text="完成"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
                 android:id="@+id/finished"
@@ -98,21 +121,19 @@
 
             <org.espier.voicememos7.ui.SlideCutListView
                 android:id="@+id/listView"
-                android:layout_below="@+id/hiddenView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_marginTop="-100dip" 
-                />
-            
-            <Button 
+                android:layout_below="@+id/hiddenView"
+                android:layout_marginTop="-100dip" />
+
+            <Button
                 android:id="@+id/hiddenView"
                 android:layout_width="fill_parent"
-                android:layout_height = "100dip"
+                android:layout_height="100dip"
                 android:background="#e0ffff00"
-                android:clickable="false"
-                />
+                android:clickable="false" />
         </RelativeLayout>
     </LinearLayout>
 
-</LinearLayout><!-- </org.espier.ios7.ui.IosLikeScrollView> -->
+</LinearLayout> <!-- </org.espier.ios7.ui.IosLikeScrollView> -->
 
