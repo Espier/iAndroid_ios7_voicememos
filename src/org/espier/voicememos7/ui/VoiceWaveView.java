@@ -28,22 +28,25 @@ public class VoiceWaveView extends View {
 
     long time;
     public float time_axix_len;
-    public static int invalidate_rate = 20;
-    public static float cicle_radius = 5;
-    public static float num_margin_right = 10;
+    public static final int invalidate_rate = 20;
+    
+    public static final float cicle_radius = 7;
+    public static final float num_margin_right = 10;
+    public static final float width_per_second = 60;
     Timer timer;
     TimerTask timerTask;
     Paint voiceLinePaint;
     Paint slideLinePaint;
     Paint timeTextPaint;
     Paint grayLinePaint;
+    Paint darkGrayLinePaint;
     Paint voicedbPaint;
     Recorder recorder;
     Handler handler;
 
     int w;
     float v;
-    float slide_line_top_margin = 70;
+    float slide_line_top_margin = 40;
     float slide_line_bottom_margin = 120;
     List<Integer> voice_list = new ArrayList<Integer>();
     List<Integer> time_list = new ArrayList<Integer>();
@@ -55,6 +58,7 @@ public class VoiceWaveView extends View {
     public float margin_lef_init = cicle_radius + 1;
 
     Context context;
+    
 
     /**
      * @param recorder the recorder to set
@@ -91,12 +95,19 @@ public class VoiceWaveView extends View {
         voiceLinePaint.setColor(Color.WHITE);
         slideLinePaint = new Paint();
         slideLinePaint.setColor(Color.BLUE);
-        slideLinePaint.setStrokeWidth(2.0f);
+        slideLinePaint.setStrokeWidth(0.8f);
         timeTextPaint = new Paint();
         timeTextPaint.setTextSize(30);
         timeTextPaint.setColor(Color.WHITE);
+        timeTextPaint.setTypeface(Typeface.SANS_SERIF);
         grayLinePaint = new Paint();
         grayLinePaint.setColor(Color.GRAY);
+        grayLinePaint.setStrokeWidth(0.5f);
+        darkGrayLinePaint = new Paint();
+        
+        
+        darkGrayLinePaint.setColor(Color.DKGRAY);;
+        darkGrayLinePaint.setStrokeWidth(0.5f);
         voicedbPaint = new Paint();
         voicedbPaint.setColor(Color.GRAY);
         voicedbPaint.setTextAlign(Align.RIGHT);
@@ -129,7 +140,7 @@ public class VoiceWaveView extends View {
 
         float x = 0;
         w = getWidth();
-        time_axix_len = w / 60;
+        time_axix_len = w / width_per_second;
 
         x = w * time / (time_axix_len * 1000) + margin_lef_init;
         if (x >= w / 2) {
@@ -160,7 +171,7 @@ public class VoiceWaveView extends View {
             drawSlideLine(canvas, x, mid_y);
             drawVoice(canvas, x, mid_y);
             drawTimeTextView(canvas, q);
-            drawXAxis(canvas);
+            drawXAxis(canvas,cicle_radius);
             drawYAxis(canvas, mid_y);
         } catch (Exception e) {
             // TODO: handle exception
@@ -185,7 +196,7 @@ public class VoiceWaveView extends View {
         canvas.drawLine(0, getHeight() - slide_line_bottom_margin, getWidth(), getHeight()
                 - slide_line_bottom_margin, grayLinePaint);
 
-        canvas.drawLine(0, mid_y, getWidth(), mid_y, grayLinePaint);
+        canvas.drawLine(0, mid_y, getWidth(), mid_y, darkGrayLinePaint);
 
     }
 
@@ -214,13 +225,24 @@ public class VoiceWaveView extends View {
 
     }
 
-    private void drawXAxis(Canvas canvas)
+    private void drawXAxis(Canvas canvas,float offset)
     {
+        int grid_num = 4;
+        float s = width_per_second/grid_num;
+        float text_offset = 8;
         for (int i = 0; i < time_list.size(); i++)
         {
             float x = i * w / time_axix_len - v
-                    * invalidate_rate * second_index;
-            canvas.drawText(timeAxisFormat(time_list.get(i)), x, 50, voiceLinePaint);
+                    * invalidate_rate * second_index+offset;
+            for(int j=0;j<grid_num;j++)
+            {
+                float h = 5;
+                if (j==0) {
+                    h=25;
+                }
+                canvas.drawLine(x+j*s, slide_line_top_margin, x+j*s, slide_line_top_margin-h, darkGrayLinePaint);
+            }
+            canvas.drawText(timeAxisFormat(time_list.get(i)), x+text_offset, slide_line_top_margin-15, voiceLinePaint);
         }
     }
     
@@ -373,7 +395,7 @@ public class VoiceWaveView extends View {
 
     public void clearData()
     {
-        voice_list.removeAll(voice_list);  
+        voice_list.removeAll(voice_list);
         time_list.removeAll(time_list);
         time = 0;
         invalidate();
