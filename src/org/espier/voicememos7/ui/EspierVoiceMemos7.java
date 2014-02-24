@@ -188,6 +188,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         ll1 = (RelativeLayout) findViewById(R.id.ll_1);
         ll2 = (RelativeLayout) findViewById(R.id.ll_2);
         Button vv = (Button)findViewById(R.id.hiddenView);
+        vv.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                
+                
+            }
+        });
         vv.setOnTouchListener(new View.OnTouchListener() {
             
             @Override
