@@ -273,62 +273,62 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        velocityTracker.addMovement(event);
-        int y = (int) event.getY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                downy = event.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                
-                if(!isTobottom){
-                    int deltaY = (int) (downy - y);
-                    downy = y;
-                    if(deltaY <0&& isfirstdown ){
-                        return true;
-                    }
-                    if(deltaY>0){
-                        isfirstdown = false;
-                    }
-                    //control page scroll to top limit
-                    if (view.getScrollY()+deltaY<0)
-                        deltaY = -view.getScrollY();
-                        
-                    view.scrollBy(0, deltaY);
-                    
-                    System.out.println(deltaY);
-                }else{
-                    return true;
-                }
-                
-                
-                break;
-            case MotionEvent.ACTION_UP:
-                int velocityY = getScrollVelocity();
-                if(velocityY>0){
-                    System.out.println("向下 ");
-                    if(view.getScrollY()<0){
-                        view.scrollTo(0, 0);
-                    }
-                    System.out.println(view.getScrollY());
-                }else if(velocityY<0){
-                    System.out.println("向上");
-                    System.out.println(view.getScrollY()+"　　"+height*1.7);
-                    view.scrollTo(0, (int) (height*0.8));
-                    isTobottom =true;
-                }else{
-                    
-                }
-                
-                break;
-
-            default:
-                break;
-        }
-        return super.onTouchEvent(event);
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        velocityTracker.addMovement(event);
+//        int y = (int) event.getY();
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                downy = event.getY();
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                
+//                if(!isTobottom){
+//                    int deltaY = (int) (downy - y);
+//                    downy = y;
+//                    if(deltaY <0&& isfirstdown ){
+//                        return true;
+//                    }
+//                    if(deltaY>0){
+//                        isfirstdown = false;
+//                    }
+//                    //control page scroll to top limit
+//                    if (view.getScrollY()+deltaY<0)
+//                        deltaY = -view.getScrollY();
+//                        
+//                    view.scrollBy(0, deltaY);
+//                    
+//                    System.out.println(deltaY);
+//                }else{
+//                    return true;
+//                }
+//                
+//                
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                int velocityY = getScrollVelocity();
+//                if(velocityY>0){
+//                    System.out.println("向下 ");
+//                    if(view.getScrollY()<0){
+//                        view.scrollTo(0, 0);
+//                    }
+//                    System.out.println(view.getScrollY());
+//                }else if(velocityY<0){
+//                    System.out.println("向上");
+//                    System.out.println(view.getScrollY()+"　　"+height*1.7);
+//                    view.scrollTo(0, (int) (height*0.8));
+//                    isTobottom =true;
+//                }else{
+//                    
+//                }
+//                
+//                break;
+//
+//            default:
+//                break;
+//        }
+//        return super.onTouchEvent(event);
+//    }
     
     private int getScrollVelocity() {
         velocityTracker.computeCurrentVelocity(1000);
