@@ -62,7 +62,15 @@ import java.util.TimerTask;
 
 public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItemClickListener,OnClickListener
 {
-    
+    float downy = 0;
+    private VelocityTracker velocityTracker=VelocityTracker.obtain();
+    private boolean isTobottom = false;
+    private boolean isfirstdown = true;
+    public int ms;
+    public int second;
+    public int miniute;
+    public int mCurrentPosition=-1;
+    protected int mCurrentDuration;
     public static final int REFRESH = 1;
     public static int LABEL_TYPE_NONE = 0;
     private MediaPlayer mCurrentMediaPlayer;
@@ -90,7 +98,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
     };
     private RelativeLayout ll1;
     private boolean isCurrentPosition = false;
-    private LinearLayout ll2;
+    private RelativeLayout ll2;
     private List<String> dataSourceList = new ArrayList<String>();
     View view ;
     ImageView start;
@@ -173,7 +181,70 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_memo_main);
         ll1 = (RelativeLayout) findViewById(R.id.ll_1);
-        ll2 = (LinearLayout) findViewById(R.id.ll_2);
+        ll2 = (RelativeLayout) findViewById(R.id.ll_2);
+        Button vv = (Button)findViewById(R.id.hiddenView);
+        vv.setOnTouchListener(new View.OnTouchListener() {
+            
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                velocityTracker.addMovement(event);
+                int y = (int) event.getY();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        downy = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        
+                        if(!isTobottom){
+                            int deltaY = (int) (downy - y);
+                            downy = y;
+                            if(deltaY <0&& isfirstdown ){
+                                return true;
+                            }
+                            if(deltaY>0){
+                                isfirstdown = false;
+                            }
+                            //control page scroll to top limit
+                            if (view.getScrollY()+deltaY<0)
+                                deltaY = -view.getScrollY();
+                                
+                            view.scrollBy(0, deltaY);
+                            
+                            System.out.println(deltaY);
+                        }else{
+                            return true;
+                        }
+                        
+                        
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        int velocityY = getScrollVelocity();
+                        if(velocityY>0){
+                            System.out.println("向下 ");
+                            if(view.getScrollY()<0){
+                                view.scrollTo(0, 0);
+                            }
+                            System.out.println(view.getScrollY());
+                        }else if(velocityY<0){
+                            System.out.println("向上");
+                            System.out.println(view.getScrollY()+"　　"+height*1.7);
+                            view.scrollTo(0, (int) (height*0.8));
+                            isTobottom =true;
+                        }else{
+                            
+                        }
+                        
+                        break;
+
+                    default:
+                        break;
+                }
+                 
+                return false;
+            }
+        });
+        
         LinearLayout layout =(LinearLayout)findViewById(R.id.layout);
         start = (ImageView)findViewById(R.id.imageView2);
         start.setOnTouchListener(startTouchListener );
@@ -232,71 +303,63 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnItem
     }
     
     
-    float downy = 0;
-    private VelocityTracker velocityTracker=VelocityTracker.obtain();
-    private boolean isTobottom = false;
-    private boolean isfirstdown = true;
-    public int ms;
-    public int second;
-    public int miniute;
-    public int mCurrentPosition=-1;
-    protected int mCurrentDuration;
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        velocityTracker.addMovement(event);
-        int y = (int) event.getY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                downy = event.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                
-                if(!isTobottom){
-                    int deltaY = (int) (downy - y);
-                    downy = y;
-                    if(deltaY <0&& isfirstdown ){
-                        return true;
-                    }
-                    if(deltaY>0){
-                        isfirstdown = false;
-                    }
-                    //control page scroll to top limit
-                    if (view.getScrollY()+deltaY<0)
-                        deltaY = -view.getScrollY();
-                        
-                    view.scrollBy(0, deltaY);
-                    
-                    System.out.println(deltaY);
-                }else{
-                    return true;
-                }
-                
-                
-                break;
-            case MotionEvent.ACTION_UP:
-                int velocityY = getScrollVelocity();
-                if(velocityY>0){
-                    System.out.println("向下 ");
-                    if(view.getScrollY()<0){
-                        view.scrollTo(0, 0);
-                    }
-                    System.out.println(view.getScrollY());
-                }else if(velocityY<0){
-                    System.out.println("向上");
-                    System.out.println(view.getScrollY()+"　　"+height*1.7);
-                    view.scrollTo(0, (int) (height*0.8));
-                    isTobottom =true;
-                }else{
-                    
-                }
-                
-                break;
 
-            default:
-                break;
-        }
-        return super.onTouchEvent(event);
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        velocityTracker.addMovement(event);
+//        int y = (int) event.getY();
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                downy = event.getY();
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                
+//                if(!isTobottom){
+//                    int deltaY = (int) (downy - y);
+//                    downy = y;
+//                    if(deltaY <0&& isfirstdown ){
+//                        return true;
+//                    }
+//                    if(deltaY>0){
+//                        isfirstdown = false;
+//                    }
+//                    //control page scroll to top limit
+//                    if (view.getScrollY()+deltaY<0)
+//                        deltaY = -view.getScrollY();
+//                        
+//                    view.scrollBy(0, deltaY);
+//                    
+//                    System.out.println(deltaY);
+//                }else{
+//                    return true;
+//                }
+//                
+//                
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                int velocityY = getScrollVelocity();
+//                if(velocityY>0){
+//                    System.out.println("向下 ");
+//                    if(view.getScrollY()<0){
+//                        view.scrollTo(0, 0);
+//                    }
+//                    System.out.println(view.getScrollY());
+//                }else if(velocityY<0){
+//                    System.out.println("向上");
+//                    System.out.println(view.getScrollY()+"　　"+height*1.7);
+//                    view.scrollTo(0, (int) (height*0.8));
+//                    isTobottom =true;
+//                }else{
+//                    
+//                }
+//                
+//                break;
+//
+//            default:
+//                break;
+//        }
+//        return super.onTouchEvent(event);
+//    }
     
     private int getScrollVelocity() {
         velocityTracker.computeCurrentVelocity(1000);
