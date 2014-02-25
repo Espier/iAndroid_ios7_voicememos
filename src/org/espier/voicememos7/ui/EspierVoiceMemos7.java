@@ -315,7 +315,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                         break;
                 }
             }
-        };
+          };
+        protected View lastView = null;
+        protected boolean isClose = false;
 
         public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
             super(context, layout, c, from, to);
@@ -357,30 +359,39 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                 SeekBar seeker = (SeekBar) vh.bar;
                 seeker.setOnSeekBarChangeListener(mSeekListener);
             }
-            vh.bar.setMax(1000);
-            v.setTag(vh);
-            v.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    LinearLayout layout = (LinearLayout) v.findViewById(R.id.playlayout);
-                    if (layout.getVisibility() == View.GONE) {
-                        layout.setVisibility(View.VISIBLE);
-                    } else {
+          vh.bar.setMax(1000);
+          v.setTag(vh);
+          v.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                if(lastView!=null&& isClose){
+                    LinearLayout layout = (LinearLayout)lastView.findViewById(R.id.playlayout);
                         layout.setVisibility(View.GONE);
-                    }
-                    RelativeLayout sharelayout = (RelativeLayout) v.findViewById(R.id.sharelayout);
-                    if (sharelayout.getVisibility() == View.GONE) {
-                        sharelayout.setVisibility(View.VISIBLE);
-                    } else {
+                    RelativeLayout sharelayout = (RelativeLayout)lastView.findViewById(R.id.sharelayout);
                         sharelayout.setVisibility(View.GONE);
-                    }
-
-                    System.out.println("item click");
+                        isClose = false;
+                        return;
                 }
-            });
-            return v;
+                LinearLayout layout = (LinearLayout)v.findViewById(R.id.playlayout);
+                if(layout.getVisibility() == View.GONE){
+                    layout.setVisibility(View.VISIBLE);
+                }else{
+                    layout.setVisibility(View.GONE);
+                }
+                RelativeLayout sharelayout = (RelativeLayout)v.findViewById(R.id.sharelayout);
+                if(sharelayout.getVisibility() == View.GONE){
+                    sharelayout.setVisibility(View.VISIBLE);
+                }else{
+                    sharelayout.setVisibility(View.GONE);
+                }
+                isClose  = true;
+                lastView  = v;
+                
+            }
+        });
+          return v;
         }
 
         @Override
