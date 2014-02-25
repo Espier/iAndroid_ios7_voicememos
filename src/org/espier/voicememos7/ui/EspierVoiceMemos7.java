@@ -374,6 +374,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
               }
             }
           };
+        protected View lastView = null;
+        protected boolean isClose = false;
 
         public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
           super(context, layout, c, from, to);
@@ -421,6 +423,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+                if(lastView!=null&& isClose){
+                    LinearLayout layout = (LinearLayout)lastView.findViewById(R.id.playlayout);
+                        layout.setVisibility(View.GONE);
+                    RelativeLayout sharelayout = (RelativeLayout)lastView.findViewById(R.id.sharelayout);
+                        sharelayout.setVisibility(View.GONE);
+                        isClose = false;
+                        return;
+                }
                 LinearLayout layout = (LinearLayout)v.findViewById(R.id.playlayout);
                 if(layout.getVisibility() == View.GONE){
                     layout.setVisibility(View.VISIBLE);
@@ -433,8 +443,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
                 }else{
                     sharelayout.setVisibility(View.GONE);
                 }
+                isClose  = true;
+                lastView  = v;
                 
-                System.out.println("item click");
             }
         });
           return v;
