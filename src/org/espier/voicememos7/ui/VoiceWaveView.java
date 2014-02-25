@@ -48,7 +48,7 @@ public class VoiceWaveView extends View {
     List<Integer> voice_list = new ArrayList<Integer>();
     List<Integer> time_list = new ArrayList<Integer>();
    
-    String[] voice_db_list = new String[]{"0","-1","-2","-3","-5","-7","-10"};
+    String[] voice_db_list = new String[]{"-10","-7","-5","-3","-2","-1","0"};
 
     int second_index = 0;
 
