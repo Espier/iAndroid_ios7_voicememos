@@ -194,6 +194,7 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
         if (mRecorder != null) {
             try {
                 mRecorder.stop();
+                mRecorder.reset();
                 mRecorder.release();
                 mRecorder = null;
             } catch (RuntimeException ex) {
@@ -216,6 +217,7 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
         if (mRecorder == null)
             return;
         mRecorder.stop();
+        mRecorder.reset();
         mRecorder.release();
         mRecorder = null;
         mSampleLength += (int) ((System.currentTimeMillis() - mSampleStart) / 1000);
