@@ -23,6 +23,8 @@
     <string name="detail_date_format">yyy-MM-dd E</string>
     <string name="record_time_prefix">录制于：</string>
     <string name="back">返回</string>
+    <string name="main_title">录制</string>
+    <string name="record_name">新录音</string>
     <string name="label_title">标签</string>
     <string name="label_custom_title">自定</string>
     <string name="storage_is_full" msgid="416039755956726221">"存储空间已满"</string>

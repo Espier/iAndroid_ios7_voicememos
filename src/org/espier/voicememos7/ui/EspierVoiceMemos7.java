@@ -45,6 +45,7 @@ import org.espier.voicememos7.ui.SlideCutListView.RemoveDirection;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
+import org.espier.voicememos7.util.ScalePx;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -53,6 +54,7 @@ import java.util.TimerTask;
 
 public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnClickListener
 {
+    private LinearLayout mainLayout;
     float downy = 0;
     // private VelocityTracker velocityTracker;
     // private int mPointerId;
@@ -74,7 +76,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
     private RelativeLayout ll1;
     private boolean isCurrentPosition = false;
     private RelativeLayout ll2;
-    View view;
     ImageView start;
     protected TimerTask timerTask;
     private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
@@ -153,14 +154,35 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_memo_main);
+        
+        
+        TextView txtMainTitle = (TextView)findViewById(R.id.txtMainTitle);
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        rlp.setMargins(0, ScalePx.scalePx(this, 29), 0, 0);
+        txtMainTitle.setLayoutParams(rlp);
+        
+        TextView txtRecordName = (TextView)findViewById(R.id.txtRecordName);
+        RelativeLayout.LayoutParams rlpRecordName = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        rlpRecordName.setMargins(
+                ScalePx.scalePx(this, 31), 
+                ScalePx.scalePx(this, 13), 0, 0);
+        rlpRecordName.addRule(RelativeLayout.BELOW, R.id.waveView);
+        txtRecordName.setLayoutParams(rlpRecordName);
+        
+        TextView txtDate = (TextView)findViewById(R.id.txtDate);
+        RelativeLayout.LayoutParams rlpDate = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        rlpDate.setMargins(
+                ScalePx.scalePx(this, 31), 
+                ScalePx.scalePx(this, 11), 0, 0);
+        rlpDate.addRule(RelativeLayout.BELOW, R.id.txtRecordName);
+        txtDate.setLayoutParams(rlpDate);
+        
+        
+        mainLayout = (LinearLayout) findViewById(R.id.mainlayout);
         ll1 = (RelativeLayout) findViewById(R.id.ll_1);
         ll2 = (RelativeLayout) findViewById(R.id.ll_2);
-        LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
         start = (ImageView) findViewById(R.id.imageView2);
         start.setOnTouchListener(startTouchListener);
-
-        view = layout.getChildAt(0);
-
         init();
     }
 
@@ -193,11 +215,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
 
                         int deltaY = (int) (downy - y);
 
-                        if (view.getScrollY() + deltaY < 0) {
-                            deltaY = -view.getScrollY();
+                        if (mainLayout.getScrollY() + deltaY < 0) {
+                            deltaY = -mainLayout.getScrollY();
                         }
 
-                        view.scrollBy(0, deltaY);
+                        mainLayout.scrollBy(0, deltaY);
 
                         System.out.println(deltaY);
                         break;
@@ -207,9 +229,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                         int viewY = location[1];
                        
                         if (viewY > GetScreenCenter() / 2) {
-                            view.scrollBy(0, -view.getScrollY());
+                            mainLayout.scrollBy(0, -mainLayout.getScrollY());
                         } else {
-                            view.scrollBy(0, 50-viewY);
+                            mainLayout.scrollBy(0, 50-viewY);
                         }
 
 
@@ -239,7 +261,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         finished.setOnClickListener(this);
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         slideCutListView.setRemoveListener(this);
-        date = (TextView) findViewById(R.id.date);
+        date = (TextView) findViewById(R.id.txtDate);
         String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
         date.setText(datetime);
         listViewaddData();

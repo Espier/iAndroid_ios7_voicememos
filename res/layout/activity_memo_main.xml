@@ -1,133 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-         <org.espier.ios7.ui.IosLikeScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/sv_base_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:fadingEdge="none"
-        android:scrollbars="none"
-        android:fillViewport="true">
--->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout"
+    android:id="@+id/mainlayout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/ll_1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <RelativeLayout
-            android:id="@+id/ll_1"
+        <TextView
+            android:id="@+id/txtMainTitle"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical" >
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/main_title"
+            android:textColor="@color/white"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dip"
-                android:text="录制"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+        <org.espier.voicememos7.ui.VoiceWaveView
+            android:id="@+id/waveView"
+            android:layout_width="fill_parent"
+            android:layout_height="300dip"
+            android:layout_below="@+id/txtMainTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="1dp" />
 
-            <org.espier.voicememos7.ui.VoiceWaveView
-                android:id="@+id/waveView"
-                android:layout_width="fill_parent"
-                android:layout_height="300dip"
-                android:layout_below="@+id/textView11"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="1dp" />
+        <TextView
+            android:id="@+id/txtRecordName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/waveView"
+            android:text="@string/record_name"
+            android:textColor="@color/white"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dip"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/waveView"
-                android:text="Large Text"
-                android:layout_marginTop="-40dip"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView
+            android:id="@+id/txtDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/txtRecordName"
+            />
 
-            
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/textView3"
-                android:layout_marginLeft="20dip"
-                
-                android:text="Large Text" />
-
-            <LinearLayout
-                android:id="@+id/imageLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/date"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dip"
-                android:background="@drawable/frame" >
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/circular" />
-            </LinearLayout>
+        <LinearLayout
+            android:id="@+id/imageLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtDate"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dip"
+            android:background="@drawable/frame" >
 
             <ImageView
                 android:id="@+id/imageView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/imageLayout"
-                android:layout_marginBottom="19dp"
-                android:layout_marginLeft="30dip"
-                android:layout_toRightOf="@+id/imageLayout"
-                android:text="完成"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:background="@drawable/circular" />
+        </LinearLayout>
 
-            <TextView
-                android:id="@+id/finished"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/imageLayout"
-                android:layout_marginBottom="19dp"
-                android:layout_marginLeft="10dip"
-                android:layout_toRightOf="@+id/imageLayout"
-                android:text="完成"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageLayout"
+            android:layout_marginBottom="19dp"
+            android:layout_marginLeft="30dip"
+            android:layout_toRightOf="@+id/imageLayout"
+            android:text="完成"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <RelativeLayout
-            android:id="@+id/ll_2"
+        <TextView
+            android:id="@+id/finished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageLayout"
+            android:layout_marginBottom="19dp"
+            android:layout_marginLeft="10dip"
+            android:layout_toRightOf="@+id/imageLayout"
+            android:text="完成"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <org.espier.voicememos7.ui.SlideCutListView
+            android:id="@+id/listView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical" >
+            android:layout_below="@+id/hiddenView"
+            android:layout_marginTop="-100dip" />
 
-            <org.espier.voicememos7.ui.SlideCutListView
-                android:id="@+id/listView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_below="@+id/hiddenView"
-                android:layout_marginTop="-100dip" />
-
-            <Button
-                android:id="@+id/hiddenView"
-                android:layout_width="fill_parent"
-                android:layout_height="100dip"
-                android:background="#e0ffff00"
-                android:clickable="false" />
-        </RelativeLayout>
-    </LinearLayout>
+        <Button
+            android:id="@+id/hiddenView"
+            android:layout_width="fill_parent"
+            android:layout_height="100dip"
+            android:background="#e0ffff00"
+            android:clickable="false" />
+    </RelativeLayout>
 
 </LinearLayout> <!-- </org.espier.ios7.ui.IosLikeScrollView> -->
 
