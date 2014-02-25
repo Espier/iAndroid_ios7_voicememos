@@ -80,6 +80,8 @@ public class VoiceWaveView extends View {
     private String darkGrayColorString = "#8c8c8c";
     private int darkGrayColor;
     
+    float x = 0;
+    
 
     /**
      * @param recorder the recorder to set
@@ -174,6 +176,7 @@ public class VoiceWaveView extends View {
         
         
         margin_lef_init = ScalePx.scalePx(context, 31);
+        
     }
 
     @Override
@@ -183,7 +186,7 @@ public class VoiceWaveView extends View {
         // long t1 = System.currentTimeMillis();
         initView();
 
-        float x = 0;
+        
         w = getWidth();
         
         //time_axix_len = w / width_per_second;
@@ -202,17 +205,8 @@ public class VoiceWaveView extends View {
         //v = w / (time_x * 1000);
         v = grid_width*4/1000f;
         float start_move_time_textview = 80;
-        float q = 0;
-
-        if (x < start_move_time_textview) {
-            q = 0;
-        }
-        else {
-            q = x - start_move_time_textview;
-
-        }
-
-
+        
+        float q  = (x<start_move_time_textview)?0:(x-start_move_time_textview);
         try {
             drawSlideLine(canvas, x);
             drawVoice(canvas, x);
@@ -276,8 +270,8 @@ public class VoiceWaveView extends View {
     {
         int grid_num = 4;
         //float s = width_per_second/grid_num;
-        float text_offset = 8;
-        for (int i = 0; i < time_list.size(); i++)
+        float text_offset = ScalePx.scalePx(context, 8);
+        for (int i = -1; i < time_list.size(); i++)
         {
             
             float x = i * grid_width * 4 - v* invalidate_rate * second_index + offset;
@@ -291,7 +285,10 @@ public class VoiceWaveView extends View {
                 h=(j==0)?h_high_line:h_low_line;
                 canvas.drawLine(x+j*grid_width, y_xaxis+h_high_line, x+j*grid_width, y_xaxis+h_high_line-h, darkGrayLinePaint);
             }
-            canvas.drawText(timeAxisFormat(time_list.get(i)), x+text_offset, y_xaxis+voiceLinePaint.getTextSize(), voiceLinePaint);
+            if (i!=-1) {
+                canvas.drawText(timeAxisFormat(time_list.get(i)), x+text_offset, y_xaxis+voiceLinePaint.getTextSize(), voiceLinePaint);
+
+            }
         }
     }
     
@@ -381,7 +378,9 @@ public class VoiceWaveView extends View {
 
                 try {
                     time += invalidate_rate;
-                    if (time >= time_x * 1000 / 2) {
+                    //if (time >= time_x * 1000 / 2) 
+                    if (x >= w / 2)
+                    {
                         // Log.e("size", voice_list.size()+"");
                         // voice_list.remove(0);
 
@@ -423,7 +422,7 @@ public class VoiceWaveView extends View {
             }
         };
         timer.schedule(timerTask, invalidate_rate, invalidate_rate);
-        timer.schedule(getAmpTask, 10, 10);
+        timer.schedule(getAmpTask, 20, 20);
 
     }
 
@@ -447,6 +446,7 @@ public class VoiceWaveView extends View {
         voice_list.removeAll(voice_list);
         time_list.removeAll(time_list);
         time = 0;
+        second_index = 0;
         invalidate();
     }
 
