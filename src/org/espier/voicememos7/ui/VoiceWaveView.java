@@ -34,6 +34,7 @@ public class VoiceWaveView extends View {
     TimerTask timerTask;
     Paint voiceLinePaint;
     Paint slideLinePaint;
+    Paint timeTopPaint;
     Paint timeTextPaint;
     Paint grayLinePaint;
     Paint darkGrayLinePaint;
@@ -80,6 +81,8 @@ public class VoiceWaveView extends View {
     private String darkGrayColorString = "#8c8c8c";
     private int darkGrayColor;
     
+    int time_text_font_size;
+    
     float x = 0;
     
 
@@ -122,6 +125,11 @@ public class VoiceWaveView extends View {
         blueColor = Color.parseColor(blueColorString);
         slideLinePaint.setColor(blueColor);
         slideLinePaint.setStrokeWidth(0.8f);
+        
+        timeTopPaint = new Paint();
+        timeTopPaint.setTextSize(ScalePx.scalePx(context, 24));
+        timeTopPaint.setColor(Color.WHITE);
+        
         timeTextPaint = new Paint();
         timeTextPaint.setTextSize(30);
         timeTextPaint.setColor(Color.WHITE);
@@ -173,6 +181,7 @@ public class VoiceWaveView extends View {
         y_time_text = y_bottom_line+h_bottomLine2timetext;
         h_db2db = ScalePx.scalePx(context, 8);
         h_db2midline = ScalePx.scalePx(context, 13);
+        time_text_font_size = ScalePx.scalePx(context, 24);
         
         
         margin_lef_init = ScalePx.scalePx(context, 31);
@@ -286,7 +295,7 @@ public class VoiceWaveView extends View {
                 canvas.drawLine(x+j*grid_width, y_xaxis+h_high_line, x+j*grid_width, y_xaxis+h_high_line-h, darkGrayLinePaint);
             }
             if (i!=-1) {
-                canvas.drawText(timeAxisFormat(time_list.get(i)), x+text_offset, y_xaxis+voiceLinePaint.getTextSize(), voiceLinePaint);
+                canvas.drawText(timeAxisFormat(time_list.get(i)), x+text_offset, y_xaxis+timeTopPaint.getTextSize(), timeTopPaint);
 
             }
         }
@@ -375,6 +384,9 @@ public class VoiceWaveView extends View {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
+                if (recorder.getState() != Recorder.RECORDING_STATE) {
+                    return;
+                }
 
                 try {
                     time += invalidate_rate;
@@ -408,6 +420,9 @@ public class VoiceWaveView extends View {
 
             @Override
             public void run() {
+                if (recorder.getState() != Recorder.RECORDING_STATE) {
+                    return;
+                }
                 try {
                     if (time >= time_x * 1000 / 2)
                     {
