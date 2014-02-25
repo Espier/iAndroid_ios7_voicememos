@@ -1,3 +1,4 @@
+
 package org.espier.voicememos7.ui;
 
 import android.app.Activity;
@@ -23,6 +24,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -49,16 +51,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimerTask;
 
-public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClickListener
+public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnClickListener
 {
     float downy = 0;
-    private VelocityTracker velocityTracker=VelocityTracker.obtain();
+    // private VelocityTracker velocityTracker;
+    // private int mPointerId;
+    // private int mMaxVelocity;
     private boolean isTobottom = false;
     private boolean isfirstdown = true;
     public int ms;
     public int second;
     public int miniute;
-    public int mCurrentPosition=-1;
+    public int mCurrentPosition = -1;
     protected int mCurrentDuration;
     public static final int REFRESH = 1;
     public static int LABEL_TYPE_NONE = 0;
@@ -66,53 +70,59 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
     private static final int DEL_REQUEST = 2;
     TextView date;
     TextView finished;
-    
+
     private RelativeLayout ll1;
     private boolean isCurrentPosition = false;
     private RelativeLayout ll2;
-    View view ;
+    View view;
     ImageView start;
     protected TimerTask timerTask;
     private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
     private ArrayAdapter<String> adapter;
     private org.espier.voicememos7.ui.VoiceWaveView waveView;
     private org.espier.voicememos7.util.Recorder mRecorder;
-    private org.espier.voicememos7.ui.EspierVoiceMemos7.VoiceMemoListAdapter mVoiceMemoListAdapter;  
+    private org.espier.voicememos7.ui.EspierVoiceMemos7.VoiceMemoListAdapter mVoiceMemoListAdapter;
     int height;
     public String mCurrentPath;
-    public Integer mCurrentMemoId=-1;
+    public Integer mCurrentMemoId = -1;
     private OnTouchListener startTouchListener = new View.OnTouchListener() {
-        public final float[] BT_SELECTED = new float[] {1,0,0,0,-100,0,1,0,0,-100,0,0,1,0,-100,0,0,0,1,0};
-        public final float[] BT_NOT_SELECTED = new float[] {1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0};
-        private boolean isdown= false;
+        public final float[] BT_SELECTED = new float[] {
+                1, 0, 0, 0, -100, 0, 1, 0, 0, -100, 0, 0, 1, 0, -100, 0, 0, 0, 1, 0
+        };
+        public final float[] BT_NOT_SELECTED = new float[] {
+                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
+        };
+        private boolean isdown = false;
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             // TODO Auto-generated method stub
-            
+
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    start.getBackground().setColorFilter( new ColorMatrixColorFilter(BT_SELECTED));
+                    start.getBackground().setColorFilter(new ColorMatrixColorFilter(BT_SELECTED));
                     start.setBackgroundDrawable(start.getBackground());
 
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    
+
                     break;
                 case MotionEvent.ACTION_UP:
-                    start.getBackground().setColorFilter(new ColorMatrixColorFilter(BT_NOT_SELECTED));
+                    start.getBackground().setColorFilter(
+                            new ColorMatrixColorFilter(BT_NOT_SELECTED));
                     start.setBackgroundDrawable(start.getBackground());
-                   if(!isdown){
-                       start.setBackgroundResource(R.drawable.start_down);
-                       isdown = true;
-                       //start
-                       start();
-                   }else{
-                       start.setBackgroundResource(R.drawable.circular);
-                       isdown = false;
-                       //pause
-                       pause();
-                   }
-                    
+                    if (!isdown) {
+                        start.setBackgroundResource(R.drawable.start_down);
+                        isdown = true;
+                        // start
+                        start();
+                    } else {
+                        start.setBackgroundResource(R.drawable.circular);
+                        isdown = false;
+                        // pause
+                        pause();
+                    }
+
                     break;
 
                 default:
@@ -120,12 +130,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
             }
             return true;
         }
+
         private void pause() {
             // TODO Auto-generated method stub
             mRecorder.pauseRecording();
             waveView.pause();
         }
-      
+
         private void start() {
             // TODO Auto-generated method stub
             waveView.clearData();
@@ -137,119 +148,113 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         }
     };
 
-      @Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_memo_main);
         ll1 = (RelativeLayout) findViewById(R.id.ll_1);
         ll2 = (RelativeLayout) findViewById(R.id.ll_2);
-        Button vv = (Button)findViewById(R.id.hiddenView);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
+        start = (ImageView) findViewById(R.id.imageView2);
+        start.setOnTouchListener(startTouchListener);
+
+        view = layout.getChildAt(0);
+
+        init();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Button vv = (Button) findViewById(R.id.hiddenView);
         vv.setOnClickListener(new View.OnClickListener() {
-            
+
             @Override
             public void onClick(View v) {
-                
-                
+
             }
         });
         vv.setOnTouchListener(new View.OnTouchListener() {
-            
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                // TODO Auto-generated method stub
-                velocityTracker.addMovement(event);
+
+                final int action = event.getAction();
+
                 int y = (int) event.getY();
+
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         downy = event.getY();
+
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        
-                        if(!isTobottom){
-                            int deltaY = (int) (downy - y);
-                            downy = y;
-                            if(deltaY <0&& isfirstdown ){
-                                return true;
-                            }
-                            if(deltaY>0){
-                                isfirstdown = false;
-                            }
-                            //control page scroll to top limit
-                            if (view.getScrollY()+deltaY<0)
-                                deltaY = -view.getScrollY();
-                                
-                            view.scrollBy(0, deltaY);
-                            
-                            System.out.println(deltaY);
-                        }else{
-                            return true;
+
+                        int deltaY = (int) (downy - y);
+
+                        if (view.getScrollY() + deltaY < 0) {
+                            deltaY = -view.getScrollY();
                         }
-                        
-                        
+
+                        view.scrollBy(0, deltaY);
+
+                        System.out.println(deltaY);
                         break;
                     case MotionEvent.ACTION_UP:
-                        int velocityY = getScrollVelocity();
-                        if(velocityY>0){
-                            System.out.println("向下 ");
-                            if(view.getScrollY()<0){
-                                view.scrollTo(0, 0);
-                            }
-                            System.out.println(view.getScrollY());
-                        }else if(velocityY<0){
-                            System.out.println("向上");
-                            System.out.println(view.getScrollY()+"　　"+height*1.7);
-                            view.scrollTo(0, (int) (height*0.8));
-                            isTobottom =true;
-                        }else{
-                            
+                        int[] location = new int[2];
+                        v.getLocationOnScreen(location);
+                        int viewY = location[1];
+                       
+                        if (viewY > GetScreenCenter() / 2) {
+                            view.scrollBy(0, -view.getScrollY());
+                        } else {
+                            view.scrollBy(0, 50-viewY);
                         }
-                        
+
+
                         break;
 
                     default:
                         break;
                 }
-                 
+
                 return false;
             }
         });
-        
-        LinearLayout layout =(LinearLayout)findViewById(R.id.layout);
-        start = (ImageView)findViewById(R.id.imageView2);
-        start.setOnTouchListener(startTouchListener );
-        
-        view = layout.getChildAt(0);
-        
-        init();
     }
-    
+
+    private int GetScreenCenter() {
+        return this.getResources().getDisplayMetrics().heightPixels;
+    }
+
     private void init() {
-        
-        waveView = (VoiceWaveView)findViewById(R.id.waveView);
+
+        waveView = (VoiceWaveView) findViewById(R.id.waveView);
         waveView.setMinimumWidth(500);
         waveView.setMinimumHeight(500);
         mRecorder = new Recorder();
         waveView.setRecorder(mRecorder);
-        finished = (TextView)findViewById(R.id.finished);
+        finished = (TextView) findViewById(R.id.finished);
         finished.setOnClickListener(this);
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         slideCutListView.setRemoveListener(this);
-        date = (TextView)findViewById(R.id.date);
+        date = (TextView) findViewById(R.id.date);
         String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
         date.setText(datetime);
         listViewaddData();
     }
-    
+
     private void listViewaddData() {
         // TODO Auto-generated method stub
         Cursor cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
         mVoiceMemoListAdapter =
-            new VoiceMemoListAdapter(EspierVoiceMemos7.this, R.layout.listview_item, cs, new String[] {},
-                new int[] {});
+                new VoiceMemoListAdapter(EspierVoiceMemos7.this, R.layout.listview_item, cs,
+                        new String[] {},
+                        new int[] {});
         slideCutListView.setAdapter(mVoiceMemoListAdapter);
     }
-    
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         // TODO Auto-generated method stub
@@ -258,101 +263,38 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
         int top = rect.top;//
 
-         height = getWindowManager().getDefaultDisplay().getHeight()-top;
+        height = getWindowManager().getDefaultDisplay().getHeight() - top;
         int width = getWindowManager().getDefaultDisplay().getWidth();
-        
+
         LayoutParams lp1 = ll1.getLayoutParams();
         lp1.height = (int) (height * 0.9);
         lp1.width = width;
         ll1.setLayoutParams(lp1);
-        
+
         LayoutParams lp2 = ll2.getLayoutParams();
         lp2.height = (int) (height * 0.9);
         lp2.width = width;
         ll2.setLayoutParams(lp2);
-        
-    }
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        velocityTracker.addMovement(event);
-//        int y = (int) event.getY();
-//        switch (event.getAction()) {
-//            case MotionEvent.ACTION_DOWN:
-//                downy = event.getY();
-//                break;
-//            case MotionEvent.ACTION_MOVE:
-//                
-//                if(!isTobottom){
-//                    int deltaY = (int) (downy - y);
-//                    downy = y;
-//                    if(deltaY <0&& isfirstdown ){
-//                        return true;
-//                    }
-//                    if(deltaY>0){
-//                        isfirstdown = false;
-//                    }
-//                    //control page scroll to top limit
-//                    if (view.getScrollY()+deltaY<0)
-//                        deltaY = -view.getScrollY();
-//                        
-//                    view.scrollBy(0, deltaY);
-//                    
-//                    System.out.println(deltaY);
-//                }else{
-//                    return true;
-//                }
-//                
-//                
-//                break;
-//            case MotionEvent.ACTION_UP:
-//                int velocityY = getScrollVelocity();
-//                if(velocityY>0){
-//                    System.out.println("向下 ");
-//                    if(view.getScrollY()<0){
-//                        view.scrollTo(0, 0);
-//                    }
-//                    System.out.println(view.getScrollY());
-//                }else if(velocityY<0){
-//                    System.out.println("向上");
-//                    System.out.println(view.getScrollY()+"　　"+height*1.7);
-//                    view.scrollTo(0, (int) (height*0.8));
-//                    isTobottom =true;
-//                }else{
-//                    
-//                }
-//                
-//                break;
-//
-//            default:
-//                break;
-//        }
-//        return super.onTouchEvent(event);
-//    }
-    
-    private int getScrollVelocity() {
-        velocityTracker.computeCurrentVelocity(1000);
-        int velocity = (int) velocityTracker.getYVelocity();
-        return velocity;
     }
 
     @Override
     public void removeItem(RemoveDirection direction, int position) {
         adapter.remove(adapter.getItem(position));
         switch (direction) {
-        case RIGHT:
-            Toast.makeText(this, "向右删除  "+ position, Toast.LENGTH_SHORT).show();
-            break;
-        case LEFT:
-            Toast.makeText(this, "向左删除  "+ position, Toast.LENGTH_SHORT).show();
-            break;
+            case RIGHT:
+                Toast.makeText(this, "向右删除  " + position, Toast.LENGTH_SHORT).show();
+                break;
+            case LEFT:
+                Toast.makeText(this, "向左删除  " + position, Toast.LENGTH_SHORT).show();
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
-        
+
     }
-    
+
     class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
         private Context mContext;
@@ -366,55 +308,56 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         private final Handler mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-              switch (msg.what) {
-                case REFRESH:
-                  long next = refreshNow((ViewHolder) msg.obj);
-                  queueNextRefresh(next,(ViewHolder) msg.obj);
-                  break;
-              }
+                switch (msg.what) {
+                    case REFRESH:
+                        long next = refreshNow((ViewHolder) msg.obj);
+                        queueNextRefresh(next, (ViewHolder) msg.obj);
+                        break;
+                }
             }
           };
         protected View lastView = null;
         protected boolean isClose = false;
 
         public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
-          super(context, layout, c, from, to);
-          mContext = context;
-          mCurrentBgColor = Color.WHITE;
-          setupColumnIndices(c);
+            super(context, layout, c, from, to);
+            mContext = context;
+            mCurrentBgColor = Color.WHITE;
+            setupColumnIndices(c);
         }
-        
+
         public View getView(int position, View convertView, ViewGroup parent) {
-          Log.d("memo", "getView, mCurrentPosition:" + mCurrentPosition);
-          if (mCurrentPosition == position) {
-            isCurrentPosition = true;
-          } else {
-            isCurrentPosition = false;
-          }
-          return super.getView(position, convertView, parent);
+            Log.d("memo", "getView, mCurrentPosition:" + mCurrentPosition);
+            if (mCurrentPosition == position) {
+                isCurrentPosition = true;
+            } else {
+                isCurrentPosition = false;
+            }
+            return super.getView(position, convertView, parent);
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-          View v = super.newView(context, cursor, parent);
+            View v = super.newView(context, cursor, parent);
 
-          ViewHolder vh = new ViewHolder();
-          vh.playControl = (ImageView) v.findViewById(R.id.memos_item_play);
-          vh.tag = (TextView) v.findViewById(R.id.memos_item_title);
-          vh.createDate = (TextView) v.findViewById(R.id.memos_item_create_date);
-          vh.duration = (TextView) v.findViewById(R.id.memos_item_duration);
-          vh.id = (TextView) v.findViewById(R.id.memos_item__id);
-          vh.path = (TextView) v.findViewById(R.id.memos_item_path);
-          vh.bar = (SeekBar)v.findViewById(android.R.id.progress);
-          vh.mCurrentRemain = (TextView)v.findViewById(R.id.current_remain);
-          vh.mCurrentTime = (TextView)v.findViewById(R.id.current_positon);
-          vh.share = (ImageView)v.findViewById(R.id.share);
-          vh.del = (ImageView)v.findViewById(R.id.del);
-          vh.edit = (TextView)v.findViewById(R.id.edit);
-         // mCurrentDuration = (Integer)v.findViewById(R.id.memos_item_duration).getTag();
-          if (vh.bar instanceof SeekBar) {
-              SeekBar seeker = (SeekBar) vh.bar;
-              seeker.setOnSeekBarChangeListener(mSeekListener);
+            ViewHolder vh = new ViewHolder();
+            vh.playControl = (ImageView) v.findViewById(R.id.memos_item_play);
+            vh.tag = (TextView) v.findViewById(R.id.memos_item_title);
+            vh.createDate = (TextView) v.findViewById(R.id.memos_item_create_date);
+            vh.duration = (TextView) v.findViewById(R.id.memos_item_duration);
+            vh.id = (TextView) v.findViewById(R.id.memos_item__id);
+            vh.path = (TextView) v.findViewById(R.id.memos_item_path);
+            vh.bar = (SeekBar) v.findViewById(android.R.id.progress);
+            vh.mCurrentRemain = (TextView) v.findViewById(R.id.current_remain);
+            vh.mCurrentTime = (TextView) v.findViewById(R.id.current_positon);
+            vh.share = (ImageView) v.findViewById(R.id.share);
+            vh.del = (ImageView) v.findViewById(R.id.del);
+            vh.edit = (TextView) v.findViewById(R.id.edit);
+            // mCurrentDuration =
+            // (Integer)v.findViewById(R.id.memos_item_duration).getTag();
+            if (vh.bar instanceof SeekBar) {
+                SeekBar seeker = (SeekBar) vh.bar;
+                seeker.setOnSeekBarChangeListener(mSeekListener);
             }
           vh.bar.setMax(1000);
           v.setTag(vh);
@@ -454,168 +397,172 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
 
-          final ViewHolder vh = (ViewHolder) view.getTag();
-          
-          
-          vh.tag.setText(cursor.getString(mLabelIdx));
+            final ViewHolder vh = (ViewHolder) view.getTag();
 
-          int secs = cursor.getInt(mDurationIdx);
-          if (secs == 0) {
-            vh.duration.setText("");
-          } else {
-            vh.duration.setText(MemosUtils.makeTimeString(context, secs / 1000));
-            vh.duration.setTag(secs);
-          }
+            vh.tag.setText(cursor.getString(mLabelIdx));
 
-          Long date = cursor.getLong(mCreateDateIdx);
-          String dateFormat = getString(R.string.date_time_format);
-          int labelType = cursor.getInt(mLabelTypeIdx);
-          if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE ) {
-            dateFormat = getString(R.string.date_format);
-          }
-          SimpleDateFormat format = new SimpleDateFormat(dateFormat);
-          Date d = new Date(date);
-          String dd = format.format(d);
-          vh.createDate.setText(dd);
+            int secs = cursor.getInt(mDurationIdx);
+            if (secs == 0) {
+                vh.duration.setText("");
+            } else {
+                vh.duration.setText(MemosUtils.makeTimeString(context, secs / 1000));
+                vh.duration.setTag(secs);
+            }
 
-          final String path = cursor.getString(mPathIdx);
-          final Integer id = cursor.getInt(mMemoIdx);
-          vh.path.setTag(path);
-          vh.id.setTag(id);
-         
+            Long date = cursor.getLong(mCreateDateIdx);
+            String dateFormat = getString(R.string.date_time_format);
+            int labelType = cursor.getInt(mLabelTypeIdx);
+            if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE) {
+                dateFormat = getString(R.string.date_format);
+            }
+            SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+            Date d = new Date(date);
+            String dd = format.format(d);
+            vh.createDate.setText(dd);
 
-//          File file = new File(path);
-//          if (!file.exists()) {
-//            if (isCurrentPosition) {
-//              vh.playControl.setVisibility(View.VISIBLE);
-//              vh.tag.setTextColor(Color.WHITE);
-//              vh.createDate.setTextColor(Color.WHITE);
-//              vh.duration.setTextColor(Color.WHITE);
-//            }else{
-//              vh.playControl.setVisibility(View.VISIBLE);
-//              vh.tag.setTextColor(Color.BLACK);
-//              vh.createDate.setTextColor(Color.GRAY);
-//              vh.duration.setTextColor(Color.BLUE);
-//            }
-//          } else {
-//            if (isCurrentPosition) {
-//              vh.playControl.setVisibility(View.VISIBLE);
-//              vh.tag.setTextColor(Color.WHITE);
-//              vh.createDate.setTextColor(Color.WHITE);
-//              vh.duration.setTextColor(Color.WHITE);
-//            } else {
-//              vh.tag.setTextColor(Color.BLACK);
-//              vh.createDate.setTextColor(Color.GRAY);
-//              vh.duration.setTextColor(Color.BLUE);
-//            }
-           // mCurrentDuration = (Integer) view.findViewById(R.id.memos_item_duration).getTag();
+            final String path = cursor.getString(mPathIdx);
+            final Integer id = cursor.getInt(mMemoIdx);
+            vh.path.setTag(path);
+            vh.id.setTag(id);
+
+            // File file = new File(path);
+            // if (!file.exists()) {
+            // if (isCurrentPosition) {
+            // vh.playControl.setVisibility(View.VISIBLE);
+            // vh.tag.setTextColor(Color.WHITE);
+            // vh.createDate.setTextColor(Color.WHITE);
+            // vh.duration.setTextColor(Color.WHITE);
+            // }else{
+            // vh.playControl.setVisibility(View.VISIBLE);
+            // vh.tag.setTextColor(Color.BLACK);
+            // vh.createDate.setTextColor(Color.GRAY);
+            // vh.duration.setTextColor(Color.BLUE);
+            // }
+            // } else {
+            // if (isCurrentPosition) {
+            // vh.playControl.setVisibility(View.VISIBLE);
+            // vh.tag.setTextColor(Color.WHITE);
+            // vh.createDate.setTextColor(Color.WHITE);
+            // vh.duration.setTextColor(Color.WHITE);
+            // } else {
+            // vh.tag.setTextColor(Color.BLACK);
+            // vh.createDate.setTextColor(Color.GRAY);
+            // vh.duration.setTextColor(Color.BLUE);
+            // }
+            // mCurrentDuration = (Integer)
+            // view.findViewById(R.id.memos_item_duration).getTag();
             mCurrentMemoId = (Integer) view.findViewById(R.id.memos_item__id).getTag();
             mCurrentPath = (String) view.findViewById(R.id.memos_item_path).getTag();
             view.setBackgroundColor(mCurrentBgColor);
             vh.share.setOnClickListener(new View.OnClickListener() {
-                
+
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     MemosUtils.shareMemo(EspierVoiceMemos7.this, mCurrentPath);
                 }
             });
-        
+
             vh.del.setEnabled(true);
             vh.del.setOnClickListener(new View.OnClickListener() {
 
-              @Override
-              public void onClick(View arg0) {
-                  if (mRecorder.getState() != Recorder.IDLE_STATE) {
-                      mRecorder.stopPlayback();
+                @Override
+                public void onClick(View arg0) {
+                    if (mRecorder.getState() != Recorder.IDLE_STATE) {
+                        mRecorder.stopPlayback();
                     }
                     Intent delIntent = new Intent(EspierVoiceMemos7.this, MemoDelete.class);
                     delIntent.putExtra("memoname", vh.tag.getText());
                     startActivityForResult(delIntent, DEL_REQUEST);
-              }
+                }
             });
             vh.playControl.setOnClickListener(new View.OnClickListener() {
 
-              @Override
-              public void onClick(View arg0) {
-                int state = mRecorder.getState();
-//                if (state == Recorder.PLAYING_STATE) {
-//                  mRecorder.stopPlayback();
-//                }
-                if (state == Recorder.IDLE_STATE) {
-                  mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
-                  mRecorder.startPlayback();
-                  vh.playControl.setImageResource(R.drawable.pause);
-                } else if (state == Recorder.PLAYER_PAUSE_STATE) {
-                  mRecorder.startPlayback();
-                  vh.playControl.setImageResource(R.drawable.pause);
-                } else if (state == Recorder.PLAYING_STATE) {
-                  mRecorder.pausePlayback();
-                  vh.playControl.setImageResource(R.drawable.play);
+                @Override
+                public void onClick(View arg0) {
+                    int state = mRecorder.getState();
+                    // if (state == Recorder.PLAYING_STATE) {
+                    // mRecorder.stopPlayback();
+                    // }
+                    if (state == Recorder.IDLE_STATE) {
+                        mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
+                        mRecorder.startPlayback();
+                        vh.playControl.setImageResource(R.drawable.pause);
+                    } else if (state == Recorder.PLAYER_PAUSE_STATE) {
+                        mRecorder.startPlayback();
+                        vh.playControl.setImageResource(R.drawable.pause);
+                    } else if (state == Recorder.PLAYING_STATE) {
+                        mRecorder.pausePlayback();
+                        vh.playControl.setImageResource(R.drawable.play);
+                    }
+
+                    mCurrentMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            vh.playControl.setImageResource(R.drawable.play);
+                            mRecorder.stopPlayback();
+                        }
+                    });
+                    mCurrentDuration = (Integer) ((View) (vh.duration)).getTag();
+                    long next = refreshNow(vh);
+                    queueNextRefresh(next, vh);
+
                 }
-
-                mCurrentMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-
-                  @Override
-                  public void onCompletion(MediaPlayer mp) {
-                    vh.playControl.setImageResource(R.drawable.play);
-                    mRecorder.stopPlayback();
-                  }
-                });
-                mCurrentDuration = (Integer) ((View)(vh.duration)).getTag();
-                long next = refreshNow(vh);
-                queueNextRefresh(next,vh);
-
-              }
             });
-//          }
+            // }
         }
 
-        protected void queueNextRefresh(long delay,ViewHolder vh) {
+        protected void queueNextRefresh(long delay, ViewHolder vh) {
             if (mRecorder.getState() == Recorder.PLAYING_STATE) {
-                Message msg =new Message();
+                Message msg = new Message();
                 msg.what = 1;
                 msg.obj = vh;
                 mHandler.removeMessages(REFRESH);
-                mHandler .sendMessageDelayed(msg, delay);
-              }
+                mHandler.sendMessageDelayed(msg, delay);
             }
+        }
 
         protected long refreshNow(ViewHolder view) {
             if (mCurrentMediaPlayer == null || mRecorder.getState() != Recorder.PLAYING_STATE) {
 
                 return 500;
-              }
+            }
 
-              // try {
-              long pos = mCurrentMediaPlayer.getCurrentPosition();
-              if ((pos >= 0) && (mCurrentDuration > 0)) {
-                  view.mCurrentTime.setText(MemosUtils.makeTimeString(EspierVoiceMemos7.this, pos / 1000));
-                  view.mCurrentRemain.setText("-"
-                    + MemosUtils.makeTimeString(EspierVoiceMemos7.this, ((mCurrentDuration - pos) / 1000)));
+            // try {
+            long pos = mCurrentMediaPlayer.getCurrentPosition();
+            if ((pos >= 0) && (mCurrentDuration > 0)) {
+                view.mCurrentTime.setText(MemosUtils.makeTimeString(EspierVoiceMemos7.this,
+                        pos / 1000));
+                view.mCurrentRemain.setText("-"
+                        + MemosUtils.makeTimeString(EspierVoiceMemos7.this,
+                                ((mCurrentDuration - pos) / 1000)));
                 int progress = (int) (1000 * pos / mCurrentDuration);
                 view.bar.setProgress(progress);
 
-              } else {
-                  view. mCurrentTime.setText("0:00");
-                  view.bar.setProgress(1000);
-              }
-              // calculate the number of milliseconds until the next full second,
-              // so
-              // the counter can be updated at just the right time
-              long remaining = 1000 - (pos % 1000);
-
-              // approximate how often we would need to refresh the slider to
-              // move it smoothly
-              int width = view.bar.getWidth();
-              if (width == 0) width = 320;
-              long smoothrefreshtime = mCurrentDuration / width;
-
-              if (smoothrefreshtime > remaining) return remaining;
-              if (smoothrefreshtime < 20) return 20;
-              return smoothrefreshtime;
-              // return 500;
+            } else {
+                view.mCurrentTime.setText("0:00");
+                view.bar.setProgress(1000);
             }
+            // calculate the number of milliseconds until the next full second,
+            // so
+            // the counter can be updated at just the right time
+            long remaining = 1000 - (pos % 1000);
+
+            // approximate how often we would need to refresh the slider to
+            // move it smoothly
+            int width = view.bar.getWidth();
+            if (width == 0)
+                width = 320;
+            long smoothrefreshtime = mCurrentDuration / width;
+
+            if (smoothrefreshtime > remaining)
+                return remaining;
+            if (smoothrefreshtime < 20)
+                return 20;
+            return smoothrefreshtime;
+            // return 500;
+        }
 
         @Override
         public void changeCursor(Cursor cursor) {
@@ -623,48 +570,51 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         }
 
         class ViewHolder {
-          ImageView playControl;
-          TextView tag;
-          TextView createDate;
-          TextView duration;
-          TextView path;
-          TextView id;
-          TextView mCurrentTime;
-          TextView mCurrentRemain;
-          SeekBar bar;
-          ImageView share;
-          ImageView del;
-          TextView edit;
+            ImageView playControl;
+            TextView tag;
+            TextView createDate;
+            TextView duration;
+            TextView path;
+            TextView id;
+            TextView mCurrentTime;
+            TextView mCurrentRemain;
+            SeekBar bar;
+            ImageView share;
+            ImageView del;
+            TextView edit;
         }
 
         private void setupColumnIndices(Cursor cursor) {
-          if (cursor != null) {
-            mLabelIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.LABEL);
-            mLabelTypeIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.LABEL_TYPE);
-            mDurationIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.DURATION);
-            mCreateDateIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.CREATE_DATE);
-            mMemoIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos._ID);
-            mPathIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.DATA);
-          }else{
-              System.out.println("cursor is null");
-          }
+            if (cursor != null) {
+                mLabelIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.LABEL);
+                mLabelTypeIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.LABEL_TYPE);
+                mDurationIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.DURATION);
+                mCreateDateIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.CREATE_DATE);
+                mMemoIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos._ID);
+                mPathIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.DATA);
+            } else {
+                System.out.println("cursor is null");
+            }
         }
 
-      }
+    }
 
     private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
-        public void onStartTrackingTouch(SeekBar bar) {}
-
-        public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
-          if (!fromuser) return;
-          int pos = mCurrentDuration * progress / 1000;
-          mRecorder.seekTo(pos);
+        public void onStartTrackingTouch(SeekBar bar) {
         }
 
-        public void onStopTrackingTouch(SeekBar bar) {}
-      };
-   
-      @Override
+        public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
+            if (!fromuser)
+                return;
+            int pos = mCurrentDuration * progress / 1000;
+            mRecorder.seekTo(pos);
+        }
+
+        public void onStopTrackingTouch(SeekBar bar) {
+        }
+    };
+
+    @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
@@ -686,7 +636,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         waveView.clearData();
         mVoiceMemoListAdapter.notifyDataSetChanged();
     }
-    
+
     private void insertVoiceMemo() {
         // TODO Auto-generated method stub
 
@@ -703,8 +653,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(filepath);
         int duration = mediaPlayer.getDuration();
         mRecorder.stopPlayback();
-        if(duration < 1000){
-          return;
+        if (duration < 1000) {
+            return;
         }
 
         cv.put(VoiceMemo.Memos.DATA, filepath);
@@ -714,22 +664,22 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
         cv.put(VoiceMemo.Memos.DURATION, duration);
         getContentResolver().insert(VoiceMemo.Memos.CONTENT_URI, cv);
-      
+
     }
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      // TODO Auto-generated method stub
-      super.onActivityResult(requestCode, resultCode, data);
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
 
-      if (resultCode == Activity.RESULT_OK) {
-        if (requestCode == DEL_REQUEST) {
-          deleteMemo(mCurrentMemoId);
-          mVoiceMemoListAdapter.notifyDataSetChanged();
-          mCurrentDuration = 0;
-//          resetPlayer();
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == DEL_REQUEST) {
+                deleteMemo(mCurrentMemoId);
+                mVoiceMemoListAdapter.notifyDataSetChanged();
+                mCurrentDuration = 0;
+                // resetPlayer();
+            }
         }
-      }
     }
 
     private void deleteMemo(int memoId) {
@@ -739,10 +689,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,OnClic
         getContentResolver().delete(memoUri, null, null);
         File file = new File(mCurrentPath);
         if (file.exists()) {
-          file.delete();
+            file.delete();
         }
         mCurrentPosition = -1;
-      
-        
+
     }
 }

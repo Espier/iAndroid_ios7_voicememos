@@ -23,7 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class MemoDelete extends BaseUi implements OnClickListener {
+public class MemoDelete extends Activity implements OnClickListener {
 
   public static final String MEMO_PATH = "memo_path";
   public static final String MEMO_ID = "memo_id";
