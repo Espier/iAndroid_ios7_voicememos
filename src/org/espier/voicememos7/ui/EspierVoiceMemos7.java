@@ -139,7 +139,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
 
         private void start() {
             // TODO Auto-generated method stub
-            waveView.clearData();
+//            waveView.clearData();
             if (mRecorder.mState == Recorder.RECORDING_STATE) {
                 return;
             }
