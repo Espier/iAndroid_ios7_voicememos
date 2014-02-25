@@ -11,13 +11,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager.LayoutParams;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.espier.voicememos7.util.Recorder;
+import org.espier.voicememos7.util.ScalePx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +24,12 @@ import java.util.TimerTask;
 public class VoiceWaveView extends View {
 
     long time;
-    public float time_axix_len;
+    //public float time_axix_len;
     public static final int invalidate_rate = 20;
     
-    public static final float cicle_radius = 7;
+    
     public static final float num_margin_right = 10;
-    public static final float width_per_second = 60;
+   // public static final float width_per_second = 60;
     Timer timer;
     TimerTask timerTask;
     Paint voiceLinePaint;
@@ -46,18 +43,42 @@ public class VoiceWaveView extends View {
 
     int w;
     float v;
-    float slide_line_top_margin = 40;
+    float slide_line_top_margin = 0;
     float slide_line_bottom_margin = 120;
     List<Integer> voice_list = new ArrayList<Integer>();
     List<Integer> time_list = new ArrayList<Integer>();
    
     String[] voice_db_list = new String[]{"0","-1","-2","-3","-5","-7","-10"};
 
-    int second_index;
-
-    public float margin_lef_init = cicle_radius + 1;
+    int second_index = 0;
 
     Context context;
+    private int grid_width;
+    private float time_x;
+    private float width_per_second = grid_width*4;;
+    private float y_xaxis = 0;
+    private float h_high_line = 30;
+    private float h_low_line = 5;
+    private float y_top_line = y_xaxis +h_high_line;
+    private float h_block ;
+    private float y_mid_line ;
+    private float y_bottom_line ;
+    private float cicle_radius ;
+    private float h_bottomLine2timetext;
+    private float y_time_text;
+    private float h_db2midline;
+    private float h_db2db;
+    
+    private float margin_lef_init ;
+    
+    private String blueColorString = "#007aff";
+    private int blueColor; 
+    
+    private String grayColorString = "#808080";
+    private int grayColor;
+    
+    private String darkGrayColorString = "#8c8c8c";
+    private int darkGrayColor;
     
 
     /**
@@ -90,27 +111,32 @@ public class VoiceWaveView extends View {
     private void init()
     {
         
+        
         voiceLinePaint = new Paint();
         voiceLinePaint.setStrokeWidth(3.0f);
         voiceLinePaint.setColor(Color.WHITE);
         slideLinePaint = new Paint();
-        slideLinePaint.setColor(Color.BLUE);
+        blueColor = Color.parseColor(blueColorString);
+        slideLinePaint.setColor(blueColor);
         slideLinePaint.setStrokeWidth(0.8f);
         timeTextPaint = new Paint();
         timeTextPaint.setTextSize(30);
         timeTextPaint.setColor(Color.WHITE);
         timeTextPaint.setTypeface(Typeface.SANS_SERIF);
         grayLinePaint = new Paint();
-        grayLinePaint.setColor(Color.GRAY);
-        grayLinePaint.setStrokeWidth(0.5f);
+        grayColor = Color.parseColor(grayColorString);
+        grayLinePaint.setColor(grayColor);
+        grayLinePaint.setStrokeWidth(1f);
+        
         darkGrayLinePaint = new Paint();
-        
-        
-        darkGrayLinePaint.setColor(Color.DKGRAY);;
+        darkGrayLinePaint.setColor(grayColor);;
         darkGrayLinePaint.setStrokeWidth(0.5f);
+        
         voicedbPaint = new Paint();
-        voicedbPaint.setColor(Color.GRAY);
+        darkGrayColor = Color.parseColor(darkGrayColorString);
+        voicedbPaint.setColor(darkGrayColor);
         voicedbPaint.setTextAlign(Align.RIGHT);
+        voicedbPaint.setTextSize(10f);
 
         handler = new Handler()
         {
@@ -131,30 +157,50 @@ public class VoiceWaveView extends View {
         };
 
     }
+    
+    private void initView()
+    {
+        grid_width = ScalePx.scalePx(context, 24);
+        time_x = getWidth()/(grid_width*4);
+        h_block = ScalePx.scalePx(context, 176);
+        cicle_radius = ScalePx.scalePx(context, 7);
+        y_mid_line = y_xaxis +h_high_line+h_block;
+        y_bottom_line = y_xaxis +h_high_line+h_block*2;
+        h_bottomLine2timetext = ScalePx.scalePx(context, 28);
+        y_time_text = y_bottom_line+h_bottomLine2timetext;
+        h_db2db = ScalePx.scalePx(context, 8);
+        h_db2midline = ScalePx.scalePx(context, 13);
+        
+        
+        margin_lef_init = ScalePx.scalePx(context, 31);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
         // long t1 = System.currentTimeMillis();
+        initView();
 
         float x = 0;
         w = getWidth();
-        time_axix_len = w / width_per_second;
+        
+        //time_axix_len = w / width_per_second;
 
-        x = w * time / (time_axix_len * 1000) + margin_lef_init;
+        x = w * time / (time_x * 1000) + margin_lef_init;
         if (x >= w / 2) {
             x = w / 2;
         }
         else {
             time_list.clear();
-            for (int i = 0; i <= time_axix_len; i++)
+            for (int i = 0; i <= time_x+1; i++)
             {
                 time_list.add(i);
             }
         }
-        v = w / (time_axix_len * 1000);
-        float start_move_time_textview = 60;
+        //v = w / (time_x * 1000);
+        v = grid_width*4/1000f;
+        float start_move_time_textview = 90;
         float q = 0;
 
         if (x < start_move_time_textview) {
@@ -165,16 +211,15 @@ public class VoiceWaveView extends View {
 
         }
 
-        float mid_y = (getHeight() - slide_line_bottom_margin + slide_line_top_margin) / 2;
 
         try {
-            drawSlideLine(canvas, x, mid_y);
-            drawVoice(canvas, x, mid_y);
+            drawSlideLine(canvas, x);
+            drawVoice(canvas, x);
             drawTimeTextView(canvas, q);
-            drawXAxis(canvas,cicle_radius);
-            drawYAxis(canvas, mid_y);
+            drawXAxis(canvas,margin_lef_init);
+            drawYAxis(canvas);
         } catch (Exception e) {
-            // TODO: handle exception
+            
         }
         
 
@@ -182,25 +227,24 @@ public class VoiceWaveView extends View {
         // Log.e(" draw time", t2+"");
     }
 
-    private void drawSlideLine(Canvas canvas, float offset, float mid_y)
+    private void drawSlideLine(Canvas canvas, float offset)
     {
         float x = offset;
 
-        canvas.drawLine(x, slide_line_top_margin, x, getHeight()
-                - slide_line_bottom_margin, slideLinePaint);
-        canvas.drawCircle(x, slide_line_top_margin - cicle_radius, cicle_radius, slideLinePaint);
-        canvas.drawCircle(x, getHeight() - slide_line_bottom_margin + cicle_radius, cicle_radius,
+        canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
+        canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
+        canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
                 slideLinePaint);
 
-        canvas.drawLine(0, slide_line_top_margin, getWidth(), slide_line_top_margin, grayLinePaint);
-        canvas.drawLine(0, getHeight() - slide_line_bottom_margin, getWidth(), getHeight()
-                - slide_line_bottom_margin, grayLinePaint);
+        canvas.drawLine(0, y_top_line, getWidth(), y_top_line, grayLinePaint);
+        canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
+                , grayLinePaint);
 
-        canvas.drawLine(0, mid_y, getWidth(), mid_y, darkGrayLinePaint);
+        canvas.drawLine(0, y_mid_line, getWidth(), y_mid_line, darkGrayLinePaint);
 
     }
 
-    private void drawVoice(Canvas canvas, float offset, float mid_y)
+    private void drawVoice(Canvas canvas, float offset)
     {
         int n = voice_list.size();
 //        float[] points = new float[n * 4];
@@ -219,7 +263,7 @@ public class VoiceWaveView extends View {
         for(int i=0;i<voice_list.size();i++)
         {
             float x = (offset / n) * i;
-            canvas.drawLine(x, mid_y-voice_list.get(i), x, mid_y+voice_list.get(i), voiceLinePaint);
+            canvas.drawLine(x, y_mid_line-voice_list.get(i), x, y_mid_line+voice_list.get(i), voiceLinePaint);
         }
         
 
@@ -228,33 +272,35 @@ public class VoiceWaveView extends View {
     private void drawXAxis(Canvas canvas,float offset)
     {
         int grid_num = 4;
-        float s = width_per_second/grid_num;
+        //float s = width_per_second/grid_num;
         float text_offset = 8;
         for (int i = 0; i < time_list.size(); i++)
         {
-            float x = i * w / time_axix_len - v
-                    * invalidate_rate * second_index+offset;
-            for(int j=0;j<grid_num;j++)
+            
+            float x = i * grid_width * 4 - v* invalidate_rate * second_index + offset;
+            
+            
+            //float x = i * grid_width * 4 - grid_width*4 * (invalidate_rate/1000) * second_index + offset;
+            //Log.e("index", x+"");
+            float  h;
+            for(int j = 0; j < grid_num; j++)
             {
-                float h = 5;
-                if (j==0) {
-                    h=25;
-                }
-                canvas.drawLine(x+j*s, slide_line_top_margin, x+j*s, slide_line_top_margin-h, darkGrayLinePaint);
+                h=(j==0)?h_high_line:h_low_line;
+                canvas.drawLine(x+j*grid_width, y_xaxis+h_high_line, x+j*grid_width, y_xaxis+h_high_line-h, darkGrayLinePaint);
             }
-            canvas.drawText(timeAxisFormat(time_list.get(i)), x+text_offset, slide_line_top_margin-15, voiceLinePaint);
+            canvas.drawText(timeAxisFormat(time_list.get(i)), x+text_offset, y_xaxis+voiceLinePaint.getTextSize(), voiceLinePaint);
         }
     }
     
-    private void drawYAxis(Canvas canvas,float midy)
+    private void drawYAxis(Canvas canvas)
     
     {
-        float H = midy - slide_line_top_margin - 20;
-        float h = H/voice_db_list.length;
+//        float H = midy - slide_line_top_margin - 20;
+//        float h = h_block/voice_db_list.length;
         for(int i=0;i<voice_db_list.length;i++)
         {
-            canvas.drawText(voice_db_list[i], getWidth()-num_margin_right, midy +(i+1)*h+grayLinePaint.getTextSize(), voicedbPaint);
-            canvas.drawText(voice_db_list[i], getWidth()-num_margin_right, midy -(i+1)*h, voicedbPaint);
+            canvas.drawText(voice_db_list[i], getWidth()-num_margin_right, y_mid_line+h_db2midline +i*(h_db2db+voicedbPaint.getTextSize())+voicedbPaint.getTextSize(), voicedbPaint);
+            canvas.drawText(voice_db_list[i], getWidth()-num_margin_right, y_mid_line -h_db2midline-i*(h_db2db+voicedbPaint.getTextSize()), voicedbPaint);
         }
         
         
@@ -262,7 +308,7 @@ public class VoiceWaveView extends View {
 
     private void drawTimeTextView(Canvas canvas, float offset)
     {
-        canvas.drawText(timeFormat(time), offset, getHeight() - 70, timeTextPaint);
+        canvas.drawText(timeFormat(time), offset+margin_lef_init, y_time_text+timeTextPaint.getTextSize(), timeTextPaint);
     }
 
     private String timeAxisFormat(int t)
@@ -332,7 +378,7 @@ public class VoiceWaveView extends View {
 
                 try {
                     time += invalidate_rate;
-                    if (time >= time_axix_len * 1000 / 2) {
+                    if (time >= time_x * 1000 / 2) {
                         // Log.e("size", voice_list.size()+"");
                         // voice_list.remove(0);
 
@@ -361,7 +407,7 @@ public class VoiceWaveView extends View {
             @Override
             public void run() {
                 try {
-                    if (time >= time_axix_len * 1000 / 2)
+                    if (time >= time_x * 1000 / 2)
                     {
                         voice_list.remove(0);
 
@@ -374,7 +420,7 @@ public class VoiceWaveView extends View {
             }
         };
         timer.schedule(timerTask, invalidate_rate, invalidate_rate);
-        timer.schedule(getAmpTask, 0, 10);
+        timer.schedule(getAmpTask, 0, 20);
 
     }
 
