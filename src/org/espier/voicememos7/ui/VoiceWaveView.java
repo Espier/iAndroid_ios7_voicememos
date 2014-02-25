@@ -113,8 +113,9 @@ public class VoiceWaveView extends View {
         
         
         voiceLinePaint = new Paint();
-        voiceLinePaint.setStrokeWidth(3.0f);
+        voiceLinePaint.setStrokeWidth(2.0f);
         voiceLinePaint.setColor(Color.WHITE);
+        
         slideLinePaint = new Paint();
         blueColor = Color.parseColor(blueColorString);
         slideLinePaint.setColor(blueColor);
@@ -200,7 +201,7 @@ public class VoiceWaveView extends View {
         }
         //v = w / (time_x * 1000);
         v = grid_width*4/1000f;
-        float start_move_time_textview = 90;
+        float start_move_time_textview = 80;
         float q = 0;
 
         if (x < start_move_time_textview) {
@@ -263,7 +264,9 @@ public class VoiceWaveView extends View {
         for(int i=0;i<voice_list.size();i++)
         {
             float x = (offset / n) * i;
-            canvas.drawLine(x, y_mid_line-voice_list.get(i), x, y_mid_line+voice_list.get(i), voiceLinePaint);
+            canvas.drawLine(x, y_mid_line - voice_list.get(i), 
+                            x, y_mid_line + voice_list.get(i), voiceLinePaint);
+            
         }
         
 
@@ -420,7 +423,7 @@ public class VoiceWaveView extends View {
             }
         };
         timer.schedule(timerTask, invalidate_rate, invalidate_rate);
-        timer.schedule(getAmpTask, 0, 20);
+        timer.schedule(getAmpTask, 10, 10);
 
     }
 
