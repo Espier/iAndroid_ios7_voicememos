@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:id="@+id/ll_1"
+        android:id="@+id/aboveLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtDate"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dip"
+            
             android:background="@drawable/frame" >
 
             <ImageView
@@ -62,6 +62,7 @@
                 android:id="@+id/imageView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:scaleType="centerInside"
                 android:background="@drawable/circular" />
         </LinearLayout>
 
@@ -80,7 +81,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/ll_2"
+        android:id="@+id/belowLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
@@ -100,5 +101,5 @@
             android:clickable="false" />
     </RelativeLayout>
 
-</LinearLayout> <!-- </org.espier.ios7.ui.IosLikeScrollView> -->
+</LinearLayout>
 
