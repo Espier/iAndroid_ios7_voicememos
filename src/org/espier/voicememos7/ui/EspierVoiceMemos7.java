@@ -1,4 +1,3 @@
-
 package org.espier.voicememos7.ui;
 
 import android.annotation.SuppressLint;
@@ -52,6 +51,7 @@ import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
+import org.espier.voicememos7.util.StorageUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -60,247 +60,237 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
 
-public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnClickListener
-{
-    private LinearLayout mainLayout;
-    float downy = 0;
-    // private VelocityTracker velocityTracker;
-    // private int mPointerId;
-    // private int mMaxVelocity;
-    private boolean isTobottom = false;
-    private boolean isfirstdown = true;
-    public int ms;
-    public int second;
-    public int miniute;
-    public int mCurrentPosition = -1;
-    protected int mCurrentDuration;
-    public static final int REFRESH = 1;
-    public static int LABEL_TYPE_NONE = 0;
-    private MediaPlayer mCurrentMediaPlayer;
-    private static final int DEL_REQUEST = 2;
-    TextView date;
-    TextView finished;
 
-    private Button hiddenView;
-    private RelativeLayout aboveLayout;
-    private boolean isCurrentPosition = false;
-    private RelativeLayout belowLayout;
-    ImageView start;
-    protected TimerTask timerTask;
-    private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
-    private ArrayAdapter<String> adapter;
-    private org.espier.voicememos7.ui.VoiceWaveView waveView;
-    private org.espier.voicememos7.util.Recorder mRecorder;
-    private org.espier.voicememos7.ui.EspierVoiceMemos7.VoiceMemoListAdapter mVoiceMemoListAdapter;
-    int height;
-    public String mCurrentPath;
-    public Integer mCurrentMemoId = -1;
-    private OnTouchListener startTouchListener = new View.OnTouchListener() {
-        public final float[] BT_SELECTED = new float[] {
-                1, 0, 0, 0, -100, 0, 1, 0, 0, -100, 0, 0, 1, 0, -100, 0, 0, 0, 1, 0
-        };
-        public final float[] BT_NOT_SELECTED = new float[] {
-                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
-        };
-        private boolean isdown = false;
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            // TODO Auto-generated method stub
-
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    start.getBackground().setColorFilter(new ColorMatrixColorFilter(BT_SELECTED));
-                    start.setBackgroundDrawable(start.getBackground());
-
-                    break;
-                case MotionEvent.ACTION_MOVE:
-
-                    break;
-                case MotionEvent.ACTION_UP:
-                    start.getBackground().setColorFilter(
-                            new ColorMatrixColorFilter(BT_NOT_SELECTED));
-                    start.setBackgroundDrawable(start.getBackground());
-                    if (!isdown) {
-                        start.setBackgroundResource(R.drawable.start_down);
-                        isdown = true;
-                        // start
-                        ScrollDown();
-                        start();
-                    } else {
-                        start.setBackgroundResource(R.drawable.circular);
-                        isdown = false;
-                        // pause
-                        pause();
-                    }
-
-                    break;
-
-                default:
-                    break;
-            }
-            return true;
-        }
-
-        private void pause() {
-            // TODO Auto-generated method stub
-            mRecorder.pauseRecording();
-            waveView.pause();
-        }
-
-        private void start() {
-            // TODO Auto-generated method stub
-//            waveView.clearData();
-            if (mRecorder.mState == Recorder.RECORDING_STATE) {
-                return;
-            }
-            mRecorder.startRecording(EspierVoiceMemos7.this);
-            waveView.start();
-        }
-    };
+public class EspierVoiceMemos7 extends Activity implements RemoveListener,
+		OnClickListener {
+	private LinearLayout mainLayout;
+	float downy = 0;
+	public int ms;
+	public int second;
+	public int miniute;
+	public int mCurrentPosition = -1;
+	protected int mCurrentDuration;
+	public static final int REFRESH = 1;
+	public static int LABEL_TYPE_NONE = 0;
+	private MediaPlayer mCurrentMediaPlayer;
+	private static final int DEL_REQUEST = 2;
+	TextView date;
+	TextView finished;
+	Boolean isCurrentPosition;
+	private Button hiddenView;
+	private RelativeLayout aboveLayout;
+	private RelativeLayout belowLayout;
+	ImageView start;
+	protected TimerTask timerTask;
+	private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
+	private ArrayAdapter<String> adapter;
+	private org.espier.voicememos7.ui.VoiceWaveView waveView;
+	private org.espier.voicememos7.util.Recorder mRecorder;
+	private org.espier.voicememos7.ui.EspierVoiceMemos7.VoiceMemoListAdapter mVoiceMemoListAdapter;
+	int height;
+	public String mCurrentPath;
+	public Integer mCurrentMemoId = -1;
     public String memoName;
+	
+	public final float[] BT_SELECTED = new float[] { 1, 0, 0, 0, -100, 0,
+			1, 0, 0, -100, 0, 0, 1, 0, -100, 0, 0, 0, 1, 0 };
+	public final float[] BT_NOT_SELECTED = new float[] { 1, 0, 0, 0, 0, 0,
+			1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0 };
+	
+	
+	private OnTouchListener startTouchListener = new View.OnTouchListener() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_memo_main);
-        
-        
-        TextView txtMainTitle = (TextView)findViewById(R.id.txtMainTitle);
-        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        rlp.setMargins(0, ScalePx.scalePx(this, 29), 0, 0);
-        txtMainTitle.setLayoutParams(rlp);
-        
-        VoiceWaveView waveView = (VoiceWaveView)findViewById(R.id.waveView);
-        RelativeLayout.LayoutParams rlpWaveView = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        rlpWaveView.setMargins(0, ScalePx.scalePx(this, 40), 0, 0);
-        rlpWaveView.addRule(RelativeLayout.BELOW, R.id.txtMainTitle);
-        rlpWaveView.height = ScalePx.scalePx(this, 465);
-        waveView.setLayoutParams(rlpWaveView);
-        
-        
-        
-        TextView txtRecordName = (TextView)findViewById(R.id.txtRecordName);
-        memoName = txtRecordName.getText().toString();
-        RelativeLayout.LayoutParams rlpRecordName = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        rlpRecordName.setMargins(
-                ScalePx.scalePx(this, 31), 
-                ScalePx.scalePx(this, 13), 0, 0);
-        rlpRecordName.addRule(RelativeLayout.BELOW, R.id.waveView);
-        txtRecordName.setLayoutParams(rlpRecordName);
-        
-        TextView txtDate = (TextView)findViewById(R.id.txtDate);
-        RelativeLayout.LayoutParams rlpDate = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        rlpDate.setMargins(
-                ScalePx.scalePx(this, 31), 
-                ScalePx.scalePx(this, 11), 0, 0);
-        rlpDate.addRule(RelativeLayout.BELOW, R.id.txtRecordName);
-        txtDate.setLayoutParams(rlpDate);
-        
-//        LinearLayout buttonLayout = (LinearLayout)findViewById(R.id.buttonLayout);
-//        RelativeLayout.LayoutParams rlpButton = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-//        rlpButton.setMargins(
-//                0, 
-//                ScalePx.scalePx(this, 40), 0, 0);
-//        rlpButton.addRule(RelativeLayout.BELOW, R.id.txtDate);
-//        
-//        buttonLayout.setLayoutParams(rlpButton);
-        
-        
-        mainLayout = (LinearLayout) findViewById(R.id.mainlayout);
-        aboveLayout = (RelativeLayout) findViewById(R.id.aboveLayout);
-        belowLayout = (RelativeLayout) findViewById(R.id.belowLayout);
-        hiddenView = (Button) findViewById(R.id.hiddenView);
-        start = (ImageView) findViewById(R.id.imageView2);
-        start.setOnTouchListener(startTouchListener);
-        init();
-    }
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			// TODO Auto-generated method stub
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Button vv = (Button) findViewById(R.id.hiddenView);
-        vv.setOnClickListener(new View.OnClickListener() {
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				start.getBackground().setColorFilter(
+						new ColorMatrixColorFilter(BT_SELECTED));
+				start.setBackgroundDrawable(start.getBackground());
 
-            @Override
-            public void onClick(View v) {
+				break;
 
-            }
-        });
-        vv.setOnTouchListener(new View.OnTouchListener() {
+			case MotionEvent.ACTION_UP:
+				start.getBackground().setColorFilter(
+						new ColorMatrixColorFilter(BT_NOT_SELECTED));
+				start.setBackgroundDrawable(start.getBackground());
+				break;
+			default:
+				break;
+			}
+			return false;
+		}
+	};
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.activity_memo_main);
 
-                final int action = event.getAction();
+		TextView txtMainTitle = (TextView) findViewById(R.id.txtMainTitle);
+		RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
+				LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		rlp.setMargins(0, ScalePx.scalePx(this, 29), 0, 0);
+		txtMainTitle.setLayoutParams(rlp);
 
-                int y = (int) event.getY();
+		VoiceWaveView waveView = (VoiceWaveView) findViewById(R.id.waveView);
+		RelativeLayout.LayoutParams rlpWaveView = new RelativeLayout.LayoutParams(
+				LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		rlpWaveView.setMargins(0, ScalePx.scalePx(this, 40), 0, 0);
+		rlpWaveView.addRule(RelativeLayout.BELOW, R.id.txtMainTitle);
+		rlpWaveView.height = ScalePx.scalePx(this, 465);
+		waveView.setLayoutParams(rlpWaveView);
 
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        downy = event.getY();
+		TextView txtRecordName = (TextView) findViewById(R.id.txtRecordName);
+		RelativeLayout.LayoutParams rlpRecordName = new RelativeLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		rlpRecordName.setMargins(ScalePx.scalePx(this, 31),
+				ScalePx.scalePx(this, 13), 0, 0);
+		rlpRecordName.addRule(RelativeLayout.BELOW, R.id.waveView);
+		txtRecordName.setLayoutParams(rlpRecordName);
 
-                        break;
-                    case MotionEvent.ACTION_MOVE:
+		TextView txtDate = (TextView) findViewById(R.id.txtDate);
+		RelativeLayout.LayoutParams rlpDate = new RelativeLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		rlpDate.setMargins(ScalePx.scalePx(this, 31),
+				ScalePx.scalePx(this, 11), 0, 0);
+		rlpDate.addRule(RelativeLayout.BELOW, R.id.txtRecordName);
+		txtDate.setLayoutParams(rlpDate);
 
-                        int deltaY = (int) (downy - y);
+		// LinearLayout buttonLayout =
+		// (LinearLayout)findViewById(R.id.buttonLayout);
+		// RelativeLayout.LayoutParams rlpButton = new
+		// RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+		// LayoutParams.WRAP_CONTENT);
+		// rlpButton.setMargins(
+		// 0,
+		// ScalePx.scalePx(this, 40), 0, 0);
+		// rlpButton.addRule(RelativeLayout.BELOW, R.id.txtDate);
+		//
+		// buttonLayout.setLayoutParams(rlpButton);
 
-                        if (mainLayout.getScrollY() + deltaY < 0) {
-                            deltaY = -mainLayout.getScrollY();
-                        }
+		mainLayout = (LinearLayout) findViewById(R.id.mainlayout);
+		aboveLayout = (RelativeLayout) findViewById(R.id.aboveLayout);
+		belowLayout = (RelativeLayout) findViewById(R.id.belowLayout);
+		hiddenView = (Button) findViewById(R.id.hiddenView);
+		start = (ImageView) findViewById(R.id.redButton);
+		start.setOnClickListener(this);
+		start.setOnTouchListener(startTouchListener);
+		
+		init();
+	}
 
-                        mainLayout.scrollBy(0, deltaY);
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.finished:
+			stop();
+			break;
+		case R.id.redButton:
+			if (!StorageUtil.hasDiskSpace()) {
+				Toast.makeText(this, R.string.storage_is_full, Toast.LENGTH_SHORT).show();
+				return;
+			} else if (!StorageUtil.isStorageMounted()) {
+				Toast.makeText(this, R.string.insert_sd_card,Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
+			stopMusic();
+			if (mRecorder.getState() == Recorder.RECORDING_STATE) {
+				mRecorder.pauseRecording();
+				start.setBackgroundResource(R.drawable.circular);
+				waveView.pause();
+			} else {
+				mRecorder.startRecording(this);
+				start.setBackgroundResource(R.drawable.start_down);
+				waveView.start();
+				ScrollDown();
+			}
+			
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 
-                        System.out.println(deltaY);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        int[] location = new int[2];
-                        v.getLocationOnScreen(location);
-                        int viewY = location[1];
-                       
-                        if (viewY > GetScreenCenter() / 2) {
-                        	ScrollDown();
-                        } else {
-                        	Log.d("asdf","UP!");
-                            LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
-                            int[] lo = new int[2];
-                            
-                            ll.getLocationInWindow(lo);
-                            int buttonY = lo[1];
-                            Log.d("adf","buttonY="+String.valueOf(ll.getTop()));
-                            mainLayout.scrollTo(0, ll.getTop());
-                           
-                            v.setVisibility(View.INVISIBLE);
-                        	
-                            ScrollUp();
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                return false;
-            }
-        });
-    }
+		hiddenView.setOnClickListener(new View.OnClickListener() {
 
-    private void ScrollUp() {
-    	LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
-        mainLayout.scrollTo(0, ll.getTop());
-        hiddenView.setVisibility(View.INVISIBLE);
-        finished.setVisibility(View.INVISIBLE);
-    }
-    
-    private void ScrollDown() {
-    	 mainLayout.scrollTo(0, 0);
-    	 if (hiddenView.getVisibility()!=View.VISIBLE) {
-    		 hiddenView.setVisibility(View.VISIBLE);
-    	 }
-    	 finished.setVisibility(View.VISIBLE);
-    }
-    private int GetScreenCenter() {
-        return this.getResources().getDisplayMetrics().heightPixels;
-    }
+			@Override
+			public void onClick(View v) {
+
+			}
+		});
+		hiddenView.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+
+				final int action = event.getAction();
+
+				int y = (int) event.getY();
+
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					downy = event.getY();
+
+					break;
+				case MotionEvent.ACTION_MOVE:
+
+					int deltaY = (int) (downy - y);
+
+					if (mainLayout.getScrollY() + deltaY < 0) {
+						deltaY = -mainLayout.getScrollY();
+					}
+
+					mainLayout.scrollBy(0, deltaY);
+
+					System.out.println(deltaY);
+					break;
+				case MotionEvent.ACTION_UP:
+					int[] location = new int[2];
+					v.getLocationOnScreen(location);
+					int viewY = location[1];
+
+					if (viewY > GetScreenCenter() / 2) {
+						ScrollDown();
+					} else {
+
+						ScrollUp();
+					}
+					break;
+				default:
+					break;
+				}
+				return false;
+			}
+		});
+	}
+
+	private void ScrollUp() {
+		LinearLayout ll = (LinearLayout) findViewById(R.id.buttonLayout);
+		mainLayout.scrollTo(0, ll.getTop());
+		hiddenView.setVisibility(View.INVISIBLE);
+		finished.setVisibility(View.INVISIBLE);
+	}
+
+	private void ScrollDown() {
+		mainLayout.scrollTo(0, 0);
+		if (hiddenView.getVisibility() != View.VISIBLE) {
+			hiddenView.setVisibility(View.VISIBLE);
+		}
+		finished.setVisibility(View.VISIBLE);
+	}
+
+	private int GetScreenCenter() {
+		return this.getResources().getDisplayMetrics().heightPixels;
+	}
 
     private void init() {
 
@@ -319,6 +309,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         listViewaddData();
     }
 
+
     private void listViewaddData() {
         // TODO Auto-generated method stub
         Cursor cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
@@ -328,29 +319,30 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                         new int[] {});
         slideCutListView.setAdapter(mVoiceMemoListAdapter);
     }
+	 @Override
+	    public void onWindowFocusChanged(boolean hasFocus) {
+	        // TODO Auto-generated method stub
+	        super.onWindowFocusChanged(hasFocus);
+	        Rect rect = new Rect();
+	        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+	        int top = rect.top;//
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        // TODO Auto-generated method stub
-        super.onWindowFocusChanged(hasFocus);
-        Rect rect = new Rect();
-        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-        int top = rect.top;//
+	        height = getWindowManager().getDefaultDisplay().getHeight() - top;
+	        int width = getWindowManager().getDefaultDisplay().getWidth();
 
-        height = getWindowManager().getDefaultDisplay().getHeight() - top;
-        int width = getWindowManager().getDefaultDisplay().getWidth();
+	        LayoutParams lp1 = aboveLayout.getLayoutParams();
+	        lp1.height = (int) (height * 0.9);
+	        lp1.width = width;
+	        aboveLayout.setLayoutParams(lp1);
 
-        LayoutParams lp1 = aboveLayout.getLayoutParams();
-        lp1.height = (int) (height * 0.9);
-        lp1.width = width;
-        aboveLayout.setLayoutParams(lp1);
+	        LayoutParams lp2 = belowLayout.getLayoutParams();
+	        lp2.height = (int) (height * 0.9);
+	        lp2.width = width;
+	        belowLayout.setLayoutParams(lp2);
 
-        LayoutParams lp2 = belowLayout.getLayoutParams();
-        lp2.height = (int) (height * 0.9);
-        lp2.width = width;
-        belowLayout.setLayoutParams(lp2);
+	    }
 
-    }
+
 
     @Override
     public void removeItem(RemoveDirection direction, int position) {
@@ -653,6 +645,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
 
     }
 
+
     private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
         public void onStartTrackingTouch(SeekBar bar) {
         }
@@ -668,85 +661,72 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         }
     };
 
-    @Override
-    public void onClick(View v) {
-        // TODO Auto-generated method stub
-        switch (v.getId()) {
-            case R.id.finished:
-                stop();
-                break;
-            case R.id.imageView2:
-                System.out.println("image be clicked");
-                break;
-            default:
-                break;
-        }
-    }
+	
 
-    private void stop() {
-        // TODO Auto-generated method stub
-        int state = mRecorder.getState();
-        start.setBackgroundResource(R.drawable.circular);
-        if(state == Recorder.RECORDING_STATE||state ==Recorder.RECORDER_PAUSE_STATE){
-            mRecorder.stopRecording();
-        }else{
-            return;
-        }
-        AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this); 
-        final View view = this.getLayoutInflater().inflate(R.layout.items, null);
-        EditText text = (EditText) view.findViewById(R.id.memoname);
-        text.setText(memoName);
-        builder.setView(view);
-        
-//        TextView cancel = (TextView) view.findViewById(R.id.cancel);
-//        TextView ok = (TextView)view.findViewById(R.id.ok);
-//        cancel.setOnClickListener(new View.OnClickListener() {
-//            
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                return;
-//            }
-//        });
-//        ok.setOnClickListener(new View.OnClickListener() {
-//            
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                String name  =((EditText)view.findViewById(R.id.memoname)).getText().toString();
-//                insertVoiceMemo(name);
-//                waveView.clearData();
-//                mVoiceMemoListAdapter.notifyDataSetChanged();
-//            }
-//        });
-        
-        builder.setNegativeButton("好",new DialogInterface.OnClickListener() {
-            
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                String name  =((EditText)view.findViewById(R.id.memoname)).getText().toString();
-                insertVoiceMemo(name);
-                waveView.clearData();
-                mVoiceMemoListAdapter.notifyDataSetChanged();
-                dialog.dismiss();
-            }
-        }); 
-        builder.setPositiveButton("取消",new DialogInterface.OnClickListener() {
-            
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                dialog.dismiss();
-                return;
-            }
-        } ); 
-       builder.create().show(); 
-        
-       
-    }
+	 private void stop() {
+	        // TODO Auto-generated method stub
+	        int state = mRecorder.getState();
+	        start.setBackgroundResource(R.drawable.circular);
+	        if(state == Recorder.RECORDING_STATE||state ==Recorder.RECORDER_PAUSE_STATE){
+	            mRecorder.stopRecording();
+	        }else{
+	            return;
+	        }
+	        AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this); 
+	        final View view = this.getLayoutInflater().inflate(R.layout.items, null);
+	        EditText text = (EditText) view.findViewById(R.id.memoname);
+	        text.setText(memoName);
+	        builder.setView(view);
+	        
+//	        TextView cancel = (TextView) view.findViewById(R.id.cancel);
+//	        TextView ok = (TextView)view.findViewById(R.id.ok);
+//	        cancel.setOnClickListener(new View.OnClickListener() {
+//	            
+//	            @Override
+//	            public void onClick(View v) {
+//	                // TODO Auto-generated method stub
+//	                return;
+//	            }
+//	        });
+//	        ok.setOnClickListener(new View.OnClickListener() {
+//	            
+//	            @Override
+//	            public void onClick(View v) {
+//	                // TODO Auto-generated method stub
+//	                String name  =((EditText)view.findViewById(R.id.memoname)).getText().toString();
+//	                insertVoiceMemo(name);
+//	                waveView.clearData();
+//	                mVoiceMemoListAdapter.notifyDataSetChanged();
+//	            }
+//	        });
+	        
+	        builder.setNegativeButton("好",new DialogInterface.OnClickListener() {
+	            
+	            @Override
+	            public void onClick(DialogInterface dialog, int which) {
+	                // TODO Auto-generated method stub
+	                String name  =((EditText)view.findViewById(R.id.memoname)).getText().toString();
+	                insertVoiceMemo(name);
+	                waveView.clearData();
+	                mVoiceMemoListAdapter.notifyDataSetChanged();
+	                dialog.dismiss();
+	            }
+	        }); 
+	        builder.setPositiveButton("取消",new DialogInterface.OnClickListener() {
+	            
+	            @Override
+	            public void onClick(DialogInterface dialog, int which) {
+	                // TODO Auto-generated method stub
+	                dialog.dismiss();
+	                return;
+	            }
+	        } ); 
+	       builder.create().show(); 
+	        
+	       
+	    }
 
-    private void insertVoiceMemo(String memoname) {
+	private void insertVoiceMemo(String memoname) {
         // TODO Auto-generated method stub
         
         Resources res = getResources();
@@ -779,31 +759,40 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == DEL_REQUEST) {
-                deleteMemo(mCurrentMemoId);
-                mVoiceMemoListAdapter.notifyDataSetChanged();
-                mCurrentDuration = 0;
-                // resetPlayer();
-            }
-        }
-    }
+		if (resultCode == Activity.RESULT_OK) {
+			if (requestCode == DEL_REQUEST) {
+				deleteMemo(mCurrentMemoId);
+				mVoiceMemoListAdapter.notifyDataSetChanged();
+				mCurrentDuration = 0;
+				// resetPlayer();
+			}
+		}
+	}
 
-    private void deleteMemo(int memoId) {
-        // TODO Auto-generated method stub
+	private void deleteMemo(int memoId) {
+		// TODO Auto-generated method stub
 
-        Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI, memoId);
-        getContentResolver().delete(memoUri, null, null);
-        File file = new File(mCurrentPath);
-        if (file.exists()) {
-            file.delete();
-        }
-        mCurrentPosition = -1;
+		Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI,
+				memoId);
+		getContentResolver().delete(memoUri, null, null);
+		File file = new File(mCurrentPath);
+		if (file.exists()) {
+			file.delete();
+		}
+		mCurrentPosition = -1;
 
-    }
+	}
+	
+	private void stopMusic() {
+		Intent i = new Intent("com.android.music.musicservicecommand");
+		i.putExtra("command", "pause");
+		sendBroadcast(i);
+	}
 }
+
+
