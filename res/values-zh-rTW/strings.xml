@@ -23,6 +23,8 @@
     <string name="detail_date_time_format">yyyy-MM-dd E kk:mm</string>
     <string name="record_time_prefix">錄制于：</string>
     <string name="back">返回</string>
+    <string name="record_name">新錄音</string>
+    <string name="main_title">錄制</string>
     <string name="label_title">標簽</string>
     <string name="label_custom_title">自定</string>
     <string name="storage_is_full">"存儲空間已滿"</string>

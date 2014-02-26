@@ -45,6 +45,7 @@ import org.espier.voicememos7.ui.SlideCutListView.RemoveDirection;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
+import org.espier.voicememos7.util.ScalePx;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -53,6 +54,7 @@ import java.util.TimerTask;
 
 public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnClickListener
 {
+    private LinearLayout mainLayout;
     float downy = 0;
     // private VelocityTracker velocityTracker;
     // private int mPointerId;
@@ -71,10 +73,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
     TextView date;
     TextView finished;
 
-    private RelativeLayout ll1;
+    private RelativeLayout aboveLayout;
     private boolean isCurrentPosition = false;
-    private RelativeLayout ll2;
-    View view;
+    private RelativeLayout belowLayout;
     ImageView start;
     protected TimerTask timerTask;
     private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
@@ -153,14 +154,53 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_memo_main);
-        ll1 = (RelativeLayout) findViewById(R.id.ll_1);
-        ll2 = (RelativeLayout) findViewById(R.id.ll_2);
-        LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
+        
+        
+        TextView txtMainTitle = (TextView)findViewById(R.id.txtMainTitle);
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        rlp.setMargins(0, ScalePx.scalePx(this, 29), 0, 0);
+        txtMainTitle.setLayoutParams(rlp);
+        
+        VoiceWaveView waveView = (VoiceWaveView)findViewById(R.id.waveView);
+        RelativeLayout.LayoutParams rlpWaveView = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        rlpWaveView.setMargins(0, ScalePx.scalePx(this, 40), 0, 0);
+        rlpWaveView.addRule(RelativeLayout.BELOW, R.id.txtMainTitle);
+        rlpWaveView.height = ScalePx.scalePx(this, 465);
+        waveView.setLayoutParams(rlpWaveView);
+        
+        
+        
+        TextView txtRecordName = (TextView)findViewById(R.id.txtRecordName);
+        RelativeLayout.LayoutParams rlpRecordName = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        rlpRecordName.setMargins(
+                ScalePx.scalePx(this, 31), 
+                ScalePx.scalePx(this, 13), 0, 0);
+        rlpRecordName.addRule(RelativeLayout.BELOW, R.id.waveView);
+        txtRecordName.setLayoutParams(rlpRecordName);
+        
+        TextView txtDate = (TextView)findViewById(R.id.txtDate);
+        RelativeLayout.LayoutParams rlpDate = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        rlpDate.setMargins(
+                ScalePx.scalePx(this, 31), 
+                ScalePx.scalePx(this, 11), 0, 0);
+        rlpDate.addRule(RelativeLayout.BELOW, R.id.txtRecordName);
+        txtDate.setLayoutParams(rlpDate);
+        
+//        LinearLayout buttonLayout = (LinearLayout)findViewById(R.id.buttonLayout);
+//        RelativeLayout.LayoutParams rlpButton = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+//        rlpButton.setMargins(
+//                0, 
+//                ScalePx.scalePx(this, 40), 0, 0);
+//        rlpButton.addRule(RelativeLayout.BELOW, R.id.txtDate);
+//        
+//        buttonLayout.setLayoutParams(rlpButton);
+        
+        
+        mainLayout = (LinearLayout) findViewById(R.id.mainlayout);
+        aboveLayout = (RelativeLayout) findViewById(R.id.aboveLayout);
+        belowLayout = (RelativeLayout) findViewById(R.id.belowLayout);
         start = (ImageView) findViewById(R.id.imageView2);
         start.setOnTouchListener(startTouchListener);
-
-        view = layout.getChildAt(0);
-
         init();
     }
 
@@ -193,11 +233,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
 
                         int deltaY = (int) (downy - y);
 
-                        if (view.getScrollY() + deltaY < 0) {
-                            deltaY = -view.getScrollY();
+                        if (mainLayout.getScrollY() + deltaY < 0) {
+                            deltaY = -mainLayout.getScrollY();
                         }
 
-                        view.scrollBy(0, deltaY);
+                        mainLayout.scrollBy(0, deltaY);
 
                         System.out.println(deltaY);
                         break;
@@ -206,19 +246,20 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                         v.getLocationOnScreen(location);
                         int viewY = location[1];
                        
-                        if (viewY > GetScreenCenter() / 2) {
-                            view.scrollBy(0, -view.getScrollY());
-                        } else {
-                            view.scrollBy(0, 50-viewY);
-                        }
-
-
+//                        if (viewY > GetScreenCenter() / 2) {
+//                            mainLayout.scrollTo(0, 0);//-mainLayout.getScrollY());
+//                        } else {
+//                            LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
+//                            int[] lo = new int[2];
+//                            ll.getLocationOnScreen(lo);
+//                            int buttonY = lo[1];
+//                            
+//                            mainLayout.scrollTo(0, buttonY);
+//                        }
                         break;
-
                     default:
                         break;
                 }
-
                 return false;
             }
         });
@@ -232,14 +273,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
 
         waveView = (VoiceWaveView) findViewById(R.id.waveView);
         waveView.setMinimumWidth(500);
-        waveView.setMinimumHeight(500);
+        waveView.setMinimumHeight(100);
         mRecorder = new Recorder();
         waveView.setRecorder(mRecorder);
         finished = (TextView) findViewById(R.id.finished);
         finished.setOnClickListener(this);
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         slideCutListView.setRemoveListener(this);
-        date = (TextView) findViewById(R.id.date);
+        date = (TextView) findViewById(R.id.txtDate);
         String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
         date.setText(datetime);
         listViewaddData();
@@ -266,15 +307,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         height = getWindowManager().getDefaultDisplay().getHeight() - top;
         int width = getWindowManager().getDefaultDisplay().getWidth();
 
-        LayoutParams lp1 = ll1.getLayoutParams();
+        LayoutParams lp1 = aboveLayout.getLayoutParams();
         lp1.height = (int) (height * 0.9);
         lp1.width = width;
-        ll1.setLayoutParams(lp1);
+        aboveLayout.setLayoutParams(lp1);
 
-        LayoutParams lp2 = ll2.getLayoutParams();
+        LayoutParams lp2 = belowLayout.getLayoutParams();
         lp2.height = (int) (height * 0.9);
         lp2.width = width;
-        ll2.setLayoutParams(lp2);
+        belowLayout.setLayoutParams(lp2);
 
     }
 
