@@ -340,7 +340,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             View v = super.newView(context, cursor, parent);
 
-            ViewHolder vh = new ViewHolder();
+            final ViewHolder vh = new ViewHolder();
             vh.playControl = (ImageView) v.findViewById(R.id.memos_item_play);
             vh.tag = (TextView) v.findViewById(R.id.memos_item_title);
             vh.createDate = (TextView) v.findViewById(R.id.memos_item_create_date);
@@ -372,20 +372,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                     RelativeLayout sharelayout = (RelativeLayout)lastView.findViewById(R.id.sharelayout);
                         sharelayout.setVisibility(View.GONE);
                         isClose = false;
+                        vh.bar.setProgress(0);
+                        
                         return;
                 }
                 LinearLayout layout = (LinearLayout)v.findViewById(R.id.playlayout);
-                if(layout.getVisibility() == View.GONE){
                     layout.setVisibility(View.VISIBLE);
-                }else{
-                    layout.setVisibility(View.GONE);
-                }
+                
                 RelativeLayout sharelayout = (RelativeLayout)v.findViewById(R.id.sharelayout);
-                if(sharelayout.getVisibility() == View.GONE){
                     sharelayout.setVisibility(View.VISIBLE);
-                }else{
-                    sharelayout.setVisibility(View.GONE);
-                }
+                
+                vh.mCurrentRemain.setText("-"+vh.duration.getText());
                 isClose  = true;
                 lastView  = v;
                 
@@ -425,32 +422,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
             vh.path.setTag(path);
             vh.id.setTag(id);
 
-            // File file = new File(path);
-            // if (!file.exists()) {
-            // if (isCurrentPosition) {
-            // vh.playControl.setVisibility(View.VISIBLE);
-            // vh.tag.setTextColor(Color.WHITE);
-            // vh.createDate.setTextColor(Color.WHITE);
-            // vh.duration.setTextColor(Color.WHITE);
-            // }else{
-            // vh.playControl.setVisibility(View.VISIBLE);
-            // vh.tag.setTextColor(Color.BLACK);
-            // vh.createDate.setTextColor(Color.GRAY);
-            // vh.duration.setTextColor(Color.BLUE);
-            // }
-            // } else {
-            // if (isCurrentPosition) {
-            // vh.playControl.setVisibility(View.VISIBLE);
-            // vh.tag.setTextColor(Color.WHITE);
-            // vh.createDate.setTextColor(Color.WHITE);
-            // vh.duration.setTextColor(Color.WHITE);
-            // } else {
-            // vh.tag.setTextColor(Color.BLACK);
-            // vh.createDate.setTextColor(Color.GRAY);
-            // vh.duration.setTextColor(Color.BLUE);
-            // }
-            // mCurrentDuration = (Integer)
-            // view.findViewById(R.id.memos_item_duration).getTag();
             mCurrentMemoId = (Integer) view.findViewById(R.id.memos_item__id).getTag();
             mCurrentPath = (String) view.findViewById(R.id.memos_item_path).getTag();
             view.setBackgroundColor(mCurrentBgColor);
@@ -481,9 +452,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                 @Override
                 public void onClick(View arg0) {
                     int state = mRecorder.getState();
-                    // if (state == Recorder.PLAYING_STATE) {
-                    // mRecorder.stopPlayback();
-                    // }
                     if (state == Recorder.IDLE_STATE) {
                         mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
                         mRecorder.startPlayback();
@@ -544,13 +512,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                 view.mCurrentTime.setText("0:00");
                 view.bar.setProgress(1000);
             }
-            // calculate the number of milliseconds until the next full second,
-            // so
-            // the counter can be updated at just the right time
             long remaining = 1000 - (pos % 1000);
 
-            // approximate how often we would need to refresh the slider to
-            // move it smoothly
             int width = view.bar.getWidth();
             if (width == 0)
                 width = 320;
@@ -561,7 +524,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
             if (smoothrefreshtime < 20)
                 return 20;
             return smoothrefreshtime;
-            // return 500;
         }
 
         @Override
