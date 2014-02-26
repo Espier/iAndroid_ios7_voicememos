@@ -2,9 +2,12 @@
 package org.espier.voicememos7.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -17,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -30,6 +34,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -148,6 +153,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
             waveView.start();
         }
     };
+    public String memoName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,6 +177,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         
         
         TextView txtRecordName = (TextView)findViewById(R.id.txtRecordName);
+        memoName = txtRecordName.getText().toString();
         RelativeLayout.LayoutParams rlpRecordName = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         rlpRecordName.setMargins(
                 ScalePx.scalePx(this, 31), 
@@ -258,6 +265,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                             int buttonY = lo[1];
                             Log.d("adf","buttonY="+String.valueOf(ll.getTop()));
                             mainLayout.scrollTo(0, ll.getTop());
+                            finished.setVisibility(View.INVISIBLE);
                             v.setVisibility(View.INVISIBLE);
                         }
                         break;
@@ -638,15 +646,70 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
 
     private void stop() {
         // TODO Auto-generated method stub
-        mRecorder.stopRecording();
-        insertVoiceMemo();
-        waveView.clearData();
-        mVoiceMemoListAdapter.notifyDataSetChanged();
+        int state = mRecorder.getState();
+        start.setBackgroundResource(R.drawable.circular);
+        if(state == Recorder.RECORDING_STATE||state ==Recorder.RECORDER_PAUSE_STATE){
+            mRecorder.stopRecording();
+        }else{
+            return;
+        }
+        AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this); 
+        final View view = this.getLayoutInflater().inflate(R.layout.items, null);
+        EditText text = (EditText) view.findViewById(R.id.memoname);
+        text.setText(memoName);
+        builder.setView(view);
+        
+//        TextView cancel = (TextView) view.findViewById(R.id.cancel);
+//        TextView ok = (TextView)view.findViewById(R.id.ok);
+//        cancel.setOnClickListener(new View.OnClickListener() {
+//            
+//            @Override
+//            public void onClick(View v) {
+//                // TODO Auto-generated method stub
+//                return;
+//            }
+//        });
+//        ok.setOnClickListener(new View.OnClickListener() {
+//            
+//            @Override
+//            public void onClick(View v) {
+//                // TODO Auto-generated method stub
+//                String name  =((EditText)view.findViewById(R.id.memoname)).getText().toString();
+//                insertVoiceMemo(name);
+//                waveView.clearData();
+//                mVoiceMemoListAdapter.notifyDataSetChanged();
+//            }
+//        });
+        
+        builder.setNegativeButton("好",new DialogInterface.OnClickListener() {
+            
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                String name  =((EditText)view.findViewById(R.id.memoname)).getText().toString();
+                insertVoiceMemo(name);
+                waveView.clearData();
+                mVoiceMemoListAdapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        }); 
+        builder.setPositiveButton("取消",new DialogInterface.OnClickListener() {
+            
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                dialog.dismiss();
+                return;
+            }
+        } ); 
+       builder.create().show(); 
+        
+       
     }
 
-    private void insertVoiceMemo() {
+    private void insertVoiceMemo(String memoname) {
         // TODO Auto-generated method stub
-
+        
         Resources res = getResources();
         ContentValues cv = new ContentValues();
         long current = System.currentTimeMillis();
@@ -658,6 +721,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         // long sampleLengthMillis = mRecorder.sampleLength() * 1000L;
         String filepath = file.getAbsolutePath();
         MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(filepath);
+        if(mediaPlayer ==null){
+            return;
+        }
         int duration = mediaPlayer.getDuration();
         mRecorder.stopPlayback();
         if (duration < 1000) {
@@ -665,7 +731,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         }
 
         cv.put(VoiceMemo.Memos.DATA, filepath);
-        cv.put(VoiceMemo.Memos.LABEL, title);
+        cv.put(VoiceMemo.Memos.LABEL, memoname);
         cv.put(VoiceMemo.Memos.LABEL_TYPE, LABEL_TYPE_NONE);
         cv.put(VoiceMemo.Memos.CREATE_DATE, current);
         cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));

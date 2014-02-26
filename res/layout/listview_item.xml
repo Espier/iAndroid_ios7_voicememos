@@ -3,18 +3,17 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" 
     android:orientation="vertical">
-
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dip"
          >
-
+		
         <TextView
             android:id="@+id/memos_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="17sp"
+            android:textSize="18sp"
             android:text="name" />
         <TextView
             android:id="@+id/memos_item_create_date"
