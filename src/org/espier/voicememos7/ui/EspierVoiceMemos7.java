@@ -1,6 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -54,7 +55,9 @@ import org.espier.voicememos7.util.ScalePx;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimerTask;
 
 public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnClickListener
@@ -367,7 +370,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
     }
 
     class VoiceMemoListAdapter extends SimpleCursorAdapter {
-
+        private List list = new ArrayList<View>();
         private Context mContext;
         private int mMemoIdx;
         private int mPathIdx;
@@ -434,6 +437,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
           v.setTag(vh);
           v.setOnClickListener(new View.OnClickListener() {
             
+
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
@@ -444,7 +449,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                         sharelayout.setVisibility(View.GONE);
                         isClose = false;
                         vh.bar.setProgress(0);
-                        
+                        int i = list.size();
+                        for(int j =0;j<i;j++){
+                            View view =(View) list.get(j);
+                            
+                            view.setBackgroundColor(Color.WHITE);
+                        }
                         return;
                 }
                 LinearLayout layout = (LinearLayout)v.findViewById(R.id.playlayout);
@@ -455,10 +465,21 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                 
                 vh.mCurrentRemain.setText("-"+vh.duration.getText());
                 isClose  = true;
+                    int i = list.size();
+                    for(int j =0;j<i;j++){
+                        View view =(View) list.get(j);
+                        if(v == view){
+                            continue;
+                        }
+                        
+                        view.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                    }
+                    
                 lastView  = v;
                 
             }
         });
+          list.add(v);
           return v;
         }
 
