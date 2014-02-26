@@ -247,18 +247,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                         int viewY = location[1];
                        
                         if (viewY > GetScreenCenter() / 2) {
-                        	Log.d("asdf","DOWN!");
-                            mainLayout.scrollTo(0, 0);//-mainLayout.getScrollY());
+                        	ScrollDown(v);
                         } else {
-                        	Log.d("asdf","UP!");
-                            LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
-                            int[] lo = new int[2];
-                            
-                            ll.getLocationInWindow(lo);
-                            int buttonY = lo[1];
-                            Log.d("adf","buttonY="+String.valueOf(ll.getTop()));
-                            mainLayout.scrollTo(0, ll.getTop());
-                            v.setVisibility(View.INVISIBLE);
+                        	
+                            ScrollUp(v);
                         }
                         break;
                     default:
@@ -269,6 +261,18 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         });
     }
 
+    private void ScrollUp(View v) {
+    	LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
+        mainLayout.scrollTo(0, ll.getTop());
+        v.setVisibility(View.INVISIBLE);
+    }
+    
+    private void ScrollDown(View v) {
+    	 mainLayout.scrollTo(0, 0);
+    	 if (v.getVisibility()!=View.VISIBLE) {
+    		 v.setVisibility(View.VISIBLE);
+    	 }
+    }
     private int GetScreenCenter() {
         return this.getResources().getDisplayMetrics().heightPixels;
     }
