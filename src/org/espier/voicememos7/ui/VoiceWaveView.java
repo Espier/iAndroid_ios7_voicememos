@@ -124,16 +124,18 @@ public class VoiceWaveView extends View {
         slideLinePaint = new Paint();
         blueColor = Color.parseColor(blueColorString);
         slideLinePaint.setColor(blueColor);
-        slideLinePaint.setStrokeWidth(0.8f);
+        slideLinePaint.setStrokeWidth(1f);
         
         timeTopPaint = new Paint();
         timeTopPaint.setTextSize(ScalePx.scalePx(context, 24));
         timeTopPaint.setColor(Color.WHITE);
+        timeTopPaint.setStrokeWidth(0.5f);
         
         timeTextPaint = new Paint();
-        timeTextPaint.setTextSize(30);
+        timeTextPaint.setTextSize(ScalePx.scalePx(context, 40));
         timeTextPaint.setColor(Color.WHITE);
         timeTextPaint.setTypeface(Typeface.SANS_SERIF);
+        
         grayLinePaint = new Paint();
         grayColor = Color.parseColor(grayColorString);
         grayLinePaint.setColor(grayColor);
@@ -147,7 +149,7 @@ public class VoiceWaveView extends View {
         darkGrayColor = Color.parseColor(darkGrayColorString);
         voicedbPaint.setColor(darkGrayColor);
         voicedbPaint.setTextAlign(Align.RIGHT);
-        voicedbPaint.setTextSize(10f);
+        voicedbPaint.setTextSize(ScalePx.scalePx(context, 14));
 
         handler = new Handler()
         {
@@ -236,6 +238,7 @@ public class VoiceWaveView extends View {
         float x = offset;
 
         canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
+        //canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
         canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
         canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
                 slideLinePaint);
