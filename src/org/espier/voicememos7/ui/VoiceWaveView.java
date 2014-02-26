@@ -139,11 +139,11 @@ public class VoiceWaveView extends View {
         grayLinePaint = new Paint();
         grayColor = Color.parseColor(grayColorString);
         grayLinePaint.setColor(grayColor);
-        grayLinePaint.setStrokeWidth(1f);
+        grayLinePaint.setStrokeWidth(2f);
         
         darkGrayLinePaint = new Paint();
         darkGrayLinePaint.setColor(grayColor);;
-        darkGrayLinePaint.setStrokeWidth(0.5f);
+        darkGrayLinePaint.setStrokeWidth(1f);
         
         voicedbPaint = new Paint();
         darkGrayColor = Color.parseColor(darkGrayColorString);
