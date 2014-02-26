@@ -409,7 +409,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
             }
             return super.getView(position, convertView, parent);
         }
-
+        
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             View v = super.newView(context, cursor, parent);
