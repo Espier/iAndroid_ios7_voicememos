@@ -207,6 +207,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 				mRecorder.startRecording(this);
 				start.setBackgroundResource(R.drawable.start_down);
 				waveView.start();
+				ScrollDown();
 			}
 			
 			break;
