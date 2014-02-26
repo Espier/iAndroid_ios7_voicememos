@@ -34,6 +34,7 @@ public class VoiceWaveView extends View {
     TimerTask timerTask;
     Paint voiceLinePaint;
     Paint slideLinePaint;
+    Paint timeTopPaint;
     Paint timeTextPaint;
     Paint grayLinePaint;
     Paint darkGrayLinePaint;
@@ -80,6 +81,8 @@ public class VoiceWaveView extends View {
     private String darkGrayColorString = "#8c8c8c";
     private int darkGrayColor;
     
+    int time_text_font_size;
+    
     float x = 0;
     
 
@@ -121,25 +124,32 @@ public class VoiceWaveView extends View {
         slideLinePaint = new Paint();
         blueColor = Color.parseColor(blueColorString);
         slideLinePaint.setColor(blueColor);
-        slideLinePaint.setStrokeWidth(0.8f);
+        slideLinePaint.setStrokeWidth(1f);
+        
+        timeTopPaint = new Paint();
+        timeTopPaint.setTextSize(ScalePx.scalePx(context, 24));
+        timeTopPaint.setColor(Color.WHITE);
+        timeTopPaint.setStrokeWidth(0.5f);
+        
         timeTextPaint = new Paint();
-        timeTextPaint.setTextSize(30);
+        timeTextPaint.setTextSize(ScalePx.scalePx(context, 40));
         timeTextPaint.setColor(Color.WHITE);
         timeTextPaint.setTypeface(Typeface.SANS_SERIF);
+        
         grayLinePaint = new Paint();
         grayColor = Color.parseColor(grayColorString);
         grayLinePaint.setColor(grayColor);
-        grayLinePaint.setStrokeWidth(1f);
+        grayLinePaint.setStrokeWidth(2f);
         
         darkGrayLinePaint = new Paint();
         darkGrayLinePaint.setColor(grayColor);;
-        darkGrayLinePaint.setStrokeWidth(0.5f);
+        darkGrayLinePaint.setStrokeWidth(1f);
         
         voicedbPaint = new Paint();
         darkGrayColor = Color.parseColor(darkGrayColorString);
         voicedbPaint.setColor(darkGrayColor);
         voicedbPaint.setTextAlign(Align.RIGHT);
-        voicedbPaint.setTextSize(10f);
+        voicedbPaint.setTextSize(ScalePx.scalePx(context, 14));
 
         handler = new Handler()
         {
@@ -173,6 +183,7 @@ public class VoiceWaveView extends View {
         y_time_text = y_bottom_line+h_bottomLine2timetext;
         h_db2db = ScalePx.scalePx(context, 8);
         h_db2midline = ScalePx.scalePx(context, 13);
+        time_text_font_size = ScalePx.scalePx(context, 24);
         
         
         margin_lef_init = ScalePx.scalePx(context, 31);
@@ -227,6 +238,7 @@ public class VoiceWaveView extends View {
         float x = offset;
 
         canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
+        //canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
         canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
         canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
                 slideLinePaint);
@@ -286,7 +298,7 @@ public class VoiceWaveView extends View {
                 canvas.drawLine(x+j*grid_width, y_xaxis+h_high_line, x+j*grid_width, y_xaxis+h_high_line-h, darkGrayLinePaint);
             }
             if (i!=-1) {
-                canvas.drawText(timeAxisFormat(time_list.get(i)), x+text_offset, y_xaxis+voiceLinePaint.getTextSize(), voiceLinePaint);
+                canvas.drawText(timeAxisFormat(time_list.get(i)), x+text_offset, y_xaxis+timeTopPaint.getTextSize(), timeTopPaint);
 
             }
         }
@@ -375,6 +387,9 @@ public class VoiceWaveView extends View {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
+                if (recorder.getState() != Recorder.RECORDING_STATE) {
+                    return;
+                }
 
                 try {
                     time += invalidate_rate;
@@ -408,6 +423,9 @@ public class VoiceWaveView extends View {
 
             @Override
             public void run() {
+                if (recorder.getState() != Recorder.RECORDING_STATE) {
+                    return;
+                }
                 try {
                     if (time >= time_x * 1000 / 2)
                     {
