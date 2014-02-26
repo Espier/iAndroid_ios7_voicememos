@@ -97,7 +97,7 @@
             android:id="@+id/hiddenView"
             android:layout_width="fill_parent"
             android:layout_height="100dip"
-            android:background="#e0ffff00"
+            android:background="@android:color/transparent"
             android:clickable="false" />
     </RelativeLayout>
 

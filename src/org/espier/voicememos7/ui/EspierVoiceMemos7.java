@@ -246,16 +246,20 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                         v.getLocationOnScreen(location);
                         int viewY = location[1];
                        
-//                        if (viewY > GetScreenCenter() / 2) {
-//                            mainLayout.scrollTo(0, 0);//-mainLayout.getScrollY());
-//                        } else {
-//                            LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
-//                            int[] lo = new int[2];
-//                            ll.getLocationOnScreen(lo);
-//                            int buttonY = lo[1];
-//                            
-//                            mainLayout.scrollTo(0, buttonY);
-//                        }
+                        if (viewY > GetScreenCenter() / 2) {
+                        	Log.d("asdf","DOWN!");
+                            mainLayout.scrollTo(0, 0);//-mainLayout.getScrollY());
+                        } else {
+                        	Log.d("asdf","UP!");
+                            LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
+                            int[] lo = new int[2];
+                            
+                            ll.getLocationInWindow(lo);
+                            int buttonY = lo[1];
+                            Log.d("adf","buttonY="+String.valueOf(ll.getTop()));
+                            mainLayout.scrollTo(0, ll.getTop());
+                            v.setVisibility(View.INVISIBLE);
+                        }
                         break;
                     default:
                         break;
