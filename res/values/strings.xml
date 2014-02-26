@@ -28,6 +28,8 @@
     <string name="delete">Delete</string>
     <string name="detail_title">Info</string>
     <string name="back">Back</string>
+    <string name="record_name">New Record</string>
+    <string name="main_title">Recording</string>
     <string name="label_title">Label</string>
     <string name="label_custom_title">Custom</string>
     <string name="storage_is_full">Storage is full</string>
