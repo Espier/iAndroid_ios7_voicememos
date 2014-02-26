@@ -267,7 +267,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                             int buttonY = lo[1];
                             Log.d("adf","buttonY="+String.valueOf(ll.getTop()));
                             mainLayout.scrollTo(0, ll.getTop());
-                            finished.setVisibility(View.INVISIBLE);
+                           
                             v.setVisibility(View.INVISIBLE);
                         	
                             ScrollUp();
@@ -285,6 +285,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
     	LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
         mainLayout.scrollTo(0, ll.getTop());
         hiddenView.setVisibility(View.INVISIBLE);
+        finished.setVisibility(View.INVISIBLE);
     }
     
     private void ScrollDown() {
@@ -292,6 +293,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
     	 if (hiddenView.getVisibility()!=View.VISIBLE) {
     		 hiddenView.setVisibility(View.VISIBLE);
     	 }
+    	 finished.setVisibility(View.VISIBLE);
     }
     private int GetScreenCenter() {
         return this.getResources().getDisplayMetrics().heightPixels;
