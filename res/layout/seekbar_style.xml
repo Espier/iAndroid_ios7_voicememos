@@ -24,10 +24,8 @@
             <corners android:radius="20dip" />
             <gradient
                 android:angle="90"
-                android:centerColor="#f1f1f1"
                 android:centerY="0.45"
-                android:endColor="#969696"
-                android:startColor="#f8f8f8" />
+                />
              <stroke android:top="1dip"
                  android:width="1dip" android:color="#cdcdcd" />
         </shape>
@@ -39,10 +37,8 @@
                 <corners android:radius="20dip" />
                 <gradient
                     android:angle="90"
-                    android:centerColor="#457cbf"
                     android:centerY="0.45"
-                    android:endColor="#093c82"
-                    android:startColor="#6194ce" />
+                    />
              <stroke android:top="1dip"
                  android:width="1dip" android:color="#4178bc" />
             </shape>
