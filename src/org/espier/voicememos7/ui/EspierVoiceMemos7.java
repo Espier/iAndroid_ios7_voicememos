@@ -78,6 +78,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
     TextView date;
     TextView finished;
 
+    private Button hiddenView;
     private RelativeLayout aboveLayout;
     private boolean isCurrentPosition = false;
     private RelativeLayout belowLayout;
@@ -121,6 +122,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                         start.setBackgroundResource(R.drawable.start_down);
                         isdown = true;
                         // start
+                        ScrollDown();
                         start();
                     } else {
                         start.setBackgroundResource(R.drawable.circular);
@@ -206,6 +208,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         mainLayout = (LinearLayout) findViewById(R.id.mainlayout);
         aboveLayout = (RelativeLayout) findViewById(R.id.aboveLayout);
         belowLayout = (RelativeLayout) findViewById(R.id.belowLayout);
+        hiddenView = (Button) findViewById(R.id.hiddenView);
         start = (ImageView) findViewById(R.id.imageView2);
         start.setOnTouchListener(startTouchListener);
         init();
@@ -254,8 +257,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                         int viewY = location[1];
                        
                         if (viewY > GetScreenCenter() / 2) {
-                        	Log.d("asdf","DOWN!");
-                            mainLayout.scrollTo(0, 0);//-mainLayout.getScrollY());
+                        	ScrollDown();
                         } else {
                         	Log.d("asdf","UP!");
                             LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
@@ -267,6 +269,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
                             mainLayout.scrollTo(0, ll.getTop());
                             finished.setVisibility(View.INVISIBLE);
                             v.setVisibility(View.INVISIBLE);
+                        	
+                            ScrollUp();
                         }
                         break;
                     default:
@@ -277,6 +281,18 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener, OnCli
         });
     }
 
+    private void ScrollUp() {
+    	LinearLayout ll = (LinearLayout)findViewById(R.id.buttonLayout);
+        mainLayout.scrollTo(0, ll.getTop());
+        hiddenView.setVisibility(View.INVISIBLE);
+    }
+    
+    private void ScrollDown() {
+    	 mainLayout.scrollTo(0, 0);
+    	 if (hiddenView.getVisibility()!=View.VISIBLE) {
+    		 hiddenView.setVisibility(View.VISIBLE);
+    	 }
+    }
     private int GetScreenCenter() {
         return this.getResources().getDisplayMetrics().heightPixels;
     }
