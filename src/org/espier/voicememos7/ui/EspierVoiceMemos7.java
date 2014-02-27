@@ -177,7 +177,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 ScalePx.scalePx(this, 13), 0, 0);
         rlpRecordName.addRule(RelativeLayout.BELOW, R.id.waveView);
         txtRecordName.setLayoutParams(rlpRecordName);
-
+        memoName = txtRecordName.getText().toString();
         TextView txtDate = (TextView) findViewById(R.id.txtDate);
         RelativeLayout.LayoutParams rlpDate = new RelativeLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -713,8 +713,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         final View view = this.getLayoutInflater().inflate(R.layout.items, null);
         EditText text = (EditText) view.findViewById(R.id.memoname);
         text.setText(memoName);
-        builder.setView(view);
-
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
         TextView ok = (TextView) view.findViewById(R.id.ok);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -732,6 +730,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             public void onClick(View v) {
                 String name
                 = ((EditText) view.findViewById(R.id.memoname)).getText().toString();
+
                 insertVoiceMemo(name);
                 waveView.clearData();
                 mVoiceMemoListAdapter.notifyDataSetChanged();
@@ -740,6 +739,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         });
 
         dialog = builder.create();
+        dialog.setView(view, 0, 0, 0, 0);
         dialog.show();
 
     }
