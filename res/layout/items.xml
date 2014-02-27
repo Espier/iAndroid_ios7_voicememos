@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="horizontal" 
 	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+	android:layout_height="fill_parent"
+	android:background="@drawable/background">
 
     <TextView
         android:id="@+id/textView1"
@@ -12,7 +13,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="14dp"
         android:textSize="17sp"
-        android:text="新语音备忘录" />
+        android:textColor="@color/black"
+        android:text="@string/new_memo" />
 
     <TextView
         android:id="@+id/textView2"
@@ -21,7 +23,8 @@
        android:layout_centerHorizontal="true"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="7dp"
-        android:text="请为此语音备忘录输入名称" />
+        android:textColor="@color/black"
+        android:text="@string/new_memo_name" />
 
     <EditText
         android:id="@+id/memoname"
@@ -35,30 +38,41 @@
 
         <requestFocus />
     </EditText>
-
-    <!-- <LinearLayout
+<ImageView android:id="@+id/line"
+    android:layout_below="@+id/memoname"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:src="@drawable/line_h"/>
+   <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/memoname"
         android:layout_alignRight="@+id/memoname"
-        android:layout_below="@+id/memoname" >
+        android:layout_below="@+id/line" >
 
         <TextView
             android:id="@+id/cancel"
             android:layout_weight="1"
+            android:layout_marginTop="10dip"
             android:gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="取消" />
-
+            android:textColor="@color/blue"
+            android:text="@string/cancel" />
+		<ImageView 
+		    android:layout_height="fill_parent"
+		    android:layout_width="wrap_content"
+		    android:src="@drawable/line_v"/>
         <TextView
             android:id="@+id/ok"
             android:layout_weight="1"
+             android:layout_marginTop="10dip"
             android:gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="好" />
+            android:textColor="@color/blue"
+            android:text="@string/ok" />
 
-    </LinearLayout> -->
+    </LinearLayout> 
 		
 </RelativeLayout>

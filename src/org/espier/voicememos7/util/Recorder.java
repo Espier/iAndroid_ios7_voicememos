@@ -54,6 +54,8 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
     public static final int IN_CALL_RECORD_ERROR = 3;
 
     private List<File> mTempMemoFiles = new ArrayList<File>();
+    
+    public boolean isReSet;
 
     public interface OnStateChangedListener {
         public void onStateChanged(int state);
@@ -159,6 +161,7 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
         // Handle RuntimeException if the recording couldn't start
         try {
             mRecorder.start();
+            isReSet = false;
         } catch (RuntimeException exception) {
             AudioManager audioMngr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             boolean isInCall = ((audioMngr.getMode() == AudioManager.MODE_IN_CALL));
@@ -202,6 +205,7 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
             }
 
         }
+        isReSet = true;
 
         mergeFiles(mTempMemoFiles);
         mTempMemoFiles.clear();
@@ -216,10 +220,12 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
     public void pauseRecording() {
         if (mRecorder == null)
             return;
+        isReSet = true;
         mRecorder.stop();
         mRecorder.reset();
         mRecorder.release();
         mRecorder = null;
+        
         mSampleLength += (int) ((System.currentTimeMillis() - mSampleStart) / 1000);
 
         setState(RECORDER_PAUSE_STATE);

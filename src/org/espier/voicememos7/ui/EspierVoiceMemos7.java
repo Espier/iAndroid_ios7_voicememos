@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -75,6 +76,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private MediaPlayer mCurrentMediaPlayer;
     private static final int DEL_REQUEST = 2;
     TextView date;
+
+    private AlertDialog dialog;
+
     TextView finished;
     Boolean isCurrentPosition;
     private Button hiddenView;
@@ -99,6 +103,26 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public final float[] BT_NOT_SELECTED = new float[] {
             1, 0, 0, 0, 0, 0,
             1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
+    };
+
+    Handler dialogdismiss = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
     };
 
     private OnTouchListener startTouchListener = new View.OnTouchListener() {
@@ -213,11 +237,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 stopMusic();
                 if (mRecorder.getState() == Recorder.RECORDING_STATE) {
                     mRecorder.pauseRecording();
+
                     start.setBackgroundResource(R.drawable.record_red);
                     waveView.pause();
                 } else {
                     mRecorder.startRecording(this);
                     start.setBackgroundResource(R.drawable.stop_red);
+
                     waveView.start();
                     ScrollDown();
                 }
@@ -289,6 +315,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         LinearLayout ll = (LinearLayout) findViewById(R.id.buttonLayout);
         mainLayout.scrollTo(0, ll.getTop());
         hiddenView.setVisibility(View.INVISIBLE);
+
+        finished.setVisibility(View.INVISIBLE);
+
     }
 
     private void ScrollDown() {
@@ -296,6 +325,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         if (hiddenView.getVisibility() != View.VISIBLE) {
             hiddenView.setVisibility(View.VISIBLE);
         }
+
+        finished.setVisibility(View.VISIBLE);
+
     }
 
     private int GetScreenCenter() {
@@ -683,56 +715,36 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         text.setText(memoName);
         builder.setView(view);
 
-        // TextView cancel = (TextView) view.findViewById(R.id.cancel);
-        // TextView ok = (TextView)view.findViewById(R.id.ok);
-        // cancel.setOnClickListener(new View.OnClickListener() {
-        //
-        // @Override
-        // public void onClick(View v) {
-        // // TODO Auto-generated method stub
-        // return;
-        // }
-        // });
-        // ok.setOnClickListener(new View.OnClickListener() {
-        //
-        // @Override
-        // public void onClick(View v) {
-        // // TODO Auto-generated method stub
-        // String name
-        // =((EditText)view.findViewById(R.id.memoname)).getText().toString();
-        // insertVoiceMemo(name);
-        // waveView.clearData();
-        // mVoiceMemoListAdapter.notifyDataSetChanged();
-        // }
-        // });
-
-        builder.setNegativeButton("好", new DialogInterface.OnClickListener() {
+        TextView cancel = (TextView) view.findViewById(R.id.cancel);
+        TextView ok = (TextView) view.findViewById(R.id.ok);
+        cancel.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
-                String name = ((EditText) view.findViewById(R.id.memoname)).getText().toString();
-                insertVoiceMemo(name);
-                waveView.clearData();
-                mVoiceMemoListAdapter.notifyDataSetChanged();
-                dialog.dismiss();
-            }
-        });
-        builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                dialog.dismiss();
+                dialogdismiss.sendEmptyMessage(1);
                 return;
             }
         });
-        builder.create().show();
+        ok.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String name
+                = ((EditText) view.findViewById(R.id.memoname)).getText().toString();
+                insertVoiceMemo(name);
+                waveView.clearData();
+                mVoiceMemoListAdapter.notifyDataSetChanged();
+                dialogdismiss.sendEmptyMessage(1);
+            }
+        });
+
+        dialog = builder.create();
+        dialog.show();
 
     }
 
     private void insertVoiceMemo(String memoname) {
-
         // TODO Auto-generated method stub
 
         Resources res = getResources();
@@ -782,7 +794,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void deleteMemo(int memoId) {
         // TODO Auto-generated method stub
-
         Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI,
                 memoId);
         getContentResolver().delete(memoUri, null, null);
@@ -798,5 +809,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Intent i = new Intent("com.android.music.musicservicecommand");
         i.putExtra("command", "pause");
         sendBroadcast(i);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        waveView.destroy();
+        waveView = null;
+        super.onDestroy();
     }
 }

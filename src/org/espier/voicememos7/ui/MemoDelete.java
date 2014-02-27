@@ -37,7 +37,7 @@ public class MemoDelete extends Activity implements OnClickListener {
     memoname = intent.getStringExtra("memoname");
     del = (Button)findViewById(R.id.memo_del_ok);
     del.setOnClickListener(this);
-    del.setText("删除"+"\""+memoname+"\"");
+    del.setText(getResources().getString(R.string.delete)+"\""+memoname+"\"");
     cancel = (Button)findViewById(R.id.memo_del_cancel);
     cancel.setOnClickListener(this);
   }
