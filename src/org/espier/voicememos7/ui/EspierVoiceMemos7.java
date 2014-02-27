@@ -76,7 +76,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private MediaPlayer mCurrentMediaPlayer;
     private static final int DEL_REQUEST = 2;
     TextView date;
+
     private AlertDialog dialog;
+
     TextView finished;
     Boolean isCurrentPosition;
     private Button hiddenView;
@@ -102,6 +104,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             1, 0, 0, 0, 0, 0,
             1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
     };
+
     Handler dialogdismiss = new Handler() {
 
         @Override
@@ -225,11 +228,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 stopMusic();
                 if (mRecorder.getState() == Recorder.RECORDING_STATE) {
                     mRecorder.pauseRecording();
-                    start.setBackgroundResource(R.drawable.circular);
+
+                    start.setBackgroundResource(R.drawable.record_red);
                     waveView.pause();
                 } else {
                     mRecorder.startRecording(this);
-                    start.setBackgroundResource(R.drawable.start_down);
+                    start.setBackgroundResource(R.drawable.stop_red);
+
                     waveView.start();
                     ScrollDown();
                 }
@@ -301,7 +306,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         LinearLayout ll = (LinearLayout) findViewById(R.id.buttonLayout);
         mainLayout.scrollTo(0, ll.getTop());
         hiddenView.setVisibility(View.INVISIBLE);
+
         finished.setVisibility(View.INVISIBLE);
+
     }
 
     private void ScrollDown() {
@@ -309,7 +316,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         if (hiddenView.getVisibility() != View.VISIBLE) {
             hiddenView.setVisibility(View.VISIBLE);
         }
+
         finished.setVisibility(View.VISIBLE);
+
     }
 
     private int GetScreenCenter() {
@@ -685,7 +694,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private void stop() {
         // TODO Auto-generated method stub
         int state = mRecorder.getState();
-        start.setBackgroundResource(R.drawable.circular);
+        start.setBackgroundResource(R.drawable.record_red);
         if (state == Recorder.RECORDING_STATE || state == Recorder.RECORDER_PAUSE_STATE) {
             mRecorder.stopRecording();
         } else {
@@ -712,8 +721,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                String name = ((EditText) view.findViewById(R.id.memoname)).getText().toString();
+                String name
+                = ((EditText) view.findViewById(R.id.memoname)).getText().toString();
                 insertVoiceMemo(name);
                 waveView.clearData();
                 mVoiceMemoListAdapter.notifyDataSetChanged();
@@ -721,30 +730,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             }
         });
 
-        // builder.setNegativeButton(getResources().getString(R.string.ok),new
-        // DialogInterface.OnClickListener() {
-        //
-        // @Override
-        // public void onClick(DialogInterface dialog, int which) {
-        // // TODO Auto-generated method stub
-        // String name
-        // =((EditText)view.findViewById(R.id.memoname)).getText().toString();
-        // insertVoiceMemo(name);
-        // waveView.clearData();
-        // mVoiceMemoListAdapter.notifyDataSetChanged();
-        // dialog.dismiss();
-        // }
-        // });
-        // builder.setPositiveButton(getResources().getString(R.string.cancel),new
-        // DialogInterface.OnClickListener() {
-        //
-        // @Override
-        // public void onClick(DialogInterface dialog, int which) {
-        // // TODO Auto-generated method stub
-        // dialog.dismiss();
-        // return;
-        // }
-        // } );
         dialog = builder.create();
         dialog.show();
 
@@ -800,7 +785,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void deleteMemo(int memoId) {
         // TODO Auto-generated method stub
-
         Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI,
                 memoId);
         getContentResolver().delete(memoUri, null, null);
@@ -816,5 +800,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Intent i = new Intent("com.android.music.musicservicecommand");
         i.putExtra("command", "pause");
         sendBroadcast(i);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        waveView.destroy();
+        waveView = null;
+        super.onDestroy();
     }
 }

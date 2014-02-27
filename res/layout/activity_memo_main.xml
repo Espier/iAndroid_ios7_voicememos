@@ -54,16 +54,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtDate"
             android:layout_centerHorizontal="true"
-            
-            android:background="@drawable/frame" >
+            android:gravity="center" 
+            android:background="@drawable/ring" >
 
             <ImageView
                 android:contentDescription="@string/finish"
                 android:id="@+id/redButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                
                 android:scaleType="centerInside"
-                android:background="@drawable/circular" />
+                android:background="@drawable/record_red" />
         </LinearLayout>
 
        
