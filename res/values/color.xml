@@ -150,4 +150,7 @@
 	<color name="black">#000000</color><!--黑色 -->
 
     <color name="bar_blue">#0479EF</color><!--黑色 -->
+    <color name="cancel_blue">#007AFF</color>
+    <color name="delete_red">#FD472B</color>
+    <color name="button_white">#F7F7F7</color>
 </resources>
