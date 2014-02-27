@@ -432,7 +432,10 @@ public class VoiceWaveView extends View {
                         voice_list.remove(0);
 
                     }
-                    voice_list.add(recorder.getMaxAmplitude() / 300);
+                    if (recorder!=null && !recorder.isReSet) {
+                        voice_list.add(recorder.getMaxAmplitude() / 300);
+                    }
+                    
                 } catch (Exception e) {
 
                 }
