@@ -498,6 +498,9 @@ public class VoiceWaveView extends View {
             timer = null;
         }
         if (recorder!=null) {
+            if (recorder.getState() == Recorder.RECORDING_STATE) {
+                recorder.stopRecording();
+            }
             recorder =null;
         }
     }
