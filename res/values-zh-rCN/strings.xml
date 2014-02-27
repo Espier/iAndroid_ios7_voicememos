@@ -38,5 +38,7 @@
         卡。"</string>
     <string name="error_app_internal" msgid="312884382388702022">"发生内部应用错误。"</string>
     <string name="error_mediadb_new_record" msgid="261714902333432462">"无法保存录制的音频。"</string>
-
+	<string name ="new_memo">新语音备忘录</string>
+	<string name="edit">编辑</string>
+	<string name="ok">好</string>
 </resources>

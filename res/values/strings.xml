@@ -47,5 +47,8 @@
     <string name="error_app_internal">Internal application error.</string>
     <!-- shown as the message in a dialog when the recording could not be added to the media database -->
     <string name="error_mediadb_new_record">Couldn\'t save recorded audio.</string>
-
+	<string name ="new_memo">New Record</string>
+	<string name="new_memo_name">Please enter a name for this record</string>
+	<string name="edit">edit</string>
+	<string name="ok">ok</string>
 </resources>

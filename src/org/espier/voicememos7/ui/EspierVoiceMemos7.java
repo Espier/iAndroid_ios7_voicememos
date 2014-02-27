@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -75,6 +76,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 	private MediaPlayer mCurrentMediaPlayer;
 	private static final int DEL_REQUEST = 2;
 	TextView date;
+	private AlertDialog dialog;
 	TextView finished;
 	Boolean isCurrentPosition;
 	private Button hiddenView;
@@ -96,7 +98,25 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 			1, 0, 0, -100, 0, 0, 1, 0, -100, 0, 0, 0, 1, 0 };
 	public final float[] BT_NOT_SELECTED = new float[] { 1, 0, 0, 0, 0, 0,
 			1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0 };
-	
+	Handler dialogdismiss = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    if(dialog!=null){
+                        dialog.dismiss();
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+	    
+	};
 	
 	private OnTouchListener startTouchListener = new View.OnTouchListener() {
 
@@ -660,6 +680,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         public void onStopTrackingTouch(SeekBar bar) {
         }
     };
+   
 
 	
 
@@ -678,50 +699,53 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 	        text.setText(memoName);
 	        builder.setView(view);
 	        
-//	        TextView cancel = (TextView) view.findViewById(R.id.cancel);
-//	        TextView ok = (TextView)view.findViewById(R.id.ok);
-//	        cancel.setOnClickListener(new View.OnClickListener() {
-//	            
-//	            @Override
-//	            public void onClick(View v) {
-//	                // TODO Auto-generated method stub
-//	                return;
-//	            }
-//	        });
-//	        ok.setOnClickListener(new View.OnClickListener() {
-//	            
-//	            @Override
-//	            public void onClick(View v) {
-//	                // TODO Auto-generated method stub
-//	                String name  =((EditText)view.findViewById(R.id.memoname)).getText().toString();
-//	                insertVoiceMemo(name);
-//	                waveView.clearData();
-//	                mVoiceMemoListAdapter.notifyDataSetChanged();
-//	            }
-//	        });
-	        
-	        builder.setNegativeButton("好",new DialogInterface.OnClickListener() {
+	        TextView cancel = (TextView) view.findViewById(R.id.cancel);
+	        TextView ok = (TextView)view.findViewById(R.id.ok);
+	        cancel.setOnClickListener(new View.OnClickListener() {
 	            
 	            @Override
-	            public void onClick(DialogInterface dialog, int which) {
+	            public void onClick(View v) {
+	                // TODO Auto-generated method stub
+	                dialogdismiss.sendEmptyMessage(1);
+	                return;
+	            }
+	        });
+	        ok.setOnClickListener(new View.OnClickListener() {
+	            
+	            @Override
+	            public void onClick(View v) {
 	                // TODO Auto-generated method stub
 	                String name  =((EditText)view.findViewById(R.id.memoname)).getText().toString();
 	                insertVoiceMemo(name);
 	                waveView.clearData();
 	                mVoiceMemoListAdapter.notifyDataSetChanged();
-	                dialog.dismiss();
+	                dialogdismiss.sendEmptyMessage(1);
 	            }
-	        }); 
-	        builder.setPositiveButton("取消",new DialogInterface.OnClickListener() {
-	            
-	            @Override
-	            public void onClick(DialogInterface dialog, int which) {
-	                // TODO Auto-generated method stub
-	                dialog.dismiss();
-	                return;
-	            }
-	        } ); 
-	       builder.create().show(); 
+	        });
+	        
+//	        builder.setNegativeButton(getResources().getString(R.string.ok),new DialogInterface.OnClickListener() {
+//	            
+//	            @Override
+//	            public void onClick(DialogInterface dialog, int which) {
+//	                // TODO Auto-generated method stub
+//	                String name  =((EditText)view.findViewById(R.id.memoname)).getText().toString();
+//	                insertVoiceMemo(name);
+//	                waveView.clearData();
+//	                mVoiceMemoListAdapter.notifyDataSetChanged();
+//	                dialog.dismiss();
+//	            }
+//	        }); 
+//	        builder.setPositiveButton(getResources().getString(R.string.cancel),new DialogInterface.OnClickListener() {
+//	            
+//	            @Override
+//	            public void onClick(DialogInterface dialog, int which) {
+//	                // TODO Auto-generated method stub
+//	                dialog.dismiss();
+//	                return;
+//	            }
+//	        } ); 
+	      dialog = builder.create();
+	      dialog.show(); 
 	        
 	       
 	    }

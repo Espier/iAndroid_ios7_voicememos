@@ -38,5 +38,8 @@
         卡。"</string>
     <string name="error_app_internal">"發生內部應用錯誤。"</string>
     <string name="error_mediadb_new_record">"無法保存錄制的音頻。"</string>
-
+    <string name="new_memo">新语音备忘录</string>
+    <string name="new_memo_name">請為此語音輸入名稱</string>
+	<string name="edit">編輯</string>
+	<string name="ok">好</string>
 </resources>
