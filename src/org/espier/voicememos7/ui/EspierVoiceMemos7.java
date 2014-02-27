@@ -204,11 +204,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 stopMusic();
                 if (mRecorder.getState() == Recorder.RECORDING_STATE) {
                     mRecorder.pauseRecording();
-                    start.setBackgroundResource(R.drawable.circular);
+                    start.setBackgroundResource(R.drawable.record_red);
                     waveView.pause();
                 } else {
                     mRecorder.startRecording(this);
-                    start.setBackgroundResource(R.drawable.start_down);
+                    start.setBackgroundResource(R.drawable.stop_red);
                     waveView.start();
                     ScrollDown();
                 }
@@ -662,7 +662,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private void stop() {
         // TODO Auto-generated method stub
         int state = mRecorder.getState();
-        start.setBackgroundResource(R.drawable.circular);
+        start.setBackgroundResource(R.drawable.record_red);
         if (state == Recorder.RECORDING_STATE || state == Recorder.RECORDER_PAUSE_STATE) {
             mRecorder.stopRecording();
         } else {
@@ -684,7 +684,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         // return;
         // }
         // });
-        // ok.setOnClickListener(new View.OnClickListener() {
+//         ok.setOnClickListener(new View.OnClickListener() {
         //
         // @Override
         // public void onClick(View v) {
