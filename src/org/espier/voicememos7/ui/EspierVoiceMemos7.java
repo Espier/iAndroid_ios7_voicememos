@@ -790,4 +790,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         i.putExtra("command", "pause");
         sendBroadcast(i);
     }
+    
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        waveView.destroy();
+        waveView = null;
+        super.onDestroy();
+    }
 }
