@@ -684,7 +684,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         // return;
         // }
         // });
-//         ok.setOnClickListener(new View.OnClickListener() {
+        // ok.setOnClickListener(new View.OnClickListener() {
         //
         // @Override
         // public void onClick(View v) {
@@ -723,6 +723,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void insertVoiceMemo(String memoname) {
+
         // TODO Auto-generated method stub
 
         Resources res = getResources();
