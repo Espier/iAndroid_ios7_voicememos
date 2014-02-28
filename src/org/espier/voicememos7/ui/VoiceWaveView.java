@@ -87,7 +87,7 @@ public class VoiceWaveView extends View {
     
     float x = 0;
     
-    long t;
+    //List<Long> t_list = new ArrayList<Long>();
     
 
     /**
@@ -414,6 +414,8 @@ public class VoiceWaveView extends View {
                 try {
                     //Log.e("task", "running...");
                     time += invalidate_rate;
+//                    t_list.add(System.currentTimeMillis());
+//                    Log.e("duration", t_list.get(t_list.size()-1)-t_list.get(t_list.size()-2)+"");
                     //if (time >= time_x * 1000 / 2) 
                     if (x >= w / 2)
                     {

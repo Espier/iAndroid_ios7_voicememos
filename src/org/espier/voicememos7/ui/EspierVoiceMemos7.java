@@ -706,6 +706,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         start.setBackgroundResource(R.drawable.record_red);
         if (state == Recorder.RECORDING_STATE || state == Recorder.RECORDER_PAUSE_STATE) {
             mRecorder.stopRecording();
+            waveView.stop();
         } else {
             return;
         }
