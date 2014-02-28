@@ -87,6 +87,8 @@ public class VoiceWaveView extends View {
     
     float x = 0;
     
+    long t;
+    
 
     /**
      * @param recorder the recorder to set
@@ -405,11 +407,12 @@ public class VoiceWaveView extends View {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                if (recorder.getState() != Recorder.RECORDING_STATE) {
+                if (recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
                     return;
                 }
 
                 try {
+                    Log.e("task", "running...");
                     time += invalidate_rate;
                     //if (time >= time_x * 1000 / 2) 
                     if (x >= w / 2)
@@ -478,6 +481,8 @@ public class VoiceWaveView extends View {
     {
         if (timer != null) {
             timer.cancel();
+            
+            timer = null;   
         }
 
     }
@@ -486,6 +491,12 @@ public class VoiceWaveView extends View {
     {
         if (timer != null) {
             timer.cancel();
+            timer.purge();
+            timer = null;
+        }
+        if (timerTask!=null) {
+            timerTask.cancel();
+            timerTask = null;
         }
     }
 
