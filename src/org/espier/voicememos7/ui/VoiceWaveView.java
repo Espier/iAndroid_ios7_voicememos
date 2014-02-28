@@ -87,6 +87,8 @@ public class VoiceWaveView extends View {
     
     float x = 0;
     
+    //List<Long> t_list = new ArrayList<Long>();
+    
 
     /**
      * @param recorder the recorder to set
@@ -201,10 +203,11 @@ public class VoiceWaveView extends View {
 
         
         w = getWidth();
-        
+        v = grid_width*4/1000f;
         //time_axix_len = w / width_per_second;
 
         x = w * time / (time_x * 1000) + margin_lef_init;
+        x = margin_lef_init +time*v;
         if (x >= w / 2) {
             x = w / 2;
         }
@@ -216,7 +219,7 @@ public class VoiceWaveView extends View {
             }
         }
         //v = w / (time_x * 1000);
-        v = grid_width*4/1000f;
+        
         float start_move_time_textview = 80;
         
         float q  = (x<start_move_time_textview)?0:(x-start_move_time_textview);
@@ -280,11 +283,13 @@ public class VoiceWaveView extends View {
                 }
                 else {
                     x_ = (s / n) * i;
+                    //x_ = v*invalidate_rate*i;
                 }
                 
             }
             else {
-                x_ = (s-offset)/n*i+offset;
+                //x_ = (s-offset)/n*i+offset;
+                x_ = offset+ v*invalidate_rate*i;
             }
             canvas.drawLine(x_, y_mid_line - voice_list.get(i), 
                             x_, y_mid_line + voice_list.get(i), voiceLinePaint);
@@ -403,12 +408,15 @@ public class VoiceWaveView extends View {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                if (recorder.getState() != Recorder.RECORDING_STATE) {
+                if (recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
                     return;
                 }
 
                 try {
+                    //Log.e("task", "running...");
                     time += invalidate_rate;
+//                    t_list.add(System.currentTimeMillis());
+//                    Log.e("duration", t_list.get(t_list.size()-1)-t_list.get(t_list.size()-2)+"");
                     //if (time >= time_x * 1000 / 2) 
                     if (x >= w / 2)
                     {
@@ -422,6 +430,12 @@ public class VoiceWaveView extends View {
                             time_list.remove(0);
                             time_list.add(time_list.get(time_list.size() - 1) + 1);
                         }
+                        voice_list.remove(0);
+                    }
+                    if (recorder!=null && !recorder.isReSet) {
+                        int amp = recorder.getMaxAmplitude();
+                        voice_list.add( amp/ 300f);
+                        
                     }
 
                     // voice_list.add(recorder.getMaxAmplitude() / 300);
@@ -430,39 +444,39 @@ public class VoiceWaveView extends View {
                     msg.what = 1;
                     handler.sendMessage(msg);
                 } catch (Exception e) {
-                    Log.e("get amp err:", e.toString());
+                    Log.e("task err:", e.toString());
                 }
 
             }
         };
 
-        TimerTask getAmpTask = new TimerTask() {
-
-            @Override
-            public void run() {
-                if (recorder.getState() != Recorder.RECORDING_STATE) {
-                    return;
-                }
-                try {
-                    if (time >= time_x * 1000 / 2)
-                    {
-                        voice_list.remove(0);
-
-                    }
-                    if (recorder!=null && !recorder.isReSet) {
-                        int amp = recorder.getMaxAmplitude();
-                        voice_list.add( amp/ 300f);
-                        
-                    }
-                    
-                } catch (Exception e) {
-
-                }
-
-            }
-        };
+//        TimerTask getAmpTask = new TimerTask() {
+//
+//            @Override
+//            public void run() {
+//                if (recorder.getState() != Recorder.RECORDING_STATE) {
+//                    return;
+//                }
+//                try {
+//                    if (time >= time_x * 1000 / 2)
+//                    {
+//                        voice_list.remove(0);
+//
+//                    }
+//                    if (recorder!=null && !recorder.isReSet) {
+//                        int amp = recorder.getMaxAmplitude();
+//                        voice_list.add( amp/ 300f);
+//                        
+//                    }
+//                    
+//                } catch (Exception e) {
+//
+//                }
+//
+//            }
+//        };
         timer.schedule(timerTask, invalidate_rate, invalidate_rate);
-        timer.schedule(getAmpTask, 20, 60);
+        //timer.schedule(getAmpTask, 20, 60);
 
     }
 
@@ -470,6 +484,8 @@ public class VoiceWaveView extends View {
     {
         if (timer != null) {
             timer.cancel();
+            
+            timer = null;   
         }
 
     }
@@ -478,6 +494,12 @@ public class VoiceWaveView extends View {
     {
         if (timer != null) {
             timer.cancel();
+            timer.purge();
+            timer = null;
+        }
+        if (timerTask!=null) {
+            timerTask.cancel();
+            timerTask = null;
         }
     }
 
@@ -488,6 +510,7 @@ public class VoiceWaveView extends View {
         time = 0;
         second_index = 0;
         left_distance_time = 0;
+        v=0;
         invalidate();
     }
     

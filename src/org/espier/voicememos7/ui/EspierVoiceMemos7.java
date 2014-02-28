@@ -126,7 +126,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            // TODO Auto-generated method stub
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -186,18 +185,28 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         rlpDate.addRule(RelativeLayout.BELOW, R.id.txtRecordName);
         txtDate.setLayoutParams(rlpDate);
 
-        // LinearLayout buttonLayout =
-        // (LinearLayout)findViewById(R.id.buttonLayout);
-        // RelativeLayout.LayoutParams rlpButton = new
-        // RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-        // LayoutParams.WRAP_CONTENT);
-        // rlpButton.setMargins(
-        // 0,
-        // ScalePx.scalePx(this, 40), 0, 0);
-        // rlpButton.addRule(RelativeLayout.BELOW, R.id.txtDate);
-        //
-        // buttonLayout.setLayoutParams(rlpButton);
+//         LinearLayout buttonLayout =
+//         (LinearLayout)findViewById(R.id.buttonLayout);
+//         RelativeLayout.LayoutParams rlpButton = new
+//         RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+//         LayoutParams.WRAP_CONTENT);
+//         rlpButton.setMargins(
+//         0,
+//         ScalePx.scalePx(this, 40), 0, 0);
+//         rlpButton.addRule(RelativeLayout.BELOW, R.id.txtDate);
+//        
+//         buttonLayout.setLayoutParams(rlpButton);
 
+//        TextView txtFinish = (TextView) findViewById(R.id.finished);
+//        RelativeLayout.LayoutParams rlpFinish = new RelativeLayout.LayoutParams(
+//                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+//        rlpFinish.setMargins(ScalePx.scalePx(this, 60),0, 0, 0);
+//        rlpFinish.addRule(RelativeLayout.RIGHT_OF, R.id.buttonLayout);
+//        rlpFinish.addRule(RelativeLayout.BELOW, R.id.txtDate);
+//        rlpFinish.addRule(RelativeLayout.CENTER_VERTICAL);
+//        txtFinish.setLayoutParams(rlpFinish);
+        
+        
         mainLayout = (LinearLayout) findViewById(R.id.mainlayout);
         aboveLayout = (RelativeLayout) findViewById(R.id.aboveLayout);
         belowLayout = (RelativeLayout) findViewById(R.id.belowLayout);
@@ -712,6 +721,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         start.setBackgroundResource(R.drawable.record_red);
         if (state == Recorder.RECORDING_STATE || state == Recorder.RECORDER_PAUSE_STATE) {
             mRecorder.stopRecording();
+            waveView.stop();
         } else {
             return;
         }

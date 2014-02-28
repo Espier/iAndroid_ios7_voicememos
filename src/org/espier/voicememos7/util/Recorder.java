@@ -194,6 +194,7 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
     }
 
     public void stopRecording() {
+        isReSet = true;
         if (mRecorder != null) {
             try {
                 mRecorder.stop();
@@ -205,7 +206,7 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
             }
 
         }
-        isReSet = true;
+        
 
         mergeFiles(mTempMemoFiles);
         mTempMemoFiles.clear();
