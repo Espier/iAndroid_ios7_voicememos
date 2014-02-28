@@ -95,7 +95,8 @@
                 android:layout_height="fill_parent"
                 android:divider="@drawable/line"
                 android:layout_below="@+id/hiddenView"
-                android:layout_marginTop="-100dip" />
+                android:layout_marginTop="-100dip"
+                android:background="@drawable/list_background" />
 
         <Button
             android:id="@+id/hiddenView"

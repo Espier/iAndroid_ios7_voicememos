@@ -16,15 +16,18 @@
  */
 package org.espier.voicememos7.util;
 
-import java.util.Formatter;
-import java.util.Locale;
-
-
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 
 import org.espier.voicememos7.R;
+
+import java.util.ArrayList;
+import java.util.Formatter;
+import java.util.List;
+import java.util.Locale;
 
 
 public class MemosUtils {
@@ -58,6 +61,15 @@ public class MemosUtils {
     it.setType("audio/*");
     context.startActivity(Intent.createChooser(it, context.getString(R.string.list_share_title)));
   }
-
+  public static List<ResolveInfo> getShareApps(Context context) {  
+      List<ResolveInfo> mApps = new ArrayList<ResolveInfo>();
+      Intent intent = new Intent(Intent.ACTION_SEND, null);
+      intent.addCategory(Intent.CATEGORY_DEFAULT);
+      intent.setType("audio/*");
+      PackageManager pManager = context.getPackageManager();
+      mApps = pManager.queryIntentActivities(intent, 
+              PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+      return mApps;
+  }
 
 }

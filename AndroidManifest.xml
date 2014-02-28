@@ -24,5 +24,8 @@
         <activity android:name="org.espier.voicememos7.ui.MemoDelete"
             android:screenOrientation="portrait"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" ></activity>
+         <activity android:name="org.espier.voicememos7.ui.MemoShare"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" ></activity>
     </application>
 </manifest>

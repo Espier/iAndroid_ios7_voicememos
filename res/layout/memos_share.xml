@@ -7,24 +7,26 @@
 	<LinearLayout android:layout_width="fill_parent"
 	    android:id="@+id/buttonlay"
 		android:layout_height="wrap_content" 
-		android:orientation="vertical">
-		<Button android:id="@+id/memo_del_ok"
-		    android:background="@color/dialog_b_c"
-			android:layout_marginLeft="20dip" android:layout_marginRight="20dip"
-			android:layout_marginTop="20dip" android:layout_width="fill_parent"
-			android:layout_weight="1" android:layout_height="wrap_content"
-			android:gravity="center" android:textColor="@color/font_color_red"
-			android:textSize="20sp" android:textStyle="bold"
-			android:text="@string/list_delete" />
+		android:orientation="vertical"
+		android:background="@color/share_b">
 
-		<Button android:id="@+id/memo_del_cancel"
-			android:layout_weight="1" android:layout_marginLeft="20dip"
-			android:layout_marginRight="20dip" 
+		<org.espier.voicememos7.ui.HorizontalListView
+		    android:id="@+id/horizontalScrollView1"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@color/dialog_b_c"
+		     >
+
+		    
+		</org.espier.voicememos7.ui.HorizontalListView>
+
+		<TextView android:id="@+id/memo_del_cancel"
+			 
 			android:textSize="20sp" android:layout_marginTop="20dip"
 			android:layout_width="fill_parent" android:layout_marginBottom="20dip"
 			android:layout_height="wrap_content" android:textStyle="bold"
 			android:gravity="center" 
-			 android:background="@color/dialog_b_c"
+			 android:background="@color/share_b"
 			android:textColor="@color/font_color"
 			android:text="@string/cancel" />
 	</LinearLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_vertical" 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:orientation="vertical"
+    android:padding="2.0dip"
+    android:background="@color/dialog_b_c" >
+    <ImageView 
+        android:id="@+id/my_list_icon" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:layout_marginLeft="3.0dip" 
+        android:src="@drawable/icon"
+        android:scaleType="fitXY" />
+    <TextView 
+        android:id="@+id/my_list_name" 
+        android:gravity="center" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content" 
+        android:text="分享" 
+        android:textColor="@color/black"
+        android:singleLine="true" 
+         />
+</LinearLayout>

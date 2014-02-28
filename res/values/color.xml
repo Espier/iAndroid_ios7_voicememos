@@ -150,4 +150,8 @@
 	<color name="black">#000000</color><!--黑色 -->
 
     <color name="bar_blue">#0479EF</color><!--黑色 -->
+    <color name="dialog_b_c">#F7F7F7</color>
+    <color name="font_color">#007aff</color>
+    <color name="font_color_red">#FD472B</color>
+    <color name="share_b">#D9D9D9</color>
 </resources>
