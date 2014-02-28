@@ -203,10 +203,11 @@ public class VoiceWaveView extends View {
 
         
         w = getWidth();
-        
+        v = grid_width*4/1000f;
         //time_axix_len = w / width_per_second;
 
         x = w * time / (time_x * 1000) + margin_lef_init;
+        x = margin_lef_init +time*v;
         if (x >= w / 2) {
             x = w / 2;
         }
@@ -218,7 +219,7 @@ public class VoiceWaveView extends View {
             }
         }
         //v = w / (time_x * 1000);
-        v = grid_width*4/1000f;
+        
         float start_move_time_textview = 80;
         
         float q  = (x<start_move_time_textview)?0:(x-start_move_time_textview);
