@@ -412,7 +412,7 @@ public class VoiceWaveView extends View {
                 }
 
                 try {
-                    Log.e("task", "running...");
+                    //Log.e("task", "running...");
                     time += invalidate_rate;
                     //if (time >= time_x * 1000 / 2) 
                     if (x >= w / 2)
@@ -507,6 +507,7 @@ public class VoiceWaveView extends View {
         time = 0;
         second_index = 0;
         left_distance_time = 0;
+        v=0;
         invalidate();
     }
     
