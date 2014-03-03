@@ -155,4 +155,13 @@
     <color name="font_color_red">#FD472B</color>
     <color name="share_b">#D9D9D9</color>
     <color name="delete_red">#FD472B</color>
+    
+      <color name="waveform_selected">#33b5e5</color>
+  <color name="waveform_unselected">#195a72</color>
+  <color name="waveform_unselected_bkgnd_overlay">#0a242d</color>
+  <color name="selection_border">#ffffff</color>
+  <color name="playback_indicator">#ffff66</color>
+  <color name="grid_line">#66ffffff</color>
+  <color name="timecode">#ddffffdd</color>
+  <color name="timecode_shadow">#aa000000</color>
 </resources>
