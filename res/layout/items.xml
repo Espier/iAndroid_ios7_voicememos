@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/edittextstyle"
         android:ems="10"
         style="@style/et1" >
         

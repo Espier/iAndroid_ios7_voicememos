@@ -536,6 +536,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     if (lastView != null && isClose) {
+                        sound.setImageResource(R.drawable.volume_blue);
                         LinearLayout layout = (LinearLayout) lastView.findViewById(R.id.playlayout);
                         layout.setVisibility(View.GONE);
                         RelativeLayout sharelayout = (RelativeLayout) lastView
@@ -554,6 +555,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         }
                         return;
                     }
+                    sound.setImageResource(R.drawable.volume_gray);
                     LinearLayout layout = (LinearLayout) v.findViewById(R.id.playlayout);
                     layout.setVisibility(View.VISIBLE);
 
