@@ -9,11 +9,13 @@
         android:layout_margin="10dip"
          >
 		
-        <TextView
+        <EditText
             android:id="@+id/memos_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
+            android:background="@null"
+            android:focusable="false"
             android:text="name" />
         <TextView
             android:id="@+id/memos_item_create_date"

@@ -30,6 +30,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -460,7 +461,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             final ViewHolder vh = new ViewHolder();
             vh.playControl = (ImageView) v.findViewById(R.id.memos_item_play);
-            vh.tag = (TextView) v.findViewById(R.id.memos_item_title);
+            vh.tag = (EditText) v.findViewById(R.id.memos_item_title);
             vh.createDate = (TextView) v.findViewById(R.id.memos_item_create_date);
             vh.duration = (TextView) v.findViewById(R.id.memos_item_duration);
             vh.id = (TextView) v.findViewById(R.id.memos_item__id);
@@ -478,6 +479,28 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 seeker.setOnSeekBarChangeListener(mSeekListener);
             }
             vh.bar.setMax(1000);
+            
+            vh.tag.setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    
+//                    v.setFocusable(true);
+//                    v.requestFocus();
+                }
+            });
+            vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+//                    if (hasFocus) {
+//                        v.clearFocus();
+//                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        imm.hideSoftInputFromWindow(v.getWindowToken(),0);
+//                    }
+                    
+                }
+            });
             v.setTag(vh);
             v.setOnClickListener(new View.OnClickListener() {
 
@@ -493,6 +516,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         sharelayout.setVisibility(View.GONE);
                         isClose = false;
                         vh.bar.setProgress(0);
+                        vh.tag.clearFocus();
+                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(vh.tag.getWindowToken(),0);
                         int i = list.size();
                         for (int j = 0; j < i; j++) {
                             View view = (View) list.get(j);
@@ -524,6 +550,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
             });
             list.add(v);
+            
+            
             return v;
         }
 
@@ -672,7 +700,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         class ViewHolder {
             ImageView playControl;
-            TextView tag;
+            EditText tag;
             TextView createDate;
             TextView duration;
             TextView path;
@@ -699,6 +727,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
 
     }
+    
+    
 
     private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
         public void onStartTrackingTouch(SeekBar bar) {
