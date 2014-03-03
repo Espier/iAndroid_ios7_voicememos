@@ -42,4 +42,5 @@
 	<string name="edit">编辑</string>
 	<string name="ok">好</string>
 	<string name="new_memo_name">请为此语音备忘录输入名称</string>
+	<string name="memo">语音备忘录</string>
 </resources>

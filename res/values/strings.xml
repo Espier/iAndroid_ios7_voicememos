@@ -51,4 +51,5 @@
 	<string name="new_memo_name">Please enter a name for this record</string>
 	<string name="edit">edit</string>
 	<string name="ok">ok</string>
+	<string name="memo">Voice memo</string>
 </resources>

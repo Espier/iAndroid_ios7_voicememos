@@ -102,7 +102,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             1, 0, 0, 0, 0, 0,
             1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
     };
-
+    LinearLayout titlelayout;
     Handler dialogdismiss = new Handler() {
 
         @Override
@@ -147,7 +147,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             return false;
         }
     };
-    
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -186,28 +185,28 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         rlpDate.addRule(RelativeLayout.BELOW, R.id.txtRecordName);
         txtDate.setLayoutParams(rlpDate);
 
-//         LinearLayout buttonLayout =
-//         (LinearLayout)findViewById(R.id.buttonLayout);
-//         RelativeLayout.LayoutParams rlpButton = new
-//         RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-//         LayoutParams.WRAP_CONTENT);
-//         rlpButton.setMargins(
-//         0,
-//         ScalePx.scalePx(this, 40), 0, 0);
-//         rlpButton.addRule(RelativeLayout.BELOW, R.id.txtDate);
-//        
-//         buttonLayout.setLayoutParams(rlpButton);
+        // LinearLayout buttonLayout =
+        // (LinearLayout)findViewById(R.id.buttonLayout);
+        // RelativeLayout.LayoutParams rlpButton = new
+        // RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+        // LayoutParams.WRAP_CONTENT);
+        // rlpButton.setMargins(
+        // 0,
+        // ScalePx.scalePx(this, 40), 0, 0);
+        // rlpButton.addRule(RelativeLayout.BELOW, R.id.txtDate);
+        //
+        // buttonLayout.setLayoutParams(rlpButton);
 
-//        TextView txtFinish = (TextView) findViewById(R.id.finished);
-//        RelativeLayout.LayoutParams rlpFinish = new RelativeLayout.LayoutParams(
-//                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-//        rlpFinish.setMargins(ScalePx.scalePx(this, 60),0, 0, 0);
-//        rlpFinish.addRule(RelativeLayout.RIGHT_OF, R.id.buttonLayout);
-//        rlpFinish.addRule(RelativeLayout.BELOW, R.id.txtDate);
-//        rlpFinish.addRule(RelativeLayout.CENTER_VERTICAL);
-//        txtFinish.setLayoutParams(rlpFinish);
-        
-        
+        // TextView txtFinish = (TextView) findViewById(R.id.finished);
+        // RelativeLayout.LayoutParams rlpFinish = new
+        // RelativeLayout.LayoutParams(
+        // LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        // rlpFinish.setMargins(ScalePx.scalePx(this, 60),0, 0, 0);
+        // rlpFinish.addRule(RelativeLayout.RIGHT_OF, R.id.buttonLayout);
+        // rlpFinish.addRule(RelativeLayout.BELOW, R.id.txtDate);
+        // rlpFinish.addRule(RelativeLayout.CENTER_VERTICAL);
+        // txtFinish.setLayoutParams(rlpFinish);
+
         mainLayout = (LinearLayout) findViewById(R.id.mainlayout);
         aboveLayout = (RelativeLayout) findViewById(R.id.aboveLayout);
         belowLayout = (RelativeLayout) findViewById(R.id.belowLayout);
@@ -223,11 +222,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         // TODO Auto-generated method stub
         SharedPreferences sp = this.getSharedPreferences("espier", this.MODE_PRIVATE);
         int num = sp.getInt("Counter", 1);
-        if(num ==1){
-            memo_name = this.getResources().getString(R.string.record_name).toString()+" ";
-            
-        }else{
-            memo_name= this.getResources().getString(R.string.record_name).toString()+" "+num;
+        if (num == 1) {
+            memo_name = this.getResources().getString(R.string.record_name).toString() + " ";
+
+        } else {
+            memo_name = this.getResources().getString(R.string.record_name).toString() + " " + num;
         }
         return memo_name;
     }
@@ -326,9 +325,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void ScrollUp() {
         LinearLayout ll = (LinearLayout) findViewById(R.id.buttonLayout);
-        mainLayout.scrollTo(0, ll.getTop());
+        mainLayout.scrollTo(0, ll.getTop() - titlelayout.getHeight());
         hiddenView.setVisibility(View.INVISIBLE);
-
+        date.setVisibility(View.INVISIBLE);
+        titlelayout.setVisibility(View.VISIBLE);
         finished.setVisibility(View.INVISIBLE);
 
     }
@@ -338,7 +338,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         if (hiddenView.getVisibility() != View.VISIBLE) {
             hiddenView.setVisibility(View.VISIBLE);
         }
-
+        date.setVisibility(View.VISIBLE);
+        titlelayout.setVisibility(View.INVISIBLE);
         finished.setVisibility(View.VISIBLE);
 
     }
@@ -348,7 +349,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void init() {
-
+        titlelayout = (LinearLayout) findViewById(R.id.title);
         waveView = (VoiceWaveView) findViewById(R.id.waveView);
         waveView.setMinimumWidth(500);
         waveView.setMinimumHeight(100);
@@ -479,26 +480,27 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 seeker.setOnSeekBarChangeListener(mSeekListener);
             }
             vh.bar.setMax(1000);
-            
+
             vh.tag.setOnClickListener(new View.OnClickListener() {
-                
+
                 @Override
                 public void onClick(View v) {
-                    
-//                    v.setFocusable(true);
-//                    v.requestFocus();
+
+                    // v.setFocusable(true);
+                    // v.requestFocus();
                 }
             });
             vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                
+
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-//                    if (hasFocus) {
-//                        v.clearFocus();
-//                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-//                        imm.hideSoftInputFromWindow(v.getWindowToken(),0);
-//                    }
-                    
+                    // if (hasFocus) {
+                    // v.clearFocus();
+                    // InputMethodManager imm =
+                    // (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    // imm.hideSoftInputFromWindow(v.getWindowToken(),0);
+                    // }
+
                 }
             });
             v.setTag(vh);
@@ -517,8 +519,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         isClose = false;
                         vh.bar.setProgress(0);
                         vh.tag.clearFocus();
-                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(vh.tag.getWindowToken(),0);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(vh.tag.getWindowToken(), 0);
                         int i = list.size();
                         for (int j = 0; j < i; j++) {
                             View view = (View) list.get(j);
@@ -550,8 +552,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
             });
             list.add(v);
-            
-            
+
             return v;
         }
 
@@ -594,10 +595,19 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-//                    MemosUtils.shareMemo(EspierVoiceMemos7.this, mCurrentPath);
-                      Intent intent = new Intent(EspierVoiceMemos7.this,MemoShare.class);
-                      intent.putExtra("path", mCurrentPath);
-                      context.startActivity(intent);
+                    // MemosUtils.shareMemo(EspierVoiceMemos7.this,
+                    // mCurrentPath);
+                    Intent intent = new Intent(EspierVoiceMemos7.this, MemoShare.class);
+                    intent.putExtra("path", mCurrentPath);
+                    context.startActivity(intent);
+                }
+            });
+            vh.edit.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    ScrollDown();
                 }
             });
 
@@ -727,8 +737,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
 
     }
-    
-    
 
     private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
         public void onStartTrackingTouch(SeekBar bar) {
@@ -757,14 +765,16 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
         AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this);
         final View view = this.getLayoutInflater().inflate(R.layout.items, null);
-        RelativeLayout.LayoutParams rellay = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams rellay = new RelativeLayout.LayoutParams(
+                LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         rellay.setMargins(0, ScalePx.scalePx(this, 42), 0, 0);
         TextView title = (TextView) view.findViewById(R.id.textView1);
         title.setWidth(ScalePx.scalePx(this, 540));
         title.setLayoutParams(rellay);
-        RelativeLayout.LayoutParams rellay2 = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams rellay2 = new RelativeLayout.LayoutParams(
+                LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         rellay2.setMargins(0, ScalePx.scalePx(this, 18), 0, 0);
-        rellay2.addRule(RelativeLayout.BELOW,title.getId());
+        rellay2.addRule(RelativeLayout.BELOW, title.getId());
         TextView text2 = (TextView) view.findViewById(R.id.textView2);
         text2.setLayoutParams(rellay2);
         EditText text = (EditText) view.findViewById(R.id.memoname);
@@ -772,13 +782,16 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         text.setText(memoName);
         text.setHeight(ScalePx.scalePx(this, 58));
         text.setWidth(ScalePx.scalePx(this, 478));
-        RelativeLayout.LayoutParams textlay = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT);
-        textlay.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 48), ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 29));
-        textlay.addRule(RelativeLayout.BELOW,R.id.textView2);
+        RelativeLayout.LayoutParams textlay = new RelativeLayout.LayoutParams(
+                LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        textlay.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 48),
+                ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 29));
+        textlay.addRule(RelativeLayout.BELOW, R.id.textView2);
         text.setLayoutParams(textlay);
-        ImageView imag = (ImageView)view.findViewById(R.id.h_line);
-        imag.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,ScalePx.scalePx(this, 88)));
-        
+        ImageView imag = (ImageView) view.findViewById(R.id.h_line);
+        imag.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, ScalePx.scalePx(this, 88)));
+
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
         TextView ok = (TextView) view.findViewById(R.id.ok);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -796,17 +809,19 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             public void onClick(View v) {
                 String name
                 = ((EditText) view.findViewById(R.id.memoname)).getText().toString();
-                if(memo_name.equals(name)){
-                    SharedPreferences sp = EspierVoiceMemos7.this.getSharedPreferences("espier", EspierVoiceMemos7.MODE_PRIVATE);
-                    
+                if (memo_name.equals(name)) {
+                    SharedPreferences sp = EspierVoiceMemos7.this.getSharedPreferences("espier",
+                            EspierVoiceMemos7.MODE_PRIVATE);
+
                     int num = sp.getInt("Counter", 1);
-                    sp.edit().putInt("Counter", num+1).commit();
+                    sp.edit().putInt("Counter", num + 1).commit();
                 }
                 insertVoiceMemo(name);
                 waveView.clearData();
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 dialogdismiss.sendEmptyMessage(1);
                 txtRecordName.setText(getRecordName());
+                ScrollUp();
             }
         });
 

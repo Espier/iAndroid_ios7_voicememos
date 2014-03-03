@@ -42,4 +42,5 @@
     <string name="new_memo_name">請為此語音輸入名稱</string>
 	<string name="edit">編輯</string>
 	<string name="ok">好</string>
+	<string name="memo">語音備忘錄</string>
 </resources>
