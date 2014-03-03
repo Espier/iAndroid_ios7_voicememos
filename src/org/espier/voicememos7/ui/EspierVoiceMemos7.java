@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -103,6 +104,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
     };
     LinearLayout titlelayout;
+    ImageView sound;
+    TextView textViewEdit,textviewmemo;
     Handler dialogdismiss = new Handler() {
 
         @Override
@@ -160,7 +163,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         rlp.setMargins(0, ScalePx.scalePx(this, 29), 0, 0);
         txtMainTitle.setLayoutParams(rlp);
 
-        VoiceWaveView waveView = (VoiceWaveView) findViewById(R.id.waveView);
+        waveView = (VoiceWaveView) findViewById(R.id.waveView);
         RelativeLayout.LayoutParams rlpWaveView = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         rlpWaveView.setMargins(0, ScalePx.scalePx(this, 40), 0, 0);
@@ -327,6 +330,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         LinearLayout ll = (LinearLayout) findViewById(R.id.buttonLayout);
         mainLayout.scrollTo(0, ll.getTop() - titlelayout.getHeight());
         hiddenView.setVisibility(View.INVISIBLE);
+        txtRecordName.setVisibility(View.INVISIBLE);
+        waveView.setVisibility(View.INVISIBLE);
         date.setVisibility(View.INVISIBLE);
         titlelayout.setVisibility(View.VISIBLE);
         finished.setVisibility(View.INVISIBLE);
@@ -338,7 +343,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         if (hiddenView.getVisibility() != View.VISIBLE) {
             hiddenView.setVisibility(View.VISIBLE);
         }
+        txtRecordName.setVisibility(View.VISIBLE);
         date.setVisibility(View.VISIBLE);
+        waveView.setVisibility(View.VISIBLE);
         titlelayout.setVisibility(View.INVISIBLE);
         finished.setVisibility(View.VISIBLE);
 
@@ -350,6 +357,24 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void init() {
         titlelayout = (LinearLayout) findViewById(R.id.title);
+        textViewEdit = (TextView)findViewById(R.id.edititem);
+        LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(ScalePx.scalePx(this, 19), ScalePx.scalePx(this, 28), 0, 0);
+        lp.weight = 1;
+        
+        textViewEdit.setLayoutParams(lp);
+        textviewmemo = (TextView)findViewById(R.id.name);
+        LinearLayout.LayoutParams lp1 = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 56));
+        lp1.weight =1;
+        
+        textviewmemo.setLayoutParams(lp1);
+        sound = (ImageView)findViewById(R.id.sound);
+        LinearLayout.LayoutParams lp3 = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 45), 0);
+        lp3.weight = 1;
+        
+        sound.setLayoutParams(lp3);
         waveView = (VoiceWaveView) findViewById(R.id.waveView);
         waveView.setMinimumWidth(500);
         waveView.setMinimumHeight(100);
