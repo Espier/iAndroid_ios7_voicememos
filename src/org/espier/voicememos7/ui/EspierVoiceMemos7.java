@@ -768,6 +768,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         TextView text2 = (TextView) view.findViewById(R.id.textView2);
         text2.setLayoutParams(rellay2);
         EditText text = (EditText) view.findViewById(R.id.memoname);
+        memoName = txtRecordName.getText().toString();
         text.setText(memoName);
         text.setHeight(ScalePx.scalePx(this, 58));
         text.setWidth(ScalePx.scalePx(this, 478));
