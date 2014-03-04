@@ -43,4 +43,5 @@
 	<string name="edit">編輯</string>
 	<string name="ok">好</string>
 	<string name="memo">語音備忘錄</string>
+	<string name="no_memo">無新錄音</string>
 </resources>

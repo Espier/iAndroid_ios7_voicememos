@@ -130,7 +130,7 @@
                 android:divider="@drawable/line"
                 android:layout_below="@+id/hiddenView"
                 android:layout_marginTop="-100dip"
-                android:background="@drawable/list_background" />
+                android:background="#ffffff" />
 
         <Button
             android:id="@+id/hiddenView"

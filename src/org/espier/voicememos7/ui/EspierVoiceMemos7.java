@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
@@ -37,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -78,9 +80,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private MediaPlayer mCurrentMediaPlayer;
     private static final int DEL_REQUEST = 2;
     TextView date;
-
+    AudioManager audioManager;
     private AlertDialog dialog;
-
+    boolean isSoundOn = false;
     TextView finished;
     Boolean isCurrentPosition;
     private Button hiddenView;
@@ -101,6 +103,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private CheapSoundFile mSoundFile;
     private File mFile;
     TextView txtRecordName;
+    View emptyView;
     public final float[] BT_SELECTED = new float[] {
             1, 0, 0, 0, -100, 0,
             1, 0, 0, -100, 0, 0, 1, 0, -100, 0, 0, 0, 1, 0
@@ -111,7 +114,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     };
     LinearLayout titlelayout;
     ImageView sound;
-    TextView textViewEdit,textviewmemo;
+    TextView textViewEdit, textviewmemo;
     Handler dialogdismiss = new Handler() {
 
         @Override
@@ -224,6 +227,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         start.setOnClickListener(this);
         start.setOnTouchListener(startTouchListener);
 
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         init();
     }
 
@@ -363,24 +367,53 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void init() {
         titlelayout = (LinearLayout) findViewById(R.id.title);
-        textViewEdit = (TextView)findViewById(R.id.edititem);
-        LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        textViewEdit = (TextView) findViewById(R.id.edititem);
+        LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.setMargins(ScalePx.scalePx(this, 19), ScalePx.scalePx(this, 28), 0, 0);
         lp.weight = 1;
-        
         textViewEdit.setLayoutParams(lp);
-        textviewmemo = (TextView)findViewById(R.id.name);
-        LinearLayout.LayoutParams lp1 = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 56));
-        lp1.weight =1;
         
+        textviewmemo = (TextView) findViewById(R.id.name);
+        LinearLayout.LayoutParams lp1 = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 56));
+        lp1.weight = 1;
         textviewmemo.setLayoutParams(lp1);
-        sound = (ImageView)findViewById(R.id.sound);
-        LinearLayout.LayoutParams lp3 = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        
+        int H = textviewmemo.getHeight();
+        sound = (ImageView) findViewById(R.id.sound);
+        sound.setScaleType(ScaleType.CENTER_INSIDE);
+        sound.setMaxHeight(ScalePx.scalePx(this, H));
+        LinearLayout.LayoutParams lp3 = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 45), 0);
         lp3.weight = 1;
-        
         sound.setLayoutParams(lp3);
+        sound.setOnClickListener((new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                
+                if(isSoundOn) {
+                    audioManager.setSpeakerphoneOn(true);
+                    isSoundOn = false;
+                    sound.setImageResource(R.drawable.volume_blue);
+            } else {
+                    audioManager.setSpeakerphoneOn(false);//关闭扬声器
+                    audioManager.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
+                    setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+                    //把声音设定成Earpiece（听筒）出来，设定为正在通话中
+                    audioManager.setMode(AudioManager.MODE_IN_CALL);
+                    sound.setImageResource(R.drawable.volume_gray);
+                    isSoundOn = true;
+            }
+            }
+        }));
+        
         waveView = (VoiceWaveView) findViewById(R.id.waveView);
         waveView.setMinimumWidth(500);
         waveView.setMinimumHeight(100);
@@ -404,6 +437,65 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         new String[] {},
                         new int[] {});
         slideCutListView.setAdapter(mVoiceMemoListAdapter);
+        if (cs.getCount() == 0) {
+            emptyView = getLayoutInflater().inflate(R.layout.listviewempty, null);
+            TextView textview = (TextView) emptyView.findViewById(R.id.textView1);
+            RelativeLayout.LayoutParams lparam = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lparam.setMargins(ScalePx.scalePx(this, 30), 0, 0, 0);
+            textview.setLayoutParams(lparam);
+
+            ImageView image1 = (ImageView) emptyView.findViewById(R.id.imageView1);
+            RelativeLayout.LayoutParams lp = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            image1.setLayoutParams(lp);
+
+            ImageView image2 = (ImageView) emptyView.findViewById(R.id.imageView2);
+            RelativeLayout.LayoutParams lp2 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp2.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp2.addRule(RelativeLayout.BELOW, R.id.imageView1);
+            image2.setLayoutParams(lp2);
+
+            ImageView image3 = (ImageView) emptyView.findViewById(R.id.imageView3);
+            RelativeLayout.LayoutParams lp3 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp3.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp3.addRule(RelativeLayout.BELOW, R.id.imageView2);
+            image3.setLayoutParams(lp3);
+
+            ImageView image4 = (ImageView) emptyView.findViewById(R.id.imageView4);
+            RelativeLayout.LayoutParams lp4 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp4.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp4.addRule(RelativeLayout.BELOW, R.id.imageView3);
+            image4.setLayoutParams(lp4);
+
+            ImageView image5 = (ImageView) emptyView.findViewById(R.id.imageView5);
+            RelativeLayout.LayoutParams lp5 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp5.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp5.addRule(RelativeLayout.BELOW, R.id.imageView4);
+            image5.setLayoutParams(lp5);
+
+            ImageView image6 = (ImageView) emptyView.findViewById(R.id.imageView6);
+            RelativeLayout.LayoutParams lp6 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp6.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp6.addRule(RelativeLayout.BELOW, R.id.imageView5);
+            image6.setLayoutParams(lp6);
+
+            ((ViewGroup) slideCutListView.getParent()).addView(emptyView);
+            slideCutListView.setEmptyView(emptyView);
+        }
     }
 
     @Override
@@ -456,6 +548,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         private int mDurationIdx;
         private int mCreateDateIdx;
         private int mCurrentBgColor;
+        Cursor c;
         private final Handler mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -474,7 +567,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             super(context, layout, c, from, to);
             mContext = context;
             mCurrentBgColor = Color.WHITE;
+            this.c = c;
             setupColumnIndices(c);
+        }
+
+        @Override
+        public int getCount() {
+            // TODO Auto-generated method stub
+            return c.getCount();
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -512,28 +612,28 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             }
             vh.bar.setMax(1000);
 
-            vh.tag.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-
-                    // v.setFocusable(true);
-                    // v.requestFocus();
-                }
-            });
-            vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    // if (hasFocus) {
-                    // v.clearFocus();
-                    // InputMethodManager imm =
-                    // (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    // imm.hideSoftInputFromWindow(v.getWindowToken(),0);
-                    // }
-
-                }
-            });
+//            vh.tag.setOnClickListener(new View.OnClickListener() {
+//
+//                @Override
+//                public void onClick(View v) {
+//
+//                    // v.setFocusable(true);
+//                    // v.requestFocus();
+//                }
+//            });
+//            vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//
+//                @Override
+//                public void onFocusChange(View v, boolean hasFocus) {
+//                    // if (hasFocus) {
+//                    // v.clearFocus();
+//                    // InputMethodManager imm =
+//                    // (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    // imm.hideSoftInputFromWindow(v.getWindowToken(),0);
+//                    // }
+//
+//                }
+//            });
             v.setTag(vh);
             v.setOnClickListener(new View.OnClickListener() {
 
@@ -542,7 +642,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     if (lastView != null && isClose) {
-                        sound.setImageResource(R.drawable.volume_blue);
+//                        sound.setImageResource(R.drawable.volume_blue);
                         LinearLayout layout = (LinearLayout) lastView.findViewById(R.id.playlayout);
                         layout.setVisibility(View.GONE);
                         RelativeLayout sharelayout = (RelativeLayout) lastView
@@ -561,7 +661,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         }
                         return;
                     }
-                    sound.setImageResource(R.drawable.volume_gray);
+                    //sound.setImageResource(R.drawable.volume_gray);
                     LinearLayout layout = (LinearLayout) v.findViewById(R.id.playlayout);
                     layout.setVisibility(View.VISIBLE);
 
@@ -590,7 +690,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
 
         @Override
-        public void bindView(View view, final Context context, Cursor cursor) {
+        public void bindView(View view, final Context context, final Cursor cursor) {
 
             final ViewHolder vh = (ViewHolder) view.getTag();
 
@@ -667,7 +767,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         mRecorder.stopPlayback();
                     }
                     Intent delIntent = new Intent(EspierVoiceMemos7.this, MemoDelete.class);
-                    delIntent.putExtra("memoname", vh.tag.getText());
+                    delIntent.putExtra("memoname", cursor.getString(mLabelIdx));
+                    delIntent.putExtra("memopath",mCurrentPath);
                     startActivityForResult(delIntent, DEL_REQUEST);
                 }
             });
@@ -947,6 +1048,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                 insertVoiceMemo(name);
                 waveView.clearData();
+                if (emptyView != null) {
+                    emptyView.setVisibility(View.GONE);
+                }
+
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 dialogdismiss.sendEmptyMessage(1);
                 txtRecordName.setText(getRecordName());
