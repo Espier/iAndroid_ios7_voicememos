@@ -3,7 +3,7 @@
     android:id="@+id/lay"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/list_background"
+    android:background="#ffffff"
     android:visibility="gone" >
 
     <ImageView

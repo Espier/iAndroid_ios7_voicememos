@@ -29,7 +29,12 @@
             android:layout_below="@+id/txtMainTitle"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="1dp" />
-
+<RelativeLayout 
+    android:id="@+id/playlayout"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_below="@+id/waveView"
+    >
         <TextView
             android:id="@+id/txtRecordName"
             android:layout_width="wrap_content"
@@ -48,7 +53,8 @@
             android:layout_below="@+id/txtRecordName"
             />
 
-        <LinearLayout
+    
+    <LinearLayout
             android:id="@+id/buttonLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,12 +73,93 @@
                 android:scaleType="centerInside"
                 android:background="@drawable/record_red" />
         </LinearLayout>
+        <TextView
+            android:id="@+id/finished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/buttonLayout"
+            android:layout_marginBottom="19dp"
+            android:layout_marginLeft="10dip"
+            android:layout_toRightOf="@+id/buttonLayout"
+            android:text="@string/finish"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+</RelativeLayout>
 
+
+
+<RelativeLayout 
+    android:id="@+id/editlayout"
+    android:visibility="gone"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_below="@+id/waveView"
+    >
+        <TextView
+            android:id="@+id/edittxtRecordName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/waveView"
+            android:text="@string/record_name"
+            android:textColor="@color/white"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+        <ImageView 
+            android:id="@+id/editimage"
+            android:layout_below="@+id/waveView"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dip"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/edit"
+            />
+
+        <TextView
+            android:id="@+id/edittxtDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/edittxtRecordName"
+            />
+
+    
+    <LinearLayout
+            android:id="@+id/editbuttonLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edittxtDate"
+            android:layout_centerHorizontal="true"
+            android:gravity="center" 
+             >
+
+            <ImageView
+                android:contentDescription="@string/finish"
+                android:id="@+id/editredButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                
+                android:scaleType="centerInside"
+                android:background="@drawable/trim_play" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/editfinished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/editbuttonLayout"
+            android:layout_marginBottom="19dp"
+            android:layout_marginLeft="10dip"
+            android:layout_toRightOf="@+id/editbuttonLayout"
+            android:text="@string/finish"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+</RelativeLayout>
+
+        
+        
        <LinearLayout 
         android:id="@+id/title"
         android:visibility="invisible"
         android:layout_width="fill_parent"
-        android:layout_above="@id/buttonLayout"
+        android:layout_above="@id/playlayout"
         android:layout_height="wrap_content">
         <TextView 
             android:id="@+id/edititem"
@@ -104,16 +191,7 @@
         
     </LinearLayout>
 
-        <TextView
-            android:id="@+id/finished"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/buttonLayout"
-            android:layout_marginBottom="19dp"
-            android:layout_marginLeft="10dip"
-            android:layout_toRightOf="@+id/buttonLayout"
-            android:text="@string/finish"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+        
     </RelativeLayout>
 
     <RelativeLayout

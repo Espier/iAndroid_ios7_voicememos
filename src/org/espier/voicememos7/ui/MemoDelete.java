@@ -7,6 +7,7 @@ import org.espier.voicememos7.util.ScalePx;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,19 +17,20 @@ import android.widget.LinearLayout.LayoutParams;
 
 public class MemoDelete extends Activity implements OnClickListener {
 
-    public static final String MEMO_PATH = "memo_path";
-    public static final String MEMO_ID = "memo_id";
     public Button del, cancel;
     String memoname;
+    int mCurrentMemoId;
     private String memopath;
-
+    String index;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.memos_delete);
         Intent intent = getIntent();
+        mCurrentMemoId = intent.getIntExtra("mCurrentMemoId",-1);
         memoname = intent.getStringExtra("memoname");
         memopath = intent.getStringExtra("memopath");
+        index = memoname.substring(memoname.indexOf(" ")+1);
         // LinearLayout layout = (LinearLayout) findViewById(R.id.buttonlay);
         // layout.
         del = (Button) findViewById(R.id.memo_del_ok);
@@ -54,9 +56,8 @@ public class MemoDelete extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.memo_del_ok:
-                AMRFileUtils.delete(memopath);
-                setResult(Activity.RESULT_OK);
-                finish();
+                delete();
+                
                 break;
             case R.id.memo_del_cancel:
                 setResult(Activity.RESULT_CANCELED);
@@ -67,6 +68,26 @@ public class MemoDelete extends Activity implements OnClickListener {
                 break;
         }
 
+    }
+
+    private void delete() {
+        // TODO Auto-generated method stub
+        System.out.println("delete "+ memopath);
+        System.out.println(mCurrentMemoId);
+        AMRFileUtils.delete(memopath);
+        
+        SharedPreferences sp = MemoDelete.this.getSharedPreferences("espier",
+                EspierVoiceMemos7.MODE_PRIVATE);
+        String indexnums = sp.getString("indexs", "");
+        if(indexnums.contains(","+index+",")){
+            indexnums = indexnums.replace(","+index+",", "");
+            sp.edit().putString("indexs", indexnums).commit();
+        }
+        Intent in = new Intent();
+        in.putExtra("mCurrentMemoId", mCurrentMemoId);
+        in.putExtra("memopath", memopath);
+        setResult(Activity.RESULT_OK,in);
+        finish();
     }
 
 }
