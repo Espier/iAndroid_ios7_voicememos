@@ -1,6 +1,5 @@
 package org.espier.voicememos7.ui;
 
-import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import org.espier.voicememos7.util.Recorder;
@@ -24,6 +24,7 @@ import java.util.TimerTask;
 public class VoiceWaveView extends View {
 
     long time;
+    long time_to_edit = 0;
     //public float time_axix_len;
     public static final int invalidate_rate = 20;
     
@@ -58,7 +59,8 @@ public class VoiceWaveView extends View {
     Context context;
     private int grid_width;
     private float time_x;
-    private float width_per_second = grid_width*4;;
+    private float time_per_pixel;
+    //private float width_per_second = grid_width*4;;
     private float y_xaxis = 0;
     private float h_high_line = 30;
     private float h_low_line = 5;
@@ -87,7 +89,37 @@ public class VoiceWaveView extends View {
     
     float x = 0;
     
+    float down_x;
+    
+    /***
+     * view status
+     */
+    int viewStatus;
+    public static final int VIEW_STATUS_RECORD = 0;
+    public static final int VIEW_STATUS_TO_EDIT = 1;
+    public static final int VIEW_STATUS_EDIT = 2;
+    /**
+     * @return the viewStatus
+     */
+    public int getViewStatus() {
+        return viewStatus;
+    }
+
+    /**
+     * @param viewStatus the viewStatus to set
+     */
+    public void setViewStatus(int viewStatus) {
+        this.viewStatus = viewStatus;
+        invalidate();
+    }
+
+    
+    
+    
+    
     //List<Long> t_list = new ArrayList<Long>();
+    
+
     
 
     /**
@@ -119,8 +151,7 @@ public class VoiceWaveView extends View {
 
     private void init()
     {
-        
-        
+        viewStatus = VIEW_STATUS_RECORD;
         voiceLinePaint = new Paint();
         voiceLinePaint.setStrokeWidth(2.0f);
         voiceLinePaint.setColor(Color.WHITE);
@@ -179,6 +210,7 @@ public class VoiceWaveView extends View {
     {
         grid_width = ScalePx.scalePx(context, 24);
         time_x = getWidth()/(grid_width*4);
+        time_per_pixel = time_x*1000/getWidth();
         h_block = ScalePx.scalePx(context, 176);
         cicle_radius = ScalePx.scalePx(context, 7);
         y_mid_line = y_xaxis +h_high_line+h_block;
@@ -204,8 +236,79 @@ public class VoiceWaveView extends View {
         
         w = getWidth();
         v = grid_width*4/1000f;
-        //time_axix_len = w / width_per_second;
+        
+        switch (viewStatus) {
+            case VIEW_STATUS_RECORD:
+                drawRecordView(canvas);
+                break;
+                
+            case VIEW_STATUS_TO_EDIT:
+                drawToEditView(canvas);
+                break;
+                
+            case VIEW_STATUS_EDIT:
+                drawEditView(canvas);
+                break;
 
+            default:
+                break;
+        }
+    }
+    
+    private void drawEditView(Canvas canvas)
+    {
+        x=w/2;
+        
+        time_list.clear();
+        for (int i = 0; i <= time_x+1; i++)
+        {
+            time_list.add(i);
+        }
+       
+        //v = w / (time_x * 1000);
+        
+        float start_move_time_textview = 80;
+        
+        float q  = (x<start_move_time_textview)?0:(x-start_move_time_textview);
+        try {
+            drawSlideLine(canvas, x);
+            drawVoice(canvas, x,margin_lef_init);
+            drawTimeTextView(canvas, q);
+            drawXAxis(canvas,margin_lef_init);
+            drawYAxis(canvas);
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    private void drawToEditView(Canvas canvas)
+    {
+        x=w/2;
+        
+        time_list.clear();
+        for (int i = 0; i <= time_x+1; i++)
+        {
+            time_list.add(i);
+        }
+       
+        //v = w / (time_x * 1000);
+        
+        float start_move_time_textview = 80;
+        
+        float q  = (x<start_move_time_textview)?0:(x-start_move_time_textview);
+        try {
+            drawSlideLine(canvas, x);
+            drawVoice(canvas, x,margin_lef_init);
+            drawTimeTextViewToEdit(canvas, q);
+            drawXAxisToEdit(canvas,margin_lef_init);
+            drawYAxis(canvas);
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    private void drawRecordView(Canvas canvas)
+    {
         x = w * time / (time_x * 1000) + margin_lef_init;
         x = margin_lef_init +time*v;
         if (x >= w / 2) {
@@ -232,10 +335,6 @@ public class VoiceWaveView extends View {
         } catch (Exception e) {
             
         }
-        
-
-        // long t2 = System.currentTimeMillis() - t1;
-        // Log.e(" draw time", t2+"");
     }
 
     private void drawSlideLine(Canvas canvas, float offset)
@@ -325,11 +424,44 @@ public class VoiceWaveView extends View {
         }
     }
     
+    private void drawXAxisToEdit(Canvas canvas,float offset)
+    {
+
+        int time_ms = (int)(time_to_edit%1000);
+        
+        float text_offset = ScalePx.scalePx(context, 8);
+        //当前时间整数点
+        
+        float x0 = w/2-time_ms/time_per_pixel;
+        int index_s = 0;
+        for(int i=0;i<time_x*4/2+8;i++)
+        {
+          float x1=x0+i*grid_width;
+          float x2=x0-i*grid_width;
+          float  h;
+          h=(i%4==0)?h_high_line:h_low_line;
+          canvas.drawLine(x1, y_xaxis+h_high_line, x1, y_xaxis+h_high_line-h, darkGrayLinePaint);
+          canvas.drawLine(x2, y_xaxis+h_high_line, x2, y_xaxis+h_high_line-h, darkGrayLinePaint);
+
+          if (i%4==0) {
+              
+            int t1 = (int)(time_to_edit/1000+index_s);
+            int t2 = (int)(time_to_edit/1000-index_s);
+            
+            index_s ++;
+            canvas.drawText(timeAxisFormat(t1), x1+text_offset, y_xaxis+timeTopPaint.getTextSize(), timeTopPaint);
+            canvas.drawText(timeAxisFormat(t2), x2+text_offset, y_xaxis+timeTopPaint.getTextSize(), timeTopPaint);
+
+          }
+            
+        }
+       
+    }
+    
     private void drawYAxis(Canvas canvas)
     
     {
-//        float H = midy - slide_line_top_margin - 20;
-//        float h = h_block/voice_db_list.length;
+
         for(int i=0;i<voice_db_list.length;i++)
         {
             canvas.drawText(voice_db_list[i], getWidth()-num_margin_right, y_mid_line+h_db2midline +i*(h_db2db+voicedbPaint.getTextSize())+voicedbPaint.getTextSize(), voicedbPaint);
@@ -343,9 +475,17 @@ public class VoiceWaveView extends View {
     {
         canvas.drawText(timeFormat(time), offset+margin_lef_init, y_time_text+timeTextPaint.getTextSize(), timeTextPaint);
     }
+    
+    private void drawTimeTextViewToEdit(Canvas canvas, float offset)
+    {
+        canvas.drawText(timeFormat(time_to_edit), offset+margin_lef_init, y_time_text+timeTextPaint.getTextSize(), timeTextPaint);
+    }
 
     private String timeAxisFormat(int t)
     {
+        if (t<0) {
+            return "";
+        }
         long minute = t / 60;
         long second = t % 60;
         StringBuffer ret = new StringBuffer();
@@ -366,6 +506,9 @@ public class VoiceWaveView extends View {
 
     private String timeFormat(long t)
     {
+        if (t<=0) {
+            return "00:00.00";
+        }
         long minute = (t % (1000 * 60 * 60)) / (1000 * 60);
         long second = (t % (1000 * 60)) / 1000;
         long ms = (t % 1000) / 10;
@@ -408,7 +551,7 @@ public class VoiceWaveView extends View {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                if (recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
+                if (viewStatus!=VIEW_STATUS_RECORD || recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
                     return;
                 }
 
@@ -527,5 +670,38 @@ public class VoiceWaveView extends View {
             recorder =null;
         }
     }
+    
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        // TODO Auto-generated method stub
+        Log.e("scroll", l-oldl+"");
+        super.onScrollChanged(l, t, oldl, oldt);
+    }
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (getViewStatus()==VIEW_STATUS_TO_EDIT) {
+            
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    down_x = event.getX();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float xNew = event.getX();
+                    float ss = down_x-xNew;
+                    int t = (int)(ss*time_per_pixel);
+                    time_to_edit += t;
+                    down_x = xNew;
+                    invalidate();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        return true;
+    }
+    
+    
 
 }

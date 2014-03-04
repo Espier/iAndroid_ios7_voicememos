@@ -399,7 +399,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         LinearLayout.LayoutParams lp1 = new android.widget.LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 56));
+        lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 36));
         lp1.weight = 1;
         textviewmemo.setLayoutParams(lp1);
         
@@ -650,43 +650,43 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             lpDuration.addRule(RelativeLayout.RIGHT_OF, R.id.memos_item_create_date);
             lpDuration.addRule(RelativeLayout.BELOW,R.id.memos_item_title);
             vh.duration.setLayoutParams(lpDuration);
-            
-            LinearLayout.LayoutParams lpPlay = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            lpPlay.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
-                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
-            vh.playControl.setLayoutParams(lpPlay);
-            
-            LinearLayout.LayoutParams lpLeftTime = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            lpLeftTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
-                    0, 0, 0);
-            vh.mCurrentTime.setLayoutParams(lpLeftTime);
-            
-            LinearLayout.LayoutParams lpSeekBar = new LinearLayout.LayoutParams(
-                    ScalePx.scalePx(EspierVoiceMemos7.this, 340),
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            lpSeekBar.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
-                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
-            vh.bar.setLayoutParams(lpSeekBar);
-            
-            LinearLayout.LayoutParams lpRightTime = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            lpRightTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
-                    0, 0, 0);
-            vh.mCurrentRemain.setLayoutParams(lpRightTime);
-            
-            RelativeLayout.LayoutParams lpLine = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lpLine.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
-                    ScalePx.scalePx(EspierVoiceMemos7.this, 38), 0, 0);
-            ImageView imgLine = (ImageView)v.findViewById(R.id.line);
-            
-            imgLine.setLayoutParams(lpLine);
+//            
+//            LinearLayout.LayoutParams lpPlay = new LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.WRAP_CONTENT,
+//                    LinearLayout.LayoutParams.WRAP_CONTENT);
+//            lpPlay.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+//            vh.playControl.setLayoutParams(lpPlay);
+//            
+//            LinearLayout.LayoutParams lpLeftTime = new LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.WRAP_CONTENT,
+//                    LinearLayout.LayoutParams.WRAP_CONTENT);
+//            lpLeftTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+//                    0, 0, 0);
+//            vh.mCurrentTime.setLayoutParams(lpLeftTime);
+//            
+//            LinearLayout.LayoutParams lpSeekBar = new LinearLayout.LayoutParams(
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 340),
+//                    LinearLayout.LayoutParams.WRAP_CONTENT);
+//            lpSeekBar.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+//            vh.bar.setLayoutParams(lpSeekBar);
+//            
+//            LinearLayout.LayoutParams lpRightTime = new LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.WRAP_CONTENT,
+//                    LinearLayout.LayoutParams.WRAP_CONTENT);
+//            lpRightTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
+//                    0, 0, 0);
+//            vh.mCurrentRemain.setLayoutParams(lpRightTime);
+//            
+//            RelativeLayout.LayoutParams lpLine = new RelativeLayout.LayoutParams(
+//                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+//                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+//            lpLine.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 38), 0, 0);
+//            ImageView imgLine = (ImageView)v.findViewById(R.id.line);
+//            
+//            imgLine.setLayoutParams(lpLine);
             
             
             
