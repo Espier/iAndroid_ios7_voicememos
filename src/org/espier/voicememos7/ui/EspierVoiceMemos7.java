@@ -822,7 +822,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
+                    mediaStatus = MEDIA_STATE_EDIT;
+                    start.setBackgroundResource(R.drawable.trim_play);
+                    refreshNow(vh);
                     ScrollDown();
                     try {
                     	mFile = new File(mCurrentPath);
@@ -860,12 +862,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 @Override
                 public void onClick(View arg0) {
                     int state = mRecorder.getState();
-                    if(mediaStatus == MEDIA_STATE_RECORDING)
-                    {
-	                    if (state == Recorder.IDLE_STATE) {
-	                        mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
-	                        mRecorder.startPlayback();
-	                        vh.playControl.setImageResource(R.drawable.pause);
+	                if (state == Recorder.IDLE_STATE) {
+	                    mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
+	                    mRecorder.startPlayback();
+	                    vh.playControl.setImageResource(R.drawable.pause);
 	                    } else if (state == Recorder.PLAYER_PAUSE_STATE) {
 	                        mRecorder.startPlayback();
 	                        vh.playControl.setImageResource(R.drawable.pause);
@@ -873,21 +873,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 	                        mRecorder.pausePlayback();
 	                        vh.playControl.setImageResource(R.drawable.play);
 	                    }
-                    }
-                    else if(mediaStatus == MEDIA_STATE_EDIT)
-                    {
-                    	if (state == Recorder.IDLE_STATE) {
-//	                        mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
-//	                        mRecorder.startPlayback();
-	                        vh.playControl.setImageResource(R.drawable.trim_play);
-	                    } else if (state == Recorder.PLAYER_PAUSE_STATE) {
-//	                        mRecorder.startPlayback();
-	                        vh.playControl.setImageResource(R.drawable.trim_play);
-	                    } else if (state == Recorder.PLAYING_STATE) {
-//	                        mRecorder.pausePlayback();
-	                        vh.playControl.setImageResource(R.drawable.pause);
-	                    }
-                    }
                    
 
                     mCurrentMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
