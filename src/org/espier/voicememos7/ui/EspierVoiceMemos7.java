@@ -351,8 +351,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void ScrollUp() {
-        LinearLayout ll = (LinearLayout) findViewById(R.id.buttonLayout);
-        mainLayout.scrollTo(0, ll.getTop() - titlelayout.getHeight());
+        RelativeLayout ll = (RelativeLayout) findViewById(R.id.playlayout);
+        TextView text = (TextView)findViewById(R.id.txtRecordName);
+        mainLayout.scrollTo(0, ll.getTop() );
         hiddenView.setVisibility(View.INVISIBLE);
         txtRecordName.setVisibility(View.INVISIBLE);
         waveView.setVisibility(View.INVISIBLE);
@@ -380,7 +381,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void init() {
-        titlelayout = (LinearLayout) findViewById(R.id.title);
+        titlelayout = (LinearLayout) findViewById(R.id.titlelay);
         textViewEdit = (TextView) findViewById(R.id.edititem);
         LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
