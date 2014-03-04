@@ -112,6 +112,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             1, 0, 0, 0, 0, 0,
             1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
     };
+    
+    private final int MEDIA_STATE_RECORDING = 0;
+    private final int MEDIA_STATE_EDIT = 1;
+    private int mediaStatus = 0;
+    
     LinearLayout titlelayout;
     ImageView sound;
     TextView textViewEdit, textviewmemo;
@@ -777,17 +782,35 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 @Override
                 public void onClick(View arg0) {
                     int state = mRecorder.getState();
-                    if (state == Recorder.IDLE_STATE) {
-                        mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
-                        mRecorder.startPlayback();
-                        vh.playControl.setImageResource(R.drawable.pause);
-                    } else if (state == Recorder.PLAYER_PAUSE_STATE) {
-                        mRecorder.startPlayback();
-                        vh.playControl.setImageResource(R.drawable.pause);
-                    } else if (state == Recorder.PLAYING_STATE) {
-                        mRecorder.pausePlayback();
-                        vh.playControl.setImageResource(R.drawable.play);
+                    if(mediaStatus == MEDIA_STATE_RECORDING)
+                    {
+	                    if (state == Recorder.IDLE_STATE) {
+	                        mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
+	                        mRecorder.startPlayback();
+	                        vh.playControl.setImageResource(R.drawable.pause);
+	                    } else if (state == Recorder.PLAYER_PAUSE_STATE) {
+	                        mRecorder.startPlayback();
+	                        vh.playControl.setImageResource(R.drawable.pause);
+	                    } else if (state == Recorder.PLAYING_STATE) {
+	                        mRecorder.pausePlayback();
+	                        vh.playControl.setImageResource(R.drawable.play);
+	                    }
                     }
+                    else if(mediaStatus == MEDIA_STATE_EDIT)
+                    {
+                    	if (state == Recorder.IDLE_STATE) {
+//	                        mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
+//	                        mRecorder.startPlayback();
+	                        vh.playControl.setImageResource(R.drawable.trim_play);
+	                    } else if (state == Recorder.PLAYER_PAUSE_STATE) {
+//	                        mRecorder.startPlayback();
+	                        vh.playControl.setImageResource(R.drawable.trim_play);
+	                    } else if (state == Recorder.PLAYING_STATE) {
+//	                        mRecorder.pausePlayback();
+	                        vh.playControl.setImageResource(R.drawable.pause);
+	                    }
+                    }
+                   
 
                     mCurrentMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
 
