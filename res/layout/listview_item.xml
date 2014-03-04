@@ -5,7 +5,7 @@
     android:orientation="vertical">
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
          >
         <EditText
             android:inputType="text"
@@ -13,6 +13,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@null"
+            android:singleLine="true"
             android:focusable="false"
             android:textColor="@color/black"
              />
@@ -88,11 +89,12 @@
         android:id="@+id/sharelayout"
         android:visibility="gone"
         android:layout_width="fill_parent"
-        android:layout_height="45dip"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <ImageView
-            android:id="@+id/line"
+            android:contentDescription="@string/share_memo"
+            android:id="@+id/cell_GaryLine"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/line" />

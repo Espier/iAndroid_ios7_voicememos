@@ -621,9 +621,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             vh.share = (ImageView) v.findViewById(R.id.share);
             vh.del = (ImageView) v.findViewById(R.id.del);
             vh.edit = (TextView) v.findViewById(R.id.edit);
+            vh.cellGrayLine = (ImageView)v.findViewById(R.id.cell_GaryLine);
+            
             
             RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.FILL_PARENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             lpTitle.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31), 
                     ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
@@ -633,7 +635,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             lpCreateDate.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31), 
-                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 0), 0, 0);
             lpCreateDate.addRule(RelativeLayout.BELOW,R.id.memos_item_title);
             vh.createDate.setLayoutParams(lpCreateDate);
             
@@ -641,47 +643,78 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             lpDuration.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 54), 
-                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 0), 0, 0);
             lpDuration.addRule(RelativeLayout.RIGHT_OF, R.id.memos_item_create_date);
             lpDuration.addRule(RelativeLayout.BELOW,R.id.memos_item_title);
             vh.duration.setLayoutParams(lpDuration);
-//            
-//            LinearLayout.LayoutParams lpPlay = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT);
-//            lpPlay.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
-//                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
-//            vh.playControl.setLayoutParams(lpPlay);
-//            
-//            LinearLayout.LayoutParams lpLeftTime = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT);
-//            lpLeftTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
-//                    0, 0, 0);
-//            vh.mCurrentTime.setLayoutParams(lpLeftTime);
-//            
-//            LinearLayout.LayoutParams lpSeekBar = new LinearLayout.LayoutParams(
-//                    ScalePx.scalePx(EspierVoiceMemos7.this, 340),
-//                    LinearLayout.LayoutParams.WRAP_CONTENT);
-//            lpSeekBar.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
-//                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
-//            vh.bar.setLayoutParams(lpSeekBar);
-//            
-//            LinearLayout.LayoutParams lpRightTime = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT);
-//            lpRightTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
-//                    0, 0, 0);
-//            vh.mCurrentRemain.setLayoutParams(lpRightTime);
-//            
-//            RelativeLayout.LayoutParams lpLine = new RelativeLayout.LayoutParams(
+            
+            LinearLayout.LayoutParams lpPlay = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpPlay.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            vh.playControl.setLayoutParams(lpPlay);
+            
+            LinearLayout.LayoutParams lpLeftTime = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpLeftTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+                    0, 0, 0);
+            vh.mCurrentTime.setLayoutParams(lpLeftTime);
+            
+            LinearLayout.LayoutParams lpSeekBar = new LinearLayout.LayoutParams(
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 340),
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpSeekBar.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            vh.bar.setLayoutParams(lpSeekBar);
+            
+            LinearLayout.LayoutParams lpRightTime = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpRightTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
+                    0, 0, 0);
+            vh.mCurrentRemain.setLayoutParams(lpRightTime);
+            
+            RelativeLayout.LayoutParams lpLine = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lpLine.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 38), 0, 0);
+            vh.cellGrayLine.setLayoutParams(lpLine);
+            
+//            RelativeLayout.LayoutParams lpShare = new RelativeLayout.LayoutParams(
 //                    RelativeLayout.LayoutParams.WRAP_CONTENT,
 //                    RelativeLayout.LayoutParams.WRAP_CONTENT);
-//            lpLine.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
-//                    ScalePx.scalePx(EspierVoiceMemos7.this, 38), 0, 0);
-//            ImageView imgLine = (ImageView)v.findViewById(R.id.line);
+//            lpShare.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 32), 
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 16), 0, 
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 24));
+//            lpShare.addRule(RelativeLayout.BELOW, R.id.cell_GaryLine);
+//            vh.share.setLayoutParams(lpShare);
 //            
-//            imgLine.setLayoutParams(lpLine);
+//            RelativeLayout.LayoutParams lpEdit = new RelativeLayout.LayoutParams(
+//                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+//                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+//            lpEdit.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 32), 
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 16), 0, 
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 24));
+//            lpEdit.addRule(RelativeLayout.BELOW, R.id.cell_GaryLine);
+//            lpEdit.addRule(RelativeLayout.RIGHT_OF, R.id.share);
+//            
+//            vh.edit.setLayoutParams(lpEdit);
+//            
+//            RelativeLayout.LayoutParams lpDelete = new RelativeLayout.LayoutParams(
+//                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+//                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+//            lpDelete.setMargins(0, 
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 16), 
+//                    ScalePx.scalePx(EspierVoiceMemos7.this, 32), 
+//                    0);
+//            lpDelete.addRule(RelativeLayout.BELOW, R.id.cell_GaryLine);
+//            lpDelete.addRule(RelativeLayout.RIGHT_OF, R.id.edit);
+//            vh.del.setLayoutParams(lpDelete);
+            
+            
             
             
             
@@ -1043,6 +1076,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             TextView duration;
             TextView path;
             TextView id;
+            ImageView cellGrayLine;
             TextView mCurrentTime;
             TextView mCurrentRemain;
             SeekBar bar;
