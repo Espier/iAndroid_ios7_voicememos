@@ -670,6 +670,17 @@ public class AMRFileUtils {
   public int secondsToFrames(double seconds) {
     return (int) (1.0 * seconds * getSampleRate() / getSamplesPerFrame() + 0.5);
   }
+  public static void delete(String filePathName) {  
+      if(isNullString(filePathName)) return ;  
+      File file = new File(filePathName);  
+      if (file.isFile() && file.exists()) {  
+          boolean flag = file.delete();  
+      }  
+  }
 
+  public static boolean isNullString(String str) {  
+      if(str == null || str.equals("")) return true ;  
+      return false;  
+  }  
 
 };
