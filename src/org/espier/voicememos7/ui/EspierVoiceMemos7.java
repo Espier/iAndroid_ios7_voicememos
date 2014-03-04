@@ -390,12 +390,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         int H = textviewmemo.getHeight();
         sound = (ImageView) findViewById(R.id.sound);
+        
         sound.setScaleType(ScaleType.CENTER_INSIDE);
-        sound.setMaxHeight(ScalePx.scalePx(this, H));
-        LinearLayout.LayoutParams lp3 = new android.widget.LinearLayout.LayoutParams(
+        sound.setMaxHeight( H);
+        LinearLayout.LayoutParams lp3 = new LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 45), 0);
+        
+        lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 0), 0);
         lp3.weight = 1;
         sound.setLayoutParams(lp3);
         sound.setOnClickListener((new View.OnClickListener() {
@@ -609,6 +611,71 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             vh.share = (ImageView) v.findViewById(R.id.share);
             vh.del = (ImageView) v.findViewById(R.id.del);
             vh.edit = (TextView) v.findViewById(R.id.edit);
+            
+            RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lpTitle.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            vh.tag.setLayoutParams(lpTitle);
+            
+            RelativeLayout.LayoutParams lpCreateDate = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lpCreateDate.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            lpCreateDate.addRule(RelativeLayout.BELOW,R.id.memos_item_title);
+            vh.createDate.setLayoutParams(lpCreateDate);
+            
+            RelativeLayout.LayoutParams lpDuration = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lpDuration.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 54), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            lpDuration.addRule(RelativeLayout.RIGHT_OF, R.id.memos_item_create_date);
+            lpDuration.addRule(RelativeLayout.BELOW,R.id.memos_item_title);
+            vh.duration.setLayoutParams(lpDuration);
+            
+            LinearLayout.LayoutParams lpPlay = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpPlay.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            vh.playControl.setLayoutParams(lpPlay);
+            
+            LinearLayout.LayoutParams lpLeftTime = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpLeftTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+                    0, 0, 0);
+            vh.mCurrentTime.setLayoutParams(lpLeftTime);
+            
+            LinearLayout.LayoutParams lpSeekBar = new LinearLayout.LayoutParams(
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 340),
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpSeekBar.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            vh.bar.setLayoutParams(lpSeekBar);
+            
+            LinearLayout.LayoutParams lpRightTime = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpRightTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
+                    0, 0, 0);
+            vh.mCurrentRemain.setLayoutParams(lpRightTime);
+            
+            RelativeLayout.LayoutParams lpLine = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lpLine.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 38), 0, 0);
+            ImageView imgLine = (ImageView)v.findViewById(R.id.line);
+            
+            imgLine.setLayoutParams(lpLine);
+            
+            
+            
+            
             // mCurrentDuration =
             // (Integer)v.findViewById(R.id.memos_item_duration).getTag();
             if (vh.bar instanceof SeekBar) {
@@ -645,8 +712,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 @SuppressLint("ResourceAsColor")
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
+                    Log.d("adf","click Cell View");
                     if (lastView != null && isClose) {
+                        vh.tag.setTextColor(R.color.black);
+                        vh.createDate.setTextColor(R.color.black);
+                        vh.duration.setTextColor(R.color.black);
 //                        sound.setImageResource(R.drawable.volume_blue);
                         LinearLayout layout = (LinearLayout) lastView.findViewById(R.id.playlayout);
                         layout.setVisibility(View.GONE);
@@ -679,10 +749,18 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     for (int j = 0; j < i; j++) {
                         View view = (View) list.get(j);
                         if (v == view) {
+                            
                             continue;
                         }
+                        
 
                         view.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                        EditText et = (EditText) view.findViewById(R.id.memos_item_title);
+                        et.setTextColor(R.color.heavygray);
+                        TextView tvCreateDate = (TextView)view.findViewById(R.id.memos_item_create_date);
+                        TextView tvDuration = (TextView)view.findViewById(R.id.memos_item_duration);
+                        tvCreateDate.setTextColor(R.color.heavygray);
+                        tvDuration.setTextColor(R.color.heavygray);
                     }
 
                     lastView = v;
