@@ -83,6 +83,41 @@
             android:layout_toRightOf="@+id/buttonLayout"
             android:text="@string/finish"
             android:textAppearance="?android:attr/textAppearanceLarge" />
+        <LinearLayout 
+        android:id="@+id/titlelay"
+        android:visibility="invisible"
+        android:layout_width="fill_parent"
+        android:layout_above="@id/buttonLayout"
+        android:layout_height="wrap_content">
+        <TextView 
+            android:id="@+id/edititem"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/edit"
+            android:gravity="left"
+            android:textColor="@color/font_color"
+            android:layout_weight="1"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+         <TextView 
+            android:id="@+id/name"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/memo"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+          <ImageView 
+            android:id="@+id/sound"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/volume_blue"
+            android:layout_gravity="right"
+            android:layout_weight="1"
+            />
+        
+    </LinearLayout>
 </RelativeLayout>
 
 
@@ -155,41 +190,7 @@
 
         
         
-       <LinearLayout 
-        android:id="@+id/title"
-        android:visibility="invisible"
-        android:layout_width="fill_parent"
-        android:layout_above="@id/playlayout"
-        android:layout_height="wrap_content">
-        <TextView 
-            android:id="@+id/edititem"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/edit"
-            android:gravity="left"
-            android:textColor="@color/font_color"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            />
-         <TextView 
-            android:id="@+id/name"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/memo"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            />
-          <ImageView 
-            android:id="@+id/sound"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:src="@drawable/volume_blue"
-            android:layout_gravity="right"
-            android:layout_weight="1"
-            />
-        
-    </LinearLayout>
+       
 
         
     </RelativeLayout>
