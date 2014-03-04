@@ -94,6 +94,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public Integer mCurrentMemoId = -1;
     public String memoName;
     private String memo_name;
+    int indexnum;
     TextView txtRecordName;
     View emptyView;
     public final float[] BT_SELECTED = new float[] {
@@ -225,12 +226,20 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private CharSequence getRecordName() {
         // TODO Auto-generated method stub
         SharedPreferences sp = this.getSharedPreferences("espier", this.MODE_PRIVATE);
-        int num = sp.getInt("Counter", 1);
-        if (num == 1) {
+        String exitindexs = sp.getString("indexs", "");
+        if (exitindexs.equals("")) {
             memo_name = this.getResources().getString(R.string.record_name).toString() + " ";
-
         } else {
-            memo_name = this.getResources().getString(R.string.record_name).toString() + " " + num;
+            for(int i=2;i<10000;i++){
+                String index = ","+i+",";
+                if(exitindexs.contains(index)){
+                    continue;
+                }else{
+                    indexnum=i;
+                    memo_name = this.getResources().getString(R.string.record_name).toString() + " " + i;
+                    break;
+                }
+            }
         }
         return memo_name;
     }
@@ -546,12 +555,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            Log.d("memo", "getView, mCurrentPosition:" + mCurrentPosition);
-            if (mCurrentPosition == position) {
-                isCurrentPosition = true;
-            } else {
-                isCurrentPosition = false;
-            }
+//            Log.d("memo", "getView, mCurrentPosition:" + mCurrentPosition);
+//            if (mCurrentPosition == position) {
+//                isCurrentPosition = true;
+//            } else {
+//                isCurrentPosition = false;
+//            }
             return super.getView(position, convertView, parent);
         }
 
@@ -659,10 +668,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         @Override
         public void bindView(View view, final Context context, final Cursor cursor) {
-
+            System.out.println( cursor.getString(mLabelIdx)+"    "+cursor.getString(mPathIdx));
             final ViewHolder vh = (ViewHolder) view.getTag();
-
-            vh.tag.setText(cursor.getString(mLabelIdx));
+            final String itemname = cursor.getString(mLabelIdx);
+            vh.tag.setText(itemname);
 
             int secs = cursor.getInt(mDurationIdx);
             if (secs == 0) {
@@ -684,6 +693,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             vh.createDate.setText(dd);
 
             final String path = cursor.getString(mPathIdx);
+            final int memoid = cursor.getInt(mMemoIdx);
             final Integer id = cursor.getInt(mMemoIdx);
             vh.path.setTag(path);
             vh.id.setTag(id);
@@ -721,8 +731,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         mRecorder.stopPlayback();
                     }
                     Intent delIntent = new Intent(EspierVoiceMemos7.this, MemoDelete.class);
-                    delIntent.putExtra("memoname", cursor.getString(mLabelIdx));
-                    delIntent.putExtra("memopath",mCurrentPath);
+                    delIntent.putExtra("mCurrentMemoId", memoid);
+                    delIntent.putExtra("memoname", itemname);
+                    delIntent.putExtra("memopath", path);
                     startActivityForResult(delIntent, DEL_REQUEST);
                 }
             });
@@ -863,7 +874,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             mRecorder.stopRecording();
             waveView.stop();
         } else {
-            return;
+//            return;
         }
         AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this);
         final View view = this.getLayoutInflater().inflate(R.layout.items, null);
@@ -917,6 +928,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
                     int num = sp.getInt("Counter", 1);
                     sp.edit().putInt("Counter", num + 1).commit();
+                    String exitstring = sp.getString("indexs", "");
+                    sp.edit().putString("indexs", exitstring+","+indexnum+",").commit();
                 }
                 insertVoiceMemo(name);
                 waveView.clearData();
@@ -977,20 +990,28 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == DEL_REQUEST) {
-                deleteMemo(mCurrentMemoId);
+                int id = data.getIntExtra("mCurrentMemoId",-1);
+                String memopath = data.getStringExtra("memopath");
+                deleteMemo(id, memopath);
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 mCurrentDuration = 0;
+                if(mVoiceMemoListAdapter.c.getCount() ==0){
+                    if (emptyView != null) {
+                        emptyView.setVisibility(View.VISIBLE);
+                    }
+                }
                 // resetPlayer();
             }
         }
     }
 
-    private void deleteMemo(int memoId) {
+    private void deleteMemo(int memoId,String path) {
         // TODO Auto-generated method stub
         Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI,
                 memoId);
+        System.out.println(memoUri.toString());
         getContentResolver().delete(memoUri, null, null);
-        File file = new File(mCurrentPath);
+        File file = new File(path);
         if (file.exists()) {
             file.delete();
         }
