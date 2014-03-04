@@ -1,6 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
+import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +16,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
@@ -36,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -45,6 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.espier.voicememos7.R;
+import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveDirection;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
@@ -54,6 +58,8 @@ import org.espier.voicememos7.util.ScalePx;
 import org.espier.voicememos7.util.StorageUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,9 +80,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private MediaPlayer mCurrentMediaPlayer;
     private static final int DEL_REQUEST = 2;
     TextView date;
-
+    AudioManager audioManager;
     private AlertDialog dialog;
-
+    boolean isSoundOn = false;
     TextView finished;
     Boolean isCurrentPosition;
     private Button hiddenView;
@@ -95,6 +101,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public String memoName;
     private String memo_name;
     int indexnum;
+    private CheapSoundFile mSoundFile;
+    private File mFile;
     TextView txtRecordName;
     View emptyView;
     public final float[] BT_SELECTED = new float[] {
@@ -105,6 +113,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             1, 0, 0, 0, 0, 0,
             1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
     };
+    
+    private final int MEDIA_STATE_RECORDING = 0;
+    private final int MEDIA_STATE_EDIT = 1;
+    private int mediaStatus = 0;
+    
     LinearLayout titlelayout;
     ImageView sound;
     TextView textViewEdit, textviewmemo;
@@ -220,6 +233,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         start.setOnClickListener(this);
         start.setOnTouchListener(startTouchListener);
 
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         init();
     }
 
@@ -373,24 +387,49 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.setMargins(ScalePx.scalePx(this, 19), ScalePx.scalePx(this, 28), 0, 0);
         lp.weight = 1;
-
         textViewEdit.setLayoutParams(lp);
+        
         textviewmemo = (TextView) findViewById(R.id.name);
         LinearLayout.LayoutParams lp1 = new android.widget.LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 56));
         lp1.weight = 1;
-
         textviewmemo.setLayoutParams(lp1);
+        
+        int H = textviewmemo.getHeight();
         sound = (ImageView) findViewById(R.id.sound);
-        LinearLayout.LayoutParams lp3 = new android.widget.LinearLayout.LayoutParams(
+        
+        sound.setScaleType(ScaleType.CENTER_INSIDE);
+        sound.setMaxHeight( H);
+        LinearLayout.LayoutParams lp3 = new LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 45), 0);
+        
+        lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 0), 0);
         lp3.weight = 1;
-
         sound.setLayoutParams(lp3);
+        sound.setOnClickListener((new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                
+                if(isSoundOn) {
+                    audioManager.setSpeakerphoneOn(true);
+                    isSoundOn = false;
+                    sound.setImageResource(R.drawable.volume_blue);
+            } else {
+                    audioManager.setSpeakerphoneOn(false);//关闭扬声器
+                    audioManager.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
+                    setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+                    //把声音设定成Earpiece（听筒）出来，设定为正在通话中
+                    audioManager.setMode(AudioManager.MODE_IN_CALL);
+                    sound.setImageResource(R.drawable.volume_gray);
+                    isSoundOn = true;
+            }
+            }
+        }));
+        
         waveView = (VoiceWaveView) findViewById(R.id.waveView);
         waveView.setMinimumWidth(500);
         waveView.setMinimumHeight(100);
@@ -581,6 +620,71 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             vh.share = (ImageView) v.findViewById(R.id.share);
             vh.del = (ImageView) v.findViewById(R.id.del);
             vh.edit = (TextView) v.findViewById(R.id.edit);
+            
+            RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lpTitle.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            vh.tag.setLayoutParams(lpTitle);
+            
+            RelativeLayout.LayoutParams lpCreateDate = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lpCreateDate.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            lpCreateDate.addRule(RelativeLayout.BELOW,R.id.memos_item_title);
+            vh.createDate.setLayoutParams(lpCreateDate);
+            
+            RelativeLayout.LayoutParams lpDuration = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lpDuration.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 54), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            lpDuration.addRule(RelativeLayout.RIGHT_OF, R.id.memos_item_create_date);
+            lpDuration.addRule(RelativeLayout.BELOW,R.id.memos_item_title);
+            vh.duration.setLayoutParams(lpDuration);
+            
+            LinearLayout.LayoutParams lpPlay = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpPlay.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            vh.playControl.setLayoutParams(lpPlay);
+            
+            LinearLayout.LayoutParams lpLeftTime = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpLeftTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+                    0, 0, 0);
+            vh.mCurrentTime.setLayoutParams(lpLeftTime);
+            
+            LinearLayout.LayoutParams lpSeekBar = new LinearLayout.LayoutParams(
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 340),
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpSeekBar.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 13), 0, 0);
+            vh.bar.setLayoutParams(lpSeekBar);
+            
+            LinearLayout.LayoutParams lpRightTime = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpRightTime.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 18), 
+                    0, 0, 0);
+            vh.mCurrentRemain.setLayoutParams(lpRightTime);
+            
+            RelativeLayout.LayoutParams lpLine = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lpLine.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 36), 
+                    ScalePx.scalePx(EspierVoiceMemos7.this, 38), 0, 0);
+            ImageView imgLine = (ImageView)v.findViewById(R.id.line);
+            
+            imgLine.setLayoutParams(lpLine);
+            
+            
+            
+            
             // mCurrentDuration =
             // (Integer)v.findViewById(R.id.memos_item_duration).getTag();
             if (vh.bar instanceof SeekBar) {
@@ -589,37 +693,40 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             }
             vh.bar.setMax(1000);
 
-            vh.tag.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-
-                    // v.setFocusable(true);
-                    // v.requestFocus();
-                }
-            });
-            vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    // if (hasFocus) {
-                    // v.clearFocus();
-                    // InputMethodManager imm =
-                    // (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    // imm.hideSoftInputFromWindow(v.getWindowToken(),0);
-                    // }
-
-                }
-            });
+//            vh.tag.setOnClickListener(new View.OnClickListener() {
+//
+//                @Override
+//                public void onClick(View v) {
+//
+//                    // v.setFocusable(true);
+//                    // v.requestFocus();
+//                }
+//            });
+//            vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//
+//                @Override
+//                public void onFocusChange(View v, boolean hasFocus) {
+//                    // if (hasFocus) {
+//                    // v.clearFocus();
+//                    // InputMethodManager imm =
+//                    // (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    // imm.hideSoftInputFromWindow(v.getWindowToken(),0);
+//                    // }
+//
+//                }
+//            });
             v.setTag(vh);
             v.setOnClickListener(new View.OnClickListener() {
 
                 @SuppressLint("ResourceAsColor")
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
+                    Log.d("adf","click Cell View");
                     if (lastView != null && isClose) {
-                        sound.setImageResource(R.drawable.volume_blue);
+                        vh.tag.setTextColor(R.color.black);
+                        vh.createDate.setTextColor(R.color.black);
+                        vh.duration.setTextColor(R.color.black);
+//                        sound.setImageResource(R.drawable.volume_blue);
                         LinearLayout layout = (LinearLayout) lastView.findViewById(R.id.playlayout);
                         layout.setVisibility(View.GONE);
                         RelativeLayout sharelayout = (RelativeLayout) lastView
@@ -638,7 +745,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         }
                         return;
                     }
-                    sound.setImageResource(R.drawable.volume_gray);
+                    //sound.setImageResource(R.drawable.volume_gray);
                     LinearLayout layout = (LinearLayout) v.findViewById(R.id.playlayout);
                     layout.setVisibility(View.VISIBLE);
 
@@ -651,10 +758,18 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     for (int j = 0; j < i; j++) {
                         View view = (View) list.get(j);
                         if (v == view) {
+                            
                             continue;
                         }
+                        
 
                         view.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                        EditText et = (EditText) view.findViewById(R.id.memos_item_title);
+                        et.setTextColor(R.color.heavygray);
+                        TextView tvCreateDate = (TextView)view.findViewById(R.id.memos_item_create_date);
+                        TextView tvDuration = (TextView)view.findViewById(R.id.memos_item_duration);
+                        tvCreateDate.setTextColor(R.color.heavygray);
+                        tvDuration.setTextColor(R.color.heavygray);
                     }
 
                     lastView = v;
@@ -717,8 +832,24 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
+                    mediaStatus = MEDIA_STATE_EDIT;
+                    start.setBackgroundResource(R.drawable.trim_play);
+                    refreshNow(vh);
                     ScrollDown();
+                    try {
+                    	mFile = new File(mCurrentPath);
+						mSoundFile = CheapSoundFile.create(mCurrentPath, null);
+						mSoundFile.ReadFile(mFile);
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+                    
+                    int[] framGains = mSoundFile.getFrameGains();
+                    int sampleRate = mSoundFile.getSampleRate();
+                    int numFrames = mSoundFile.getNumFrames();
+                    double []gainHeights = computeGainHeights();
                 }
             });
 
@@ -742,17 +873,18 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 @Override
                 public void onClick(View arg0) {
                     int state = mRecorder.getState();
-                    if (state == Recorder.IDLE_STATE) {
-                        mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
-                        mRecorder.startPlayback();
-                        vh.playControl.setImageResource(R.drawable.pause);
-                    } else if (state == Recorder.PLAYER_PAUSE_STATE) {
-                        mRecorder.startPlayback();
-                        vh.playControl.setImageResource(R.drawable.pause);
-                    } else if (state == Recorder.PLAYING_STATE) {
-                        mRecorder.pausePlayback();
-                        vh.playControl.setImageResource(R.drawable.play);
-                    }
+	                if (state == Recorder.IDLE_STATE) {
+	                    mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
+	                    mRecorder.startPlayback();
+	                    vh.playControl.setImageResource(R.drawable.pause);
+	                    } else if (state == Recorder.PLAYER_PAUSE_STATE) {
+	                        mRecorder.startPlayback();
+	                        vh.playControl.setImageResource(R.drawable.pause);
+	                    } else if (state == Recorder.PLAYING_STATE) {
+	                        mRecorder.pausePlayback();
+	                        vh.playControl.setImageResource(R.drawable.play);
+	                    }
+                   
 
                     mCurrentMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
 
@@ -781,6 +913,88 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             }
         }
 
+        private double[] computeGainHeights()
+        {
+        	int numFrames = mSoundFile.getNumFrames();
+            int[] frameGains = mSoundFile.getFrameGains();
+            double[] smoothedGains = new double[numFrames];
+            if (numFrames == 1) {
+                smoothedGains[0] = frameGains[0];
+            } else if (numFrames == 2) {
+                smoothedGains[0] = frameGains[0];
+                smoothedGains[1] = frameGains[1];
+            } else if (numFrames > 2) {
+                smoothedGains[0] = (double)(
+                    (frameGains[0] / 2.0) +
+                    (frameGains[1] / 2.0));
+                for (int i = 1; i < numFrames - 1; i++) {
+                    smoothedGains[i] = (double)(
+                        (frameGains[i - 1] / 3.0) +
+                        (frameGains[i    ] / 3.0) +
+                        (frameGains[i + 1] / 3.0));
+                }
+                smoothedGains[numFrames - 1] = (double)(
+                    (frameGains[numFrames - 2] / 2.0) +
+                    (frameGains[numFrames - 1] / 2.0));
+            }
+
+            // Make sure the range is no more than 0 - 255
+            double maxGain = 1.0;
+            for (int i = 0; i < numFrames; i++) {
+                if (smoothedGains[i] > maxGain) {
+                    maxGain = smoothedGains[i];
+                }
+            }
+            double scaleFactor = 1.0;
+            if (maxGain > 255.0) {
+                scaleFactor = 255 / maxGain;
+            }        
+
+            // Build histogram of 256 bins and figure out the new scaled max
+            maxGain = 0;
+            int gainHist[] = new int[256];
+            for (int i = 0; i < numFrames; i++) {
+                int smoothedGain = (int)(smoothedGains[i] * scaleFactor);
+                if (smoothedGain < 0)
+                    smoothedGain = 0;
+                if (smoothedGain > 255)
+                    smoothedGain = 255;
+
+                if (smoothedGain > maxGain)
+                    maxGain = smoothedGain;
+
+                gainHist[smoothedGain]++;
+            }
+
+            // Re-calibrate the min to be 5%
+            double minGain = 0;
+            int sum = 0;
+            while (minGain < 255 && sum < numFrames / 20) {
+                sum += gainHist[(int)minGain];
+                minGain++;
+            }
+
+            // Re-calibrate the max to be 99%
+            sum = 0;
+            while (maxGain > 2 && sum < numFrames / 100) {
+                sum += gainHist[(int)maxGain];
+                maxGain--;
+            }
+
+            // Compute the heights
+            double[] heights = new double[numFrames];
+            double range = maxGain - minGain;
+            for (int i = 0; i < numFrames; i++) {
+                double value = (smoothedGains[i] * scaleFactor - minGain) / range;
+                if (value < 0.0)
+                    value = 0.0;
+                if (value > 1.0)
+                    value = 1.0;
+                heights[i] = value * value;
+            }
+            return heights;
+        }
+        
         protected long refreshNow(ViewHolder view) {
             if (mCurrentMediaPlayer == null || mRecorder.getState() != Recorder.PLAYING_STATE) {
 

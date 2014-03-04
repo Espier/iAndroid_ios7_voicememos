@@ -6,31 +6,31 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dip"
          >
 		
         <EditText
             android:id="@+id/memos_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:background="@null"
             android:focusable="false"
-            android:text="name" />
+            android:textColor="@color/black"
+             />
         <TextView
             android:id="@+id/memos_item_create_date"
             android:layout_below="@id/memos_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="s" />
+            android:textColor="@color/black"
+             />
         <TextView
             android:id="@+id/memos_item_duration"
              android:layout_below="@id/memos_item_title"
-             android:layout_marginLeft="10dip"
              android:layout_toRightOf="@id/memos_item_create_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="s" />
+            android:textColor="@color/black"
+            />
         
     </RelativeLayout>
     <LinearLayout 
@@ -95,7 +95,6 @@
             android:id="@+id/line"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dip"
             android:src="@drawable/line" />
 
         <ImageView
