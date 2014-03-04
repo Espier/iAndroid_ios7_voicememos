@@ -658,7 +658,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
 
         @Override
-        public void bindView(View view, final Context context, Cursor cursor) {
+        public void bindView(View view, final Context context, final Cursor cursor) {
 
             final ViewHolder vh = (ViewHolder) view.getTag();
 
@@ -721,7 +721,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         mRecorder.stopPlayback();
                     }
                     Intent delIntent = new Intent(EspierVoiceMemos7.this, MemoDelete.class);
-                    delIntent.putExtra("memoname", vh.tag.getText());
+                    delIntent.putExtra("memoname", cursor.getString(mLabelIdx));
+                    delIntent.putExtra("memopath",mCurrentPath);
                     startActivityForResult(delIntent, DEL_REQUEST);
                 }
             });

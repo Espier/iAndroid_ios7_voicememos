@@ -2,6 +2,7 @@
 package org.espier.voicememos7.ui;
 
 import org.espier.voicememos7.R;
+import org.espier.voicememos7.util.AMRFileUtils;
 import org.espier.voicememos7.util.ScalePx;
 
 import android.app.Activity;
@@ -19,6 +20,7 @@ public class MemoDelete extends Activity implements OnClickListener {
     public static final String MEMO_ID = "memo_id";
     public Button del, cancel;
     String memoname;
+    private String memopath;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,7 @@ public class MemoDelete extends Activity implements OnClickListener {
         setContentView(R.layout.memos_delete);
         Intent intent = getIntent();
         memoname = intent.getStringExtra("memoname");
+        memopath = intent.getStringExtra("memopath");
         // LinearLayout layout = (LinearLayout) findViewById(R.id.buttonlay);
         // layout.
         del = (Button) findViewById(R.id.memo_del_ok);
@@ -51,6 +54,7 @@ public class MemoDelete extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.memo_del_ok:
+                AMRFileUtils.delete(memopath);
                 setResult(Activity.RESULT_OK);
                 finish();
                 break;
