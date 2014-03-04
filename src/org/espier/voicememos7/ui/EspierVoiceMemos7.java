@@ -394,7 +394,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         LinearLayout.LayoutParams lp1 = new android.widget.LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 56));
+        lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 36));
         lp1.weight = 1;
         textviewmemo.setLayoutParams(lp1);
         
