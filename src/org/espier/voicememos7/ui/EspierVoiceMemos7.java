@@ -351,9 +351,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void ScrollUp() {
-        RelativeLayout ll = (RelativeLayout) findViewById(R.id.playlayout);
+    	RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
+        editLayout.setVisibility(View.GONE);
+        
+        RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+        playLayout.setVisibility(View.VISIBLE);
+        
         TextView text = (TextView)findViewById(R.id.txtRecordName);
-        mainLayout.scrollTo(0, ll.getTop() );
+        mainLayout.scrollTo(0, playLayout.getTop() );
         hiddenView.setVisibility(View.INVISIBLE);
         txtRecordName.setVisibility(View.INVISIBLE);
         waveView.setVisibility(View.INVISIBLE);
@@ -834,18 +839,22 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 @Override
                 public void onClick(View v) {
                     mediaStatus = MEDIA_STATE_EDIT;
-                    start.setBackgroundResource(R.drawable.trim_play);
+                    RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
+                    editLayout.setVisibility(View.VISIBLE);
+                    
+                    RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+                    playLayout.setVisibility(View.GONE);
                     refreshNow(vh);
                     ScrollDown();
                     try {
-                    	mFile = new File(mCurrentPath);
-						mSoundFile = CheapSoundFile.create(mCurrentPath, null);
-						mSoundFile.ReadFile(mFile);
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+                        mFile = new File(mCurrentPath);
+                        mSoundFile = CheapSoundFile.create(mCurrentPath, null);
+                        mSoundFile.ReadFile(mFile);
+                        } catch (FileNotFoundException e) {
+                          e.printStackTrace();
+                          } catch (IOException e) {
+                            e.printStackTrace();
+                            }
                     
                     int[] framGains = mSoundFile.getFrameGains();
                     int sampleRate = mSoundFile.getSampleRate();
