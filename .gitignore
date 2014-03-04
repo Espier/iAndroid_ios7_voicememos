@@ -10,3 +10,4 @@ proguard/
 .classpath
 .project
 project.properties
+.DS_Store
