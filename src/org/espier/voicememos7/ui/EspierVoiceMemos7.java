@@ -95,6 +95,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public String memoName;
     private String memo_name;
     TextView txtRecordName;
+    View emptyView;
     public final float[] BT_SELECTED = new float[] {
             1, 0, 0, 0, -100, 0,
             1, 0, 0, -100, 0, 0, 1, 0, -100, 0, 0, 0, 1, 0
@@ -105,7 +106,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     };
     LinearLayout titlelayout;
     ImageView sound;
-    TextView textViewEdit,textviewmemo;
+    TextView textViewEdit, textviewmemo;
     Handler dialogdismiss = new Handler() {
 
         @Override
@@ -357,23 +358,29 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void init() {
         titlelayout = (LinearLayout) findViewById(R.id.title);
-        textViewEdit = (TextView)findViewById(R.id.edititem);
-        LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        textViewEdit = (TextView) findViewById(R.id.edititem);
+        LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.setMargins(ScalePx.scalePx(this, 19), ScalePx.scalePx(this, 28), 0, 0);
         lp.weight = 1;
-        
+
         textViewEdit.setLayoutParams(lp);
-        textviewmemo = (TextView)findViewById(R.id.name);
-        LinearLayout.LayoutParams lp1 = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        textviewmemo = (TextView) findViewById(R.id.name);
+        LinearLayout.LayoutParams lp1 = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 56));
-        lp1.weight =1;
-        
+        lp1.weight = 1;
+
         textviewmemo.setLayoutParams(lp1);
-        sound = (ImageView)findViewById(R.id.sound);
-        LinearLayout.LayoutParams lp3 = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        sound = (ImageView) findViewById(R.id.sound);
+        LinearLayout.LayoutParams lp3 = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 45), 0);
         lp3.weight = 1;
-        
+
         sound.setLayoutParams(lp3);
         waveView = (VoiceWaveView) findViewById(R.id.waveView);
         waveView.setMinimumWidth(500);
@@ -398,6 +405,65 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         new String[] {},
                         new int[] {});
         slideCutListView.setAdapter(mVoiceMemoListAdapter);
+        if (cs.getCount() == 0) {
+            emptyView = getLayoutInflater().inflate(R.layout.listviewempty, null);
+            TextView textview = (TextView) emptyView.findViewById(R.id.textView1);
+            RelativeLayout.LayoutParams lparam = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lparam.setMargins(ScalePx.scalePx(this, 30), 0, 0, 0);
+            textview.setLayoutParams(lparam);
+
+            ImageView image1 = (ImageView) emptyView.findViewById(R.id.imageView1);
+            RelativeLayout.LayoutParams lp = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            image1.setLayoutParams(lp);
+
+            ImageView image2 = (ImageView) emptyView.findViewById(R.id.imageView2);
+            RelativeLayout.LayoutParams lp2 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp2.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp2.addRule(RelativeLayout.BELOW, R.id.imageView1);
+            image2.setLayoutParams(lp2);
+
+            ImageView image3 = (ImageView) emptyView.findViewById(R.id.imageView3);
+            RelativeLayout.LayoutParams lp3 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp3.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp3.addRule(RelativeLayout.BELOW, R.id.imageView2);
+            image3.setLayoutParams(lp3);
+
+            ImageView image4 = (ImageView) emptyView.findViewById(R.id.imageView4);
+            RelativeLayout.LayoutParams lp4 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp4.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp4.addRule(RelativeLayout.BELOW, R.id.imageView3);
+            image4.setLayoutParams(lp4);
+
+            ImageView image5 = (ImageView) emptyView.findViewById(R.id.imageView5);
+            RelativeLayout.LayoutParams lp5 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp5.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp5.addRule(RelativeLayout.BELOW, R.id.imageView4);
+            image5.setLayoutParams(lp5);
+
+            ImageView image6 = (ImageView) emptyView.findViewById(R.id.imageView6);
+            RelativeLayout.LayoutParams lp6 = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp6.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
+            lp6.addRule(RelativeLayout.BELOW, R.id.imageView5);
+            image6.setLayoutParams(lp6);
+
+            ((ViewGroup) slideCutListView.getParent()).addView(emptyView);
+            slideCutListView.setEmptyView(emptyView);
+        }
     }
 
     @Override
@@ -450,6 +516,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         private int mDurationIdx;
         private int mCreateDateIdx;
         private int mCurrentBgColor;
+        Cursor c;
         private final Handler mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -468,7 +535,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             super(context, layout, c, from, to);
             mContext = context;
             mCurrentBgColor = Color.WHITE;
+            this.c = c;
             setupColumnIndices(c);
+        }
+
+        @Override
+        public int getCount() {
+            // TODO Auto-generated method stub
+            return c.getCount();
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -845,6 +919,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                 insertVoiceMemo(name);
                 waveView.clearData();
+                if (emptyView != null) {
+                    emptyView.setVisibility(View.GONE);
+                }
+
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 dialogdismiss.sendEmptyMessage(1);
                 txtRecordName.setText(getRecordName());
