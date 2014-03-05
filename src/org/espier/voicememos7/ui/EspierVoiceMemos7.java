@@ -787,7 +787,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
 
-    public void onVoiceEditClicked() {
+    public void onVoiceEditClicked(CheapSoundFile mSoundFile) {
 
         ScrollDown();
         RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);

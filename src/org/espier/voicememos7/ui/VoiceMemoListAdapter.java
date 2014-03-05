@@ -65,7 +65,7 @@ import java.util.List;
         public interface OnListViewChangedListener {
             public void onAChanged(Intent intent,int state);
             public void onBChanged();
-            public void onVoiceEditClicked();
+            public void onVoiceEditClicked(CheapSoundFile mSoundFile);
           }
         OnListViewChangedListener mOnListViewChangedListener = null;
         
@@ -95,9 +95,9 @@ import java.util.List;
             if (mOnListViewChangedListener != null) mOnListViewChangedListener.onBChanged();
           }
         
-        private void setOnVoiceEditClicked() {
+        private void setOnVoiceEditClicked(CheapSoundFile mSoundFile) {
             Log.d("asdf","in C event");
-            if (mOnListViewChangedListener != null) mOnListViewChangedListener.onVoiceEditClicked();
+            if (mOnListViewChangedListener != null) mOnListViewChangedListener.onVoiceEditClicked(mSoundFile);
         }
           
           
@@ -396,15 +396,6 @@ import java.util.List;
                 @Override
                 public void onClick(View v) {
                     mediaStatus = MEDIA_STATE_EDIT;
-                    Log.d("adf","click edit button");
-//                    RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
-//                    editLayout.setVisibility(View.VISIBLE);
-//                    
-//                    RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
-//                    playLayout.setVisibility(View.GONE);
-                    
-                    setOnVoiceEditClicked();
-                    refreshNow(vh);
                     
                     try {
                         mFile = new File(mCurrentPath);
@@ -416,11 +407,11 @@ import java.util.List;
                             e.printStackTrace();
                             }
                     
-                    int[] framGains = mSoundFile.getFrameGains();
-                    int sampleRate = mSoundFile.getSampleRate();
-                    int numFrames = mSoundFile.getNumFrames();
-                    double []gainHeights = computeGainHeights();
-                    //setBChanged();
+//                    int[] framGains = mSoundFile.getFrameGains();
+//                    int sampleRate = mSoundFile.getSampleRate();
+//                    int numFrames = mSoundFile.getNumFrames();
+//                    double []gainHeights = computeGainHeights();
+                    setOnVoiceEditClicked(mSoundFile);
                 }
             });
 
