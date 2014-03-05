@@ -449,6 +449,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
         date.setText(datetime);
         listViewaddData();
+        mVoiceMemoListAdapter.setOnListViewChangedListener(this);
         mVoiceMemoListAdapter.mRecorder = mRecorder;
          
     }
@@ -754,12 +755,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     public void onBChanged() {
-        ScrollDown();
+        
         
     }
 
     @Override
     public void onCChanged() {
+        Log.d("asdf","in Cchanged");
+        ScrollDown();
         RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
         editLayout.setVisibility(View.VISIBLE);
         

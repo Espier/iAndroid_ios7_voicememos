@@ -95,6 +95,7 @@ import java.util.List;
           }
         
         private void setCChanged() {
+            Log.d("asdf","in C event");
             if (mOnListViewChangedListener != null) mOnListViewChangedListener.onCChanged();
         }
           
@@ -387,6 +388,7 @@ import java.util.List;
                 @Override
                 public void onClick(View v) {
                     mediaStatus = MEDIA_STATE_EDIT;
+                    Log.d("adf","click edit button");
 //                    RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
 //                    editLayout.setVisibility(View.VISIBLE);
 //                    
@@ -410,7 +412,7 @@ import java.util.List;
                     int sampleRate = mSoundFile.getSampleRate();
                     int numFrames = mSoundFile.getNumFrames();
                     double []gainHeights = computeGainHeights();
-                    setBChanged();
+                    //setBChanged();
                 }
             });
 
