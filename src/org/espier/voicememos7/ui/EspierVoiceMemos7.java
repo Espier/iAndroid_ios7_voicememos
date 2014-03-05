@@ -797,6 +797,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         playLayout.setVisibility(View.GONE);
         
         waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
-        
+        waveView.setCheapSoundFile(mSoundFile);
     }
 }
