@@ -1,8 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
-import android.R.integer;
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -13,19 +12,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.format.DateFormat;
-import android.util.Log;
-import android.view.Gravity;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,7 +30,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
+
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,7 +40,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,18 +48,13 @@ import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveDirection;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
-import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
 import org.espier.voicememos7.util.StorageUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TimerTask;
 
 public class EspierVoiceMemos7 extends Activity implements RemoveListener,
@@ -761,7 +752,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     public void onCChanged() {
-        Log.d("asdf","in Cchanged");
+        
         ScrollDown();
         RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
         editLayout.setVisibility(View.VISIBLE);
