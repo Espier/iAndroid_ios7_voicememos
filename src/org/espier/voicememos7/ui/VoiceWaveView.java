@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 
 import android.view.View;
 
+import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
 
@@ -30,6 +31,7 @@ public class VoiceWaveView extends View implements OnGestureListener{
 
     long time;
     long time_to_edit = 0;
+    
     //public float time_axix_len;
     public static final int invalidate_rate = 20;
     
@@ -104,6 +106,29 @@ public class VoiceWaveView extends View implements OnGestureListener{
     public static final int VIEW_STATUS_RECORD = 0;
     public static final int VIEW_STATUS_TO_EDIT = 1;
     public static final int VIEW_STATUS_EDIT = 2;
+    
+    
+    CheapSoundFile cheapSoundFile;
+    
+
+    
+
+    
+
+    /**
+     * @return the cheapSoundFile
+     */
+    public CheapSoundFile getCheapSoundFile() {
+        return cheapSoundFile;
+    }
+
+    /**
+     * @param cheapSoundFile the cheapSoundFile to set
+     */
+    public void setCheapSoundFile(CheapSoundFile cheapSoundFile) {
+        this.cheapSoundFile = cheapSoundFile;
+    }
+
     /**
      * @return the viewStatus
      */
@@ -119,7 +144,20 @@ public class VoiceWaveView extends View implements OnGestureListener{
         invalidate();
     }
 
-    
+    /**
+     * @return the time_to_edit
+     */
+    public long getTime_to_edit() {
+        return time_to_edit;
+    }
+
+    /**
+     * @param time_to_edit the time_to_edit to set
+     */
+    public void setTime_to_edit(long time_to_edit) {
+        this.time_to_edit = time_to_edit;
+    }
+
     
     
     
@@ -157,6 +195,7 @@ public class VoiceWaveView extends View implements OnGestureListener{
 
     private void init()
     {
+        //startPlay();
         gestureDetector = new GestureDetector(this);
         viewStatus = VIEW_STATUS_RECORD;
         voiceLinePaint = new Paint();
@@ -305,7 +344,7 @@ public class VoiceWaveView extends View implements OnGestureListener{
         float q  = (x<start_move_time_textview)?0:(x-start_move_time_textview);
         try {
             drawSlideLine(canvas, x);
-            drawVoice(canvas, x,margin_lef_init);
+            drawVoiceToEdit(canvas, x,margin_lef_init);
             drawTimeTextViewToEdit(canvas, q);
             drawXAxisToEdit(canvas,margin_lef_init);
             drawYAxis(canvas);
@@ -403,6 +442,111 @@ public class VoiceWaveView extends View implements OnGestureListener{
         }
         
 
+    }
+    
+    private void drawVoiceToEdit(Canvas canvas, float s,float offset)
+    {
+        if (cheapSoundFile!=null) {
+            int frameGains[] = cheapSoundFile.getFrameGains();
+            int sampleRate = cheapSoundFile.getSampleRate();
+            int numFrames = cheapSoundFile.getNumFrames();
+            double heights[] = this.computeGainHeights(cheapSoundFile); 
+            int mSamplePerFrame = cheapSoundFile.getSamplesPerFrame();
+            double time = (mSamplePerFrame * numFrames)/sampleRate;
+            float timePerFrame = mSamplePerFrame*1000/sampleRate;
+            Log.e("sampleRate--numFrames", sampleRate+","+numFrames+","+frameGains.length);
+            
+            for (int i = 0; i < numFrames; i++) {
+                x = i;
+                canvas.drawLine(x, y_mid_line - (float)frameGains[i], 
+                        x, y_mid_line + (float)frameGains[i], voiceLinePaint);
+            }
+        }
+        
+
+    }
+    
+    
+    private double[] computeGainHeights(CheapSoundFile mSoundFile)
+    {
+        int numFrames = mSoundFile.getNumFrames();
+        int[] frameGains = mSoundFile.getFrameGains();
+        double[] smoothedGains = new double[numFrames];
+        if (numFrames == 1) {
+            smoothedGains[0] = frameGains[0];
+        } else if (numFrames == 2) {
+            smoothedGains[0] = frameGains[0];
+            smoothedGains[1] = frameGains[1];
+        } else if (numFrames > 2) {
+            smoothedGains[0] = (double)(
+                (frameGains[0] / 2.0) +
+                (frameGains[1] / 2.0));
+            for (int i = 1; i < numFrames - 1; i++) {
+                smoothedGains[i] = (double)(
+                    (frameGains[i - 1] / 3.0) +
+                    (frameGains[i    ] / 3.0) +
+                    (frameGains[i + 1] / 3.0));
+            }
+            smoothedGains[numFrames - 1] = (double)(
+                (frameGains[numFrames - 2] / 2.0) +
+                (frameGains[numFrames - 1] / 2.0));
+        }
+
+        // Make sure the range is no more than 0 - 255
+        double maxGain = 1.0;
+        for (int i = 0; i < numFrames; i++) {
+            if (smoothedGains[i] > maxGain) {
+                maxGain = smoothedGains[i];
+            }
+        }
+        double scaleFactor = 1.0;
+        if (maxGain > 255.0) {
+            scaleFactor = 255 / maxGain;
+        }        
+
+        // Build histogram of 256 bins and figure out the new scaled max
+        maxGain = 0;
+        int gainHist[] = new int[256];
+        for (int i = 0; i < numFrames; i++) {
+            int smoothedGain = (int)(smoothedGains[i] * scaleFactor);
+            if (smoothedGain < 0)
+                smoothedGain = 0;
+            if (smoothedGain > 255)
+                smoothedGain = 255;
+
+            if (smoothedGain > maxGain)
+                maxGain = smoothedGain;
+
+            gainHist[smoothedGain]++;
+        }
+
+        // Re-calibrate the min to be 5%
+        double minGain = 0;
+        int sum = 0;
+        while (minGain < 255 && sum < numFrames / 20) {
+            sum += gainHist[(int)minGain];
+            minGain++;
+        }
+
+        // Re-calibrate the max to be 99%
+        sum = 0;
+        while (maxGain > 2 && sum < numFrames / 100) {
+            sum += gainHist[(int)maxGain];
+            maxGain--;
+        }
+
+        // Compute the heights
+        double[] heights = new double[numFrames];
+        double range = maxGain - minGain;
+        for (int i = 0; i < numFrames; i++) {
+            double value = (smoothedGains[i] * scaleFactor - minGain) / range;
+            if (value < 0.0)
+                value = 0.0;
+            if (value > 1.0)
+                value = 1.0;
+            heights[i] = value * value;
+        }
+        return heights;
     }
 
     private void drawXAxis(Canvas canvas,float offset)
@@ -554,82 +698,59 @@ public class VoiceWaveView extends View implements OnGestureListener{
 
     public void start()
     {
-        timer = new Timer();
-        timerTask = new TimerTask() {
+        if (viewStatus == VIEW_STATUS_RECORD) {
+            timer = new Timer();
+            timerTask = new TimerTask() {
 
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                if (viewStatus!=VIEW_STATUS_RECORD || recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
-                    return;
-                }
-
-                try {
-                    //Log.e("task", "running...");
-                    time += invalidate_rate;
-//                    t_list.add(System.currentTimeMillis());
-//                    Log.e("duration", t_list.get(t_list.size()-1)-t_list.get(t_list.size()-2)+"");
-                    //if (time >= time_x * 1000 / 2) 
-                    if (x >= w / 2)
-                    {
-                        if (time<time_x/2*1000) {
-                            left_distance_time+=invalidate_rate;
-                        }
-
-                        second_index++;
-                        if (1000 / invalidate_rate == second_index) {
-                            second_index = 0;
-                            time_list.remove(0);
-                            time_list.add(time_list.get(time_list.size() - 1) + 1);
-                        }
-                        voice_list.remove(0);
-                    }
-                    if (recorder!=null && !recorder.isReSet) {
-                        int amp = recorder.getMaxAmplitude();
-                        voice_list.add( amp/ 300f);
-                        
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    if (viewStatus!=VIEW_STATUS_RECORD || recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
+                        return;
                     }
 
-                    // voice_list.add(recorder.getMaxAmplitude() / 300);
+                    try {
+                        //Log.e("task", "running...");
+                        time += invalidate_rate;
+//                        t_list.add(System.currentTimeMillis());
+//                        Log.e("duration", t_list.get(t_list.size()-1)-t_list.get(t_list.size()-2)+"");
+                        //if (time >= time_x * 1000 / 2) 
+                        if (x >= w / 2)
+                        {
+                            if (time<time_x/2*1000) {
+                                left_distance_time+=invalidate_rate;
+                            }
 
-                    Message msg = new Message();
-                    msg.what = 1;
-                    handler.sendMessage(msg);
-                } catch (Exception e) {
-                    Log.e("task err:", e.toString());
+                            second_index++;
+                            if (1000 / invalidate_rate == second_index) {
+                                second_index = 0;
+                                time_list.remove(0);
+                                time_list.add(time_list.get(time_list.size() - 1) + 1);
+                            }
+                            voice_list.remove(0);
+                        }
+                        if (recorder!=null && !recorder.isReSet) {
+                            int amp = recorder.getMaxAmplitude();
+                            voice_list.add( amp/ 300f);
+                            
+                        }
+
+                        // voice_list.add(recorder.getMaxAmplitude() / 300);
+
+                        Message msg = new Message();
+                        msg.what = 1;
+                        handler.sendMessage(msg);
+                    } catch (Exception e) {
+                        Log.e("task err:", e.toString());
+                    }
+
                 }
+            };
+            timer.schedule(timerTask, invalidate_rate, invalidate_rate);
 
-            }
-        };
-
-//        TimerTask getAmpTask = new TimerTask() {
-//
-//            @Override
-//            public void run() {
-//                if (recorder.getState() != Recorder.RECORDING_STATE) {
-//                    return;
-//                }
-//                try {
-//                    if (time >= time_x * 1000 / 2)
-//                    {
-//                        voice_list.remove(0);
-//
-//                    }
-//                    if (recorder!=null && !recorder.isReSet) {
-//                        int amp = recorder.getMaxAmplitude();
-//                        voice_list.add( amp/ 300f);
-//                        
-//                    }
-//                    
-//                } catch (Exception e) {
-//
-//                }
-//
-//            }
-//        };
-        timer.schedule(timerTask, invalidate_rate, invalidate_rate);
-        //timer.schedule(getAmpTask, 20, 60);
-
+        }
+  
+        
     }
 
     public void pause()
@@ -653,6 +774,36 @@ public class VoiceWaveView extends View implements OnGestureListener{
             timerTask.cancel();
             timerTask = null;
         }
+    }
+    
+    public void startPlay()
+    {
+       // if (viewStatus == VIEW_STATUS_TO_EDIT) {
+            timer = new Timer();
+            timerTask = new TimerTask() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    if (viewStatus!=VIEW_STATUS_TO_EDIT || recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
+                        return;
+                    }
+
+                    try {
+                        time_to_edit+=invalidate_rate;
+
+                        Message msg = new Message();
+                        msg.what = 1;
+                        handler.sendMessage(msg);
+                    } catch (Exception e) {
+                        Log.e("task err:", e.toString());
+                    }
+
+                }
+            };
+            timer.schedule(timerTask, invalidate_rate, invalidate_rate);
+
+        //}
     }
 
     public void clearData()
@@ -716,12 +867,13 @@ public class VoiceWaveView extends View implements OnGestureListener{
     @Override
     public boolean onDown(MotionEvent e) {
         // TODO Auto-generated method stub
-        Log.e("down", "down");
+        //Log.e("down", "down");
         return true;
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        /*
         final int FLING_MIN_DISTANCE = 100, FLING_MIN_VELOCITY = 200;
         if (Math.abs(e1.getX() - e2.getX()) > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
             // Fling left
@@ -756,8 +908,10 @@ public class VoiceWaveView extends View implements OnGestureListener{
             //Log.i("MyGesture", "Fling right");
             
         }
-        
+        */
         return false;
+        
+       
     }
     
     
@@ -774,6 +928,9 @@ public class VoiceWaveView extends View implements OnGestureListener{
         //Log.e("s", distanceX+"");
         int t = (int)(distanceX*time_per_pixel);
         time_to_edit += t;
+        if (time_to_edit<0) {
+            time_to_edit = 0;
+        }
         
         invalidate();
         return true;
