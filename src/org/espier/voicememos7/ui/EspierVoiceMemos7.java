@@ -606,6 +606,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 29));
         textlay.addRule(RelativeLayout.BELOW, R.id.textView2);
         text.setLayoutParams(textlay);
+        text.setSelection(txtRecordName.getText().length());
+        text.setPadding(ScalePx.scalePx(this, 16), 
+                ScalePx.scalePx(this, 16), 
+                ScalePx.scalePx(this, 16), ScalePx.scalePx(this, 16));
         ImageView imag = (ImageView) view.findViewById(R.id.h_line);
         imag.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, ScalePx.scalePx(this, 88)));
