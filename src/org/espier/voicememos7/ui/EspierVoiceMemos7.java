@@ -162,7 +162,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_memo_main);
-
+        init();
         TextView txtMainTitle = (TextView) findViewById(R.id.txtMainTitle);
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
@@ -225,15 +225,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         start.setOnTouchListener(startTouchListener);
 
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        init();
+       
     }
 
     private CharSequence getRecordName() {
         // TODO Auto-generated method stub
         SharedPreferences sp = this.getSharedPreferences("espier", this.MODE_PRIVATE);
         String exitindexs = sp.getString("indexs", "");
-        if (exitindexs.equals("")) {
-            memo_name = this.getResources().getString(R.string.record_name).toString() + " ";
+        if (exitindexs.equals("")||mVoiceMemoListAdapter.c.getCount()==0) {
+            memo_name = this.getResources().getString(R.string.record_name).toString();
         } else {
             for(int i=2;i<10000;i++){
                 String index = ","+i+",";
@@ -273,8 +273,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 } else {
                     mRecorder.startRecording(this);
                     start.setBackgroundResource(R.drawable.stop_red);
-
+                    
                     waveView.start();
+                    if(txtRecordName.getText().toString().equals("")){
+                        txtRecordName.setText(getRecordName());
+                    }
                     ScrollDown();
                 }
 
@@ -377,6 +380,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void init() {
+        slideCutListView = (SlideCutListView) findViewById(R.id.listView);
+        listViewaddData();
         titlelayout = (LinearLayout) findViewById(R.id.titlelay);
         textViewEdit = (TextView) findViewById(R.id.edititem);
         LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
@@ -434,12 +439,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         waveView.setRecorder(mRecorder);
         finished = (TextView) findViewById(R.id.finished);
         finished.setOnClickListener(this);
-        slideCutListView = (SlideCutListView) findViewById(R.id.listView);
+        
         slideCutListView.setRemoveListener(this);
         date = (TextView) findViewById(R.id.txtDate);
         String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
         date.setText(datetime);
-        listViewaddData();
+       
         mVoiceMemoListAdapter.setOnListViewChangedListener(this);
         mVoiceMemoListAdapter.mRecorder = mRecorder;
          
@@ -644,7 +649,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 dialogdismiss.sendEmptyMessage(1);
-                txtRecordName.setText(getRecordName());
+                txtRecordName.setText("");
                 ScrollUp();
             }
         });
