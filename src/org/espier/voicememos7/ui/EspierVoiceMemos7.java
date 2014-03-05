@@ -385,7 +385,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void init() {
         titlelayout = (LinearLayout) findViewById(R.id.titlelay);
-        textViewEdit = (TextView) findViewById(R.id.edititem);
+        textViewEdit = (TextView) findViewById(R.id.editButton);
         LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -777,5 +777,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
         
+    }
+
+    @Override
+    public void DisplayEditButton(boolean isDisplay) {
+        TextView tvEdit = (TextView)findViewById(R.id.editButton);
+        if (isDisplay)
+            tvEdit.setVisibility(View.VISIBLE);
+        else 
+            tvEdit.setVisibility(View.INVISIBLE);
     }
 }

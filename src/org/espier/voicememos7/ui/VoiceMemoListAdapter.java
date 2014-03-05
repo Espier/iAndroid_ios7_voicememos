@@ -66,6 +66,7 @@ import java.util.List;
             public void onAChanged(Intent intent,int state);
             public void onBChanged();
             public void onVoiceEditClicked();
+            public void DisplayEditButton(boolean isDisplay);
           }
         OnListViewChangedListener mOnListViewChangedListener = null;
         
@@ -94,6 +95,10 @@ import java.util.List;
         private void setBChanged() {
             if (mOnListViewChangedListener != null) mOnListViewChangedListener.onBChanged();
           }
+        
+        private void DisplayEditButton(boolean isDisplay) {
+            if (mOnListViewChangedListener != null) mOnListViewChangedListener.DisplayEditButton(isDisplay);
+        }
         
         private void setOnVoiceEditClicked() {
             Log.d("asdf","in C event");
@@ -277,6 +282,7 @@ import java.util.List;
                 public void onClick(View v) {
                     //close view
                     if (lastView != null && isClose) {
+                        DisplayEditButton(true);
                         vh.tag.setTextColor(mContext.getResources().getColor(R.color.black));
                         vh.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
                         vh.duration.setTextColor(mContext.getResources().getColor(R.color.black));
@@ -305,7 +311,7 @@ import java.util.List;
                         return;
                     } else {
                     //expand the view
-                    
+                        DisplayEditButton(false);
                     LinearLayout layout = (LinearLayout) v.findViewById(R.id.playlayout);
                     layout.setVisibility(View.VISIBLE);
 
