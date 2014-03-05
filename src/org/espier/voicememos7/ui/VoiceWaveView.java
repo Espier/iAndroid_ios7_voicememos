@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 
 import android.view.View;
 
+import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
 
@@ -106,23 +107,26 @@ public class VoiceWaveView extends View implements OnGestureListener{
     public static final int VIEW_STATUS_TO_EDIT = 1;
     public static final int VIEW_STATUS_EDIT = 2;
     
-    int[] voiceDataToEdit;
+    
+    CheapSoundFile cheapSoundFile;
+    
+
     
 
     
 
     /**
-     * @return the voiceDataToEdit
+     * @return the cheapSoundFile
      */
-    public int[] getVoiceDataToEdit() {
-        return voiceDataToEdit;
+    public CheapSoundFile getCheapSoundFile() {
+        return cheapSoundFile;
     }
 
     /**
-     * @param voiceDataToEdit the voiceDataToEdit to set
+     * @param cheapSoundFile the cheapSoundFile to set
      */
-    public void setVoiceDataToEdit(int[] voiceDataToEdit) {
-        this.voiceDataToEdit = voiceDataToEdit;
+    public void setCheapSoundFile(CheapSoundFile cheapSoundFile) {
+        this.cheapSoundFile = cheapSoundFile;
     }
 
     /**
@@ -340,7 +344,7 @@ public class VoiceWaveView extends View implements OnGestureListener{
         float q  = (x<start_move_time_textview)?0:(x-start_move_time_textview);
         try {
             drawSlideLine(canvas, x);
-            drawVoice(canvas, x,margin_lef_init);
+            drawVoiceToEdit(canvas, x,margin_lef_init);
             drawTimeTextViewToEdit(canvas, q);
             drawXAxisToEdit(canvas,margin_lef_init);
             drawYAxis(canvas);
@@ -412,6 +416,38 @@ public class VoiceWaveView extends View implements OnGestureListener{
 //
 //        }
 //        canvas.drawLines(points, voiceLinePaint);
+        
+        for(int i=0;i<voice_list.size();i++)
+        {
+            float x_;
+            if (x>=w/2) {
+                
+                if (time<time_x/2*1000) {
+                    float ss = offset-left_distance_time*v;
+                    x_ = (s-ss)/n*i+ss;
+                }
+                else {
+                    x_ = (s / n) * i;
+                    //x_ = v*invalidate_rate*i;
+                }
+                
+            }
+            else {
+                //x_ = (s-offset)/n*i+offset;
+                x_ = offset+ v*invalidate_rate*i;
+            }
+            canvas.drawLine(x_, y_mid_line - voice_list.get(i), 
+                            x_, y_mid_line + voice_list.get(i), voiceLinePaint);
+            
+        }
+        
+
+    }
+    
+    private void drawVoiceToEdit(Canvas canvas, float s,float offset)
+    {
+        int n = voice_list.size();
+
         
         for(int i=0;i<voice_list.size();i++)
         {
