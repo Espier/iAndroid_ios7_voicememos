@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.sax.TextElementListener;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
@@ -117,6 +118,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private final int MEDIA_STATE_RECORDING = 0;
     private final int MEDIA_STATE_EDIT = 1;
     private int mediaStatus = 0;
+    
+    //Voice Edit Layout
+    private TextView textVoiceNameInEditMode;
+    private TextView textVoiceTimeInEditMode;
+    private ImageView imageViewVoicePlayInEditMode;
+    private ImageView imageViewVoiceCropInEditMode;
+    private TextView textViewVoiceEditFinishInEditMode;
     
     LinearLayout titlelayout;
     ImageView sound;
@@ -237,6 +245,26 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         init();
     }
 
+    private void initEditLayout()
+    {
+    	textVoiceNameInEditMode = (TextView)findViewById(R.id.edittxtRecordName);
+        textVoiceTimeInEditMode = (TextView)findViewById(R.id.edittxtDate);
+        imageViewVoiceCropInEditMode = (ImageView)findViewById(R.id.editimage);
+        imageViewVoicePlayInEditMode = (ImageView)findViewById(R.id.editredButton);
+        textViewVoiceEditFinishInEditMode = (TextView)findViewById(R.id.editfinished);
+        
+        imageViewVoicePlayInEditMode.setOnClickListener(new View.OnClickListener() {
+        
+            @Override
+            public void onClick(View v) {
+            if(mediaStatus == VoiceWaveView.VIEW_STATUS_EDIT)
+            {
+            	
+            }
+         }
+       });
+    }
+    
     private CharSequence getRecordName() {
         // TODO Auto-generated method stub
         SharedPreferences sp = this.getSharedPreferences("espier", this.MODE_PRIVATE);
@@ -451,6 +479,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         listViewaddData();
         mVoiceMemoListAdapter.setOnListViewChangedListener(this);
         mVoiceMemoListAdapter.mRecorder = mRecorder;
+        
+        this.initEditLayout();
          
     }
 
