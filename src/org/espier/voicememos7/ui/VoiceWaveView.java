@@ -446,31 +446,17 @@ public class VoiceWaveView extends View implements OnGestureListener{
     
     private void drawVoiceToEdit(Canvas canvas, float s,float offset)
     {
-        int n = voice_list.size();
-
-        
-        for(int i=0;i<voice_list.size();i++)
-        {
-            float x_;
-            if (x>=w/2) {
-                
-                if (time<time_x/2*1000) {
-                    float ss = offset-left_distance_time*v;
-                    x_ = (s-ss)/n*i+ss;
-                }
-                else {
-                    x_ = (s / n) * i;
-                    //x_ = v*invalidate_rate*i;
-                }
-                
-            }
-            else {
-                //x_ = (s-offset)/n*i+offset;
-                x_ = offset+ v*invalidate_rate*i;
-            }
-            canvas.drawLine(x_, y_mid_line - voice_list.get(i), 
-                            x_, y_mid_line + voice_list.get(i), voiceLinePaint);
+        if (cheapSoundFile!=null) {
+            int frameGains[] = cheapSoundFile.getFrameGains();
+            int sampleRate = cheapSoundFile.getSampleRate();
+            int numFrames = cheapSoundFile.getNumFrames();
+            Log.e("sampleRate--numFrames", sampleRate+","+numFrames+","+frameGains.length);
             
+            for (int i = 0; i < frameGains.length; i++) {
+                x = i;
+                canvas.drawLine(x, y_mid_line - frameGains[i], 
+                        x, y_mid_line + frameGains[i], voiceLinePaint);
+            }
         }
         
 
