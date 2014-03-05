@@ -398,8 +398,8 @@ import java.util.List;
                     mediaStatus = MEDIA_STATE_EDIT;
                     
                     try {
-                        mFile = new File(mCurrentPath);
-                        mSoundFile = CheapSoundFile.create(mCurrentPath, null);
+                        mFile = new File(path);
+                        mSoundFile = CheapSoundFile.create(path, null);
                         mSoundFile.ReadFile(mFile);
                         } catch (FileNotFoundException e) {
                           e.printStackTrace();
@@ -407,10 +407,12 @@ import java.util.List;
                             e.printStackTrace();
                             }
                     
-//                    int[] framGains = mSoundFile.getFrameGains();
-//                    int sampleRate = mSoundFile.getSampleRate();
-//                    int numFrames = mSoundFile.getNumFrames();
-//                    double []gainHeights = computeGainHeights();
+                    int[] framGains = mSoundFile.getFrameGains();
+                    int sampleRate = mSoundFile.getSampleRate();
+                    int numFrames = mSoundFile.getNumFrames();
+                    double []gainHeights = computeGainHeights();
+                    
+                    double time = (mSoundFile.getSamplesPerFrame() * numFrames)/sampleRate;
                     setOnVoiceEditClicked(mSoundFile);
                 }
             });
