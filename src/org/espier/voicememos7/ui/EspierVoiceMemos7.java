@@ -760,7 +760,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     @Override
-    public void onCChanged() {
+    public void onVoiceEditClicked() {
         Log.d("asdf","in Cchanged");
         ScrollDown();
         RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
@@ -768,6 +768,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
         playLayout.setVisibility(View.GONE);
+        
+        waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
         
     }
 }
