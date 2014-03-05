@@ -1,5 +1,6 @@
 package org.espier.voicememos7.ui;
 
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,7 +11,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
+//import android.view.View;
+
 import android.view.View;
 
 import org.espier.voicememos7.util.Recorder;
@@ -21,7 +26,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class VoiceWaveView extends View {
+public class VoiceWaveView extends View implements OnGestureListener{
 
     long time;
     long time_to_edit = 0;
@@ -90,6 +95,7 @@ public class VoiceWaveView extends View {
     float x = 0;
     
     float down_x;
+    GestureDetector gestureDetector ;
     
     /***
      * view status
@@ -151,6 +157,7 @@ public class VoiceWaveView extends View {
 
     private void init()
     {
+        gestureDetector = new GestureDetector(this);
         viewStatus = VIEW_STATUS_RECORD;
         voiceLinePaint = new Paint();
         voiceLinePaint.setStrokeWidth(2.0f);
@@ -424,6 +431,8 @@ public class VoiceWaveView extends View {
         }
     }
     
+    
+    
     private void drawXAxisToEdit(Canvas canvas,float offset)
     {
 
@@ -681,26 +690,108 @@ public class VoiceWaveView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (getViewStatus()==VIEW_STATUS_TO_EDIT) {
+            return gestureDetector.onTouchEvent(event);
+                    
             
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    down_x = event.getX();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    float xNew = event.getX();
-                    float ss = down_x-xNew;
-                    int t = (int)(ss*time_per_pixel);
-                    time_to_edit += t;
-                    down_x = xNew;
-                    invalidate();
-                    break;
-
-                default:
-                    break;
-            }
+//            switch (event.getAction()) {
+//                case MotionEvent.ACTION_DOWN:
+//                    down_x = event.getX();
+//                    break;
+//                case MotionEvent.ACTION_MOVE:
+//                    float xNew = event.getX();
+//                    float ss = down_x-xNew;
+//                    int t = (int)(ss*time_per_pixel);
+//                    time_to_edit += t;
+//                    down_x = xNew;
+//                    invalidate();
+//                    break;
+//
+//                default:
+//                    break;
+//            }
         }
         return true;
     }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        // TODO Auto-generated method stub
+        Log.e("down", "down");
+        return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        final int FLING_MIN_DISTANCE = 100, FLING_MIN_VELOCITY = 200;
+        if (Math.abs(e1.getX() - e2.getX()) > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
+            // Fling left
+           // Log.i("MyGesture", "Fling left");
+            float v =(velocityX)/1000 ;
+            float a = 0.05f;
+            float t = Math.abs(v/a);
+            Log.e("t", t+"");
+            float intval = 10;
+            
+            while (t>0) {
+                float s = v*intval-a*intval*intval/2;
+                v = v-a*intval;
+                
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                
+                t-=intval;
+                time_to_edit += (int)(s*time_per_pixel);
+                if (time_to_edit<0) {
+                    time_to_edit = 0;
+                }
+                Log.e("time", time_to_edit+"");
+                invalidate();
+            }
+        } else if (e2.getX() - e1.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
+            // Fling right
+            //Log.i("MyGesture", "Fling right");
+            
+        }
+        
+        return false;
+    }
+    
+    
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        // TODO Auto-generated method stub
+        //Log.e("s", distanceX+"");
+        int t = (int)(distanceX*time_per_pixel);
+        time_to_edit += t;
+        
+        invalidate();
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        // TODO Auto-generated method stub
+        return true;
+    }
+
+    
     
     
 
