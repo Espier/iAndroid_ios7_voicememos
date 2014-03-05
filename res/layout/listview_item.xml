@@ -14,6 +14,7 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:clickable="false"
+            android:ellipsize = "end"
             android:focusable="false"
             android:inputType="text"
             android:singleLine="true"

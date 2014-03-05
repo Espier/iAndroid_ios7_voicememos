@@ -94,6 +94,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     int indexnum;
     private CheapSoundFile mSoundFile;
     private File mFile;
+    private boolean firstTime = true;
     TextView txtRecordName;
     View emptyView;
     public final float[] BT_SELECTED = new float[] {
@@ -253,9 +254,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.finished:
-                stop();
+                if (firstTime) {
+                    ScrollUp();
+                    firstTime = false;
+                } else {
+                    stop();
+                }
                 break;
             case R.id.redButton:
+                firstTime = false;
                 if (!StorageUtil.hasDiskSpace()) {
                     Toast.makeText(this, R.string.storage_is_full, Toast.LENGTH_SHORT).show();
                     return;
@@ -606,16 +613,19 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 29));
         textlay.addRule(RelativeLayout.BELOW, R.id.textView2);
         text.setLayoutParams(textlay);
-        text.setSelection(txtRecordName.getText().length());
+        
         text.setPadding(ScalePx.scalePx(this, 16), 
                 ScalePx.scalePx(this, 16), 
                 ScalePx.scalePx(this, 16), ScalePx.scalePx(this, 16));
+        text.setSingleLine(true);
+        text.setSelection(txtRecordName.getText().length());
         ImageView imag = (ImageView) view.findViewById(R.id.h_line);
         imag.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, ScalePx.scalePx(this, 88)));
 
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
         TextView ok = (TextView) view.findViewById(R.id.ok);
+        //ok.setBackgroundColor(getResources().getColor(R.color.red));
         cancel.setOnClickListener(new View.OnClickListener() {
 
             @Override
