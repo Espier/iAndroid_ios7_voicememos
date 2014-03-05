@@ -23,6 +23,7 @@ import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -323,7 +324,7 @@ public class VoiceWaveView extends View implements OnGestureListener{
             drawXAxis(canvas,margin_lef_init);
             drawYAxis(canvas);
         } catch (Exception e) {
-            
+            Log.e("draw err", e.toString());
         }
     }
     
@@ -344,12 +345,13 @@ public class VoiceWaveView extends View implements OnGestureListener{
         float q  = (x<start_move_time_textview)?0:(x-start_move_time_textview);
         try {
             drawSlideLine(canvas, x);
-            drawVoiceToEdit(canvas, x,margin_lef_init);
+            
             drawTimeTextViewToEdit(canvas, q);
             drawXAxisToEdit(canvas,margin_lef_init);
             drawYAxis(canvas);
+            drawVoiceToEdit(canvas, x,margin_lef_init);
         } catch (Exception e) {
-            
+            Log.e("drawToEdit err", e.toString());
         }
     }
     
@@ -455,12 +457,55 @@ public class VoiceWaveView extends View implements OnGestureListener{
             double time = (mSamplePerFrame * numFrames)/sampleRate;
             float timePerFrame = mSamplePerFrame*1000/sampleRate;
             Log.e("sampleRate--numFrames", sampleRate+","+numFrames+","+frameGains.length);
+           
+            int max = getMax(frameGains);
+            float height = getHeight();
+            float factor = height*0.8f/max;
             
-            for (int i = 0; i < numFrames; i++) {
-                x = i;
-                canvas.drawLine(x, y_mid_line - (float)frameGains[i], 
-                        x, y_mid_line + (float)frameGains[i], voiceLinePaint);
-            }
+            
+            
+            float x_ = 0;
+            //帧间距
+            float step_width =w*timePerFrame/ (time_x*1000);
+            //能显示的帧数
+            int display_num = (int)(time_x*1000/timePerFrame);
+            
+            
+            //计算当前时间帧位置
+            int index = (int)(time_to_edit/timePerFrame);
+            
+            Log.e("display num,index", display_num+","+index);
+//            if (index<display_num/2) {
+//                for(int i=index;i>0;i--)
+//                {
+//                    x_ = w/2-(index-i)*step_width;
+//                    canvas.drawLine(x_, y_mid_line - (float)frameGains[i]/20, 
+//                            x_, y_mid_line + (float)frameGains[i]/20, voiceLinePaint);
+//                }
+//                for(int i=index,j=0;i<numFrames&&j<display_num/2;i++,j++)
+//                {
+//                    x_ = w/2+(i-index)*step_width;
+//                    canvas.drawLine(x_, y_mid_line - (float)frameGains[i]/20, 
+//                            x_, y_mid_line + (float)frameGains[i]/20, voiceLinePaint);
+//                }
+//            }
+//            else {
+                for(int i=index,j=display_num/2;i>0&&j>0;i--,j--)
+                {
+                    x_ = w/2-(index-i)*step_width;
+                    canvas.drawLine(x_, y_mid_line - (float)frameGains[i]*factor, 
+                            x_, y_mid_line + (float)frameGains[i]*factor, voiceLinePaint);
+                }
+                for(int i=index,j=0;i<numFrames&&j<display_num/2;i++,j++)
+                {
+                    x_ = w/2+(i-index)*step_width;
+                    canvas.drawLine(x_, y_mid_line - (float)frameGains[i]*factor, 
+                            x_, y_mid_line + (float)frameGains[i]*factor, voiceLinePaint);
+                }
+           // }
+            
+            
+            
         }
         
 
@@ -932,6 +977,7 @@ public class VoiceWaveView extends View implements OnGestureListener{
             time_to_edit = 0;
         }
         
+        
         invalidate();
         return true;
     }
@@ -947,6 +993,19 @@ public class VoiceWaveView extends View implements OnGestureListener{
         // TODO Auto-generated method stub
         return true;
     }
+    
+    private int getMax(int[] arr) {  
+        
+        int max = arr[0];  
+      
+        for (int x = 1; x < arr.length; x++) {  
+            if (arr[x] > max)  
+                max = arr[x];  
+      
+        }  
+        return max;  
+      
+    }  
 
     
     
