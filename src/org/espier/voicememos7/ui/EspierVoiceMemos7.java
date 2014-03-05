@@ -590,6 +590,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
         AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this);
         final View view = this.getLayoutInflater().inflate(R.layout.items, null);
+//        view.setBackgroundDrawable(getResources().getDrawable(R.drawable.radius));
         RelativeLayout.LayoutParams rellay = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         rellay.setMargins(0, ScalePx.scalePx(this, 42), 0, 0);
@@ -664,6 +665,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         });
 
         dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent); 
         dialog.setView(view, 0, 0, 0, 0);
         dialog.show();
 
