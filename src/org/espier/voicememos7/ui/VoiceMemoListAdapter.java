@@ -65,7 +65,7 @@ import java.util.List;
         public interface OnListViewChangedListener {
             public void onAChanged(Intent intent,int state);
             public void onBChanged();
-            public void onCChanged();
+            public void onVoiceEditClicked();
           }
         OnListViewChangedListener mOnListViewChangedListener = null;
         
@@ -95,9 +95,9 @@ import java.util.List;
             if (mOnListViewChangedListener != null) mOnListViewChangedListener.onBChanged();
           }
         
-        private void setCChanged() {
+        private void setOnVoiceEditClicked() {
             Log.d("asdf","in C event");
-            if (mOnListViewChangedListener != null) mOnListViewChangedListener.onCChanged();
+            if (mOnListViewChangedListener != null) mOnListViewChangedListener.onVoiceEditClicked();
         }
           
           
@@ -403,7 +403,7 @@ import java.util.List;
 //                    RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
 //                    playLayout.setVisibility(View.GONE);
                     
-                    setCChanged();
+                    setOnVoiceEditClicked();
                     refreshNow(vh);
                     
                     try {
