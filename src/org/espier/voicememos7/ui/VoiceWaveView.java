@@ -30,6 +30,7 @@ public class VoiceWaveView extends View implements OnGestureListener{
 
     long time;
     long time_to_edit = 0;
+    
     //public float time_axix_len;
     public static final int invalidate_rate = 20;
     
@@ -104,6 +105,26 @@ public class VoiceWaveView extends View implements OnGestureListener{
     public static final int VIEW_STATUS_RECORD = 0;
     public static final int VIEW_STATUS_TO_EDIT = 1;
     public static final int VIEW_STATUS_EDIT = 2;
+    
+    int[] voiceDataToEdit;
+    
+
+    
+
+    /**
+     * @return the voiceDataToEdit
+     */
+    public int[] getVoiceDataToEdit() {
+        return voiceDataToEdit;
+    }
+
+    /**
+     * @param voiceDataToEdit the voiceDataToEdit to set
+     */
+    public void setVoiceDataToEdit(int[] voiceDataToEdit) {
+        this.voiceDataToEdit = voiceDataToEdit;
+    }
+
     /**
      * @return the viewStatus
      */
@@ -119,7 +140,20 @@ public class VoiceWaveView extends View implements OnGestureListener{
         invalidate();
     }
 
-    
+    /**
+     * @return the time_to_edit
+     */
+    public long getTime_to_edit() {
+        return time_to_edit;
+    }
+
+    /**
+     * @param time_to_edit the time_to_edit to set
+     */
+    public void setTime_to_edit(long time_to_edit) {
+        this.time_to_edit = time_to_edit;
+    }
+
     
     
     
@@ -157,6 +191,7 @@ public class VoiceWaveView extends View implements OnGestureListener{
 
     private void init()
     {
+        //startPlay();
         gestureDetector = new GestureDetector(this);
         viewStatus = VIEW_STATUS_RECORD;
         voiceLinePaint = new Paint();
@@ -554,82 +589,59 @@ public class VoiceWaveView extends View implements OnGestureListener{
 
     public void start()
     {
-        timer = new Timer();
-        timerTask = new TimerTask() {
+        if (viewStatus == VIEW_STATUS_RECORD) {
+            timer = new Timer();
+            timerTask = new TimerTask() {
 
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                if (viewStatus!=VIEW_STATUS_RECORD || recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
-                    return;
-                }
-
-                try {
-                    //Log.e("task", "running...");
-                    time += invalidate_rate;
-//                    t_list.add(System.currentTimeMillis());
-//                    Log.e("duration", t_list.get(t_list.size()-1)-t_list.get(t_list.size()-2)+"");
-                    //if (time >= time_x * 1000 / 2) 
-                    if (x >= w / 2)
-                    {
-                        if (time<time_x/2*1000) {
-                            left_distance_time+=invalidate_rate;
-                        }
-
-                        second_index++;
-                        if (1000 / invalidate_rate == second_index) {
-                            second_index = 0;
-                            time_list.remove(0);
-                            time_list.add(time_list.get(time_list.size() - 1) + 1);
-                        }
-                        voice_list.remove(0);
-                    }
-                    if (recorder!=null && !recorder.isReSet) {
-                        int amp = recorder.getMaxAmplitude();
-                        voice_list.add( amp/ 300f);
-                        
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    if (viewStatus!=VIEW_STATUS_RECORD || recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
+                        return;
                     }
 
-                    // voice_list.add(recorder.getMaxAmplitude() / 300);
+                    try {
+                        //Log.e("task", "running...");
+                        time += invalidate_rate;
+//                        t_list.add(System.currentTimeMillis());
+//                        Log.e("duration", t_list.get(t_list.size()-1)-t_list.get(t_list.size()-2)+"");
+                        //if (time >= time_x * 1000 / 2) 
+                        if (x >= w / 2)
+                        {
+                            if (time<time_x/2*1000) {
+                                left_distance_time+=invalidate_rate;
+                            }
 
-                    Message msg = new Message();
-                    msg.what = 1;
-                    handler.sendMessage(msg);
-                } catch (Exception e) {
-                    Log.e("task err:", e.toString());
+                            second_index++;
+                            if (1000 / invalidate_rate == second_index) {
+                                second_index = 0;
+                                time_list.remove(0);
+                                time_list.add(time_list.get(time_list.size() - 1) + 1);
+                            }
+                            voice_list.remove(0);
+                        }
+                        if (recorder!=null && !recorder.isReSet) {
+                            int amp = recorder.getMaxAmplitude();
+                            voice_list.add( amp/ 300f);
+                            
+                        }
+
+                        // voice_list.add(recorder.getMaxAmplitude() / 300);
+
+                        Message msg = new Message();
+                        msg.what = 1;
+                        handler.sendMessage(msg);
+                    } catch (Exception e) {
+                        Log.e("task err:", e.toString());
+                    }
+
                 }
+            };
+            timer.schedule(timerTask, invalidate_rate, invalidate_rate);
 
-            }
-        };
-
-//        TimerTask getAmpTask = new TimerTask() {
-//
-//            @Override
-//            public void run() {
-//                if (recorder.getState() != Recorder.RECORDING_STATE) {
-//                    return;
-//                }
-//                try {
-//                    if (time >= time_x * 1000 / 2)
-//                    {
-//                        voice_list.remove(0);
-//
-//                    }
-//                    if (recorder!=null && !recorder.isReSet) {
-//                        int amp = recorder.getMaxAmplitude();
-//                        voice_list.add( amp/ 300f);
-//                        
-//                    }
-//                    
-//                } catch (Exception e) {
-//
-//                }
-//
-//            }
-//        };
-        timer.schedule(timerTask, invalidate_rate, invalidate_rate);
-        //timer.schedule(getAmpTask, 20, 60);
-
+        }
+  
+        
     }
 
     public void pause()
@@ -653,6 +665,36 @@ public class VoiceWaveView extends View implements OnGestureListener{
             timerTask.cancel();
             timerTask = null;
         }
+    }
+    
+    public void startPlay()
+    {
+       // if (viewStatus == VIEW_STATUS_TO_EDIT) {
+            timer = new Timer();
+            timerTask = new TimerTask() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    if (viewStatus!=VIEW_STATUS_TO_EDIT || recorder==null || recorder.getState() != Recorder.RECORDING_STATE) {
+                        return;
+                    }
+
+                    try {
+                        time_to_edit+=invalidate_rate;
+
+                        Message msg = new Message();
+                        msg.what = 1;
+                        handler.sendMessage(msg);
+                    } catch (Exception e) {
+                        Log.e("task err:", e.toString());
+                    }
+
+                }
+            };
+            timer.schedule(timerTask, invalidate_rate, invalidate_rate);
+
+        //}
     }
 
     public void clearData()
@@ -716,12 +758,13 @@ public class VoiceWaveView extends View implements OnGestureListener{
     @Override
     public boolean onDown(MotionEvent e) {
         // TODO Auto-generated method stub
-        Log.e("down", "down");
+        //Log.e("down", "down");
         return true;
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        /*
         final int FLING_MIN_DISTANCE = 100, FLING_MIN_VELOCITY = 200;
         if (Math.abs(e1.getX() - e2.getX()) > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
             // Fling left
@@ -756,8 +799,10 @@ public class VoiceWaveView extends View implements OnGestureListener{
             //Log.i("MyGesture", "Fling right");
             
         }
-        
+        */
         return false;
+        
+       
     }
     
     
@@ -774,6 +819,9 @@ public class VoiceWaveView extends View implements OnGestureListener{
         //Log.e("s", distanceX+"");
         int t = (int)(distanceX*time_per_pixel);
         time_to_edit += t;
+        if (time_to_edit<0) {
+            time_to_edit = 0;
+        }
         
         invalidate();
         return true;

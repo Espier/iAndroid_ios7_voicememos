@@ -10,6 +10,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -139,10 +140,12 @@ import java.util.List;
             vh.bar = (SeekBar) v.findViewById(android.R.id.progress);
             vh.mCurrentRemain = (TextView) v.findViewById(R.id.current_remain);
             vh.mCurrentTime = (TextView) v.findViewById(R.id.current_positon);
-            vh.share = (ImageView) v.findViewById(R.id.share);
-            vh.del = (ImageView) v.findViewById(R.id.del);
-            vh.edit = (TextView) v.findViewById(R.id.edit);
             vh.cellGrayLine = (ImageView)v.findViewById(R.id.cell_GaryLine);
+            vh.share = (ImageView) v.findViewById(R.id.share);
+            
+            vh.edit = (TextView) v.findViewById(R.id.edit);
+            vh.del = (ImageView) v.findViewById(R.id.del);
+            
             
             
             RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
@@ -197,61 +200,57 @@ import java.util.List;
                     0, 0, 0);
             vh.mCurrentRemain.setLayoutParams(lpRightTime);
             
-            RelativeLayout.LayoutParams lpLine = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams lpLine = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.FILL_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
             lpLine.setMargins(ScalePx.scalePx(mContext, 36), 
                     ScalePx.scalePx(mContext, 38), 0, 0);
             vh.cellGrayLine.setLayoutParams(lpLine);
             
-//            RelativeLayout.LayoutParams lpShare = new RelativeLayout.LayoutParams(
-//                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-//                    RelativeLayout.LayoutParams.WRAP_CONTENT);
-//            lpShare.setMargins(ScalePx.scalePx(mContext, 32), 
-//                    ScalePx.scalePx(mContext, 16), 0, 
-//                    ScalePx.scalePx(mContext, 24));
-//            lpShare.addRule(RelativeLayout.BELOW, R.id.cell_GaryLine);
-//            vh.share.setLayoutParams(lpShare);
-//            
-//            RelativeLayout.LayoutParams lpEdit = new RelativeLayout.LayoutParams(
-//                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-//                    RelativeLayout.LayoutParams.WRAP_CONTENT);
-//            lpEdit.setMargins(ScalePx.scalePx(mContext, 32), 
-//                    ScalePx.scalePx(mContext, 16), 0, 
-//                    ScalePx.scalePx(mContext, 24));
-//            lpEdit.addRule(RelativeLayout.BELOW, R.id.cell_GaryLine);
-//            lpEdit.addRule(RelativeLayout.RIGHT_OF, R.id.share);
-//            
-//            vh.edit.setLayoutParams(lpEdit);
-//            
-//            RelativeLayout.LayoutParams lpDelete = new RelativeLayout.LayoutParams(
-//                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-//                    RelativeLayout.LayoutParams.WRAP_CONTENT);
-//            lpDelete.setMargins(0, 
-//                    ScalePx.scalePx(mContext, 16), 
-//                    ScalePx.scalePx(mContext, 32), 
-//                    0);
-//            lpDelete.addRule(RelativeLayout.BELOW, R.id.cell_GaryLine);
-//            lpDelete.addRule(RelativeLayout.RIGHT_OF, R.id.edit);
-//            vh.del.setLayoutParams(lpDelete);
+            
+            LinearLayout.LayoutParams lpShare = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpShare.setMargins(ScalePx.scalePx(mContext, 32), 
+                    ScalePx.scalePx(mContext, 16), 0, 
+                    ScalePx.scalePx(mContext, 24));
+            lpShare.weight = 0;
+            vh.share.setLayoutParams(lpShare);
             
             
+            LinearLayout.LayoutParams lpEdit = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpEdit.setMargins(0, 
+                    ScalePx.scalePx(mContext, 16), 0, ScalePx.scalePx(mContext, 24));
+            lpEdit.weight = 1;
+            lpEdit.gravity = Gravity.CENTER_VERTICAL;
+            vh.edit.setLayoutParams(lpEdit);
             
             
+            LinearLayout.LayoutParams lpDelete = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lpDelete.setMargins(0, 
+                    ScalePx.scalePx(mContext, 16), 
+                    ScalePx.scalePx(mContext, 32), 
+                    0);
+            lpDelete.weight = 0;
+            vh.del.setLayoutParams(lpDelete);
             
             
-            // mCurrentDuration =
-            // (Integer)v.findViewById(R.id.memos_item_duration).getTag();
             if (vh.bar instanceof SeekBar) {
                 SeekBar seeker = (SeekBar) vh.bar;
                 seeker.setOnSeekBarChangeListener(mSeekListener);
             }
             vh.bar.setMax(1000);
 
+
 //            vh.tag.setOnClickListener(new View.OnClickListener() {
 //
 //                @Override
 //                public void onClick(View v) {
+//                    vh.tag.getParent().
 //
 //                    // v.setFocusable(true);
 //                    // v.requestFocus();
@@ -273,18 +272,17 @@ import java.util.List;
             v.setTag(vh);
             v.setOnClickListener(new View.OnClickListener() {
 
-                @SuppressLint("ResourceAsColor")
+                //@SuppressLint("ResourceAsColor")
                 @Override
                 public void onClick(View v) {
-                    Log.d("adf","click Cell View");
+                    //close view
                     if (lastView != null && isClose) {
-                        vh.tag.setTextColor(R.color.black);
-                        vh.createDate.setTextColor(R.color.black);
-                        vh.duration.setTextColor(R.color.black);
-//                        sound.setImageResource(R.drawable.volume_blue);
+                        vh.tag.setTextColor(mContext.getResources().getColor(R.color.black));
+                        vh.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
+                        vh.duration.setTextColor(mContext.getResources().getColor(R.color.black));
                         LinearLayout layout = (LinearLayout) lastView.findViewById(R.id.playlayout);
                         layout.setVisibility(View.GONE);
-                        RelativeLayout sharelayout = (RelativeLayout) lastView
+                        LinearLayout sharelayout = (LinearLayout) lastView
                                 .findViewById(R.id.sharelayout);
                         sharelayout.setVisibility(View.GONE);
                         isClose = false;
@@ -295,16 +293,23 @@ import java.util.List;
                         int i = list.size();
                         for (int j = 0; j < i; j++) {
                             View view = (View) list.get(j);
-
+                            
+                            EditText etTitle = (EditText) view.findViewById(R.id.memos_item_title);
+                            TextView tvCreateDate = (TextView)view.findViewById(R.id.memos_item_create_date);
+                            TextView tvDuration = (TextView)view.findViewById(R.id.memos_item_duration);
+                            etTitle.setTextColor(mContext.getResources().getColor(R.color.black));
+                            tvCreateDate.setTextColor(mContext.getResources().getColor(R.color.black));
+                            tvDuration.setTextColor(mContext.getResources().getColor(R.color.black));
                             view.setBackgroundColor(Color.WHITE);
                         }
                         return;
-                    }
-                    //sound.setImageResource(R.drawable.volume_gray);
+                    } else {
+                    //expand the view
+                    
                     LinearLayout layout = (LinearLayout) v.findViewById(R.id.playlayout);
                     layout.setVisibility(View.VISIBLE);
 
-                    RelativeLayout sharelayout = (RelativeLayout) v.findViewById(R.id.sharelayout);
+                    LinearLayout sharelayout = (LinearLayout) v.findViewById(R.id.sharelayout);
                     sharelayout.setVisibility(View.VISIBLE);
 
                     vh.mCurrentRemain.setText("-" + vh.duration.getText());
@@ -320,17 +325,20 @@ import java.util.List;
 
                         view.setBackgroundColor(mContext.getResources().getColor(R.color.light_gray));
                         EditText et = (EditText) view.findViewById(R.id.memos_item_title);
-                        et.setTextColor(R.color.heavygray);
+                        et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
                         TextView tvCreateDate = (TextView)view.findViewById(R.id.memos_item_create_date);
                         TextView tvDuration = (TextView)view.findViewById(R.id.memos_item_duration);
-                        tvCreateDate.setTextColor(R.color.heavygray);
-                        tvDuration.setTextColor(R.color.heavygray);
+                        tvCreateDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+                        tvDuration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
                     }
 
                     lastView = v;
+                    }
 
                 }
             });
+            vh.tag.setClickable(false);
+            vh.tag.setFocusable(false);
             list.add(v);
 
             return v;
