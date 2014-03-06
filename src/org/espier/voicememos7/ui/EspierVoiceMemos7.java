@@ -2,6 +2,7 @@
 package org.espier.voicememos7.ui;
 
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -17,14 +18,12 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.sax.TextElementListener;
 import android.text.format.DateFormat;
-
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,7 +33,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,6 +50,7 @@ import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveDirection;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
+import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
 import org.espier.voicememos7.util.StorageUtil;
@@ -826,7 +825,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
 
-    public void onVoiceEditClicked(CheapSoundFile mSoundFile) {
+    public void onVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memo) {
 
         ScrollDown();
         RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
@@ -834,6 +833,16 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
         playLayout.setVisibility(View.GONE);
+        
+        int sampleRate = mSoundFile.getSampleRate();
+        int numFrames = mSoundFile.getNumFrames();
+        int totalTime = numFrames * mSoundFile.getSamplesPerFrame()/sampleRate;
+        
+        textVoiceTimeInEditMode.setVisibility(View.VISIBLE);
+//        textVoiceTimeInEditMode.setText(MemosUtils.makeTimeString(this, totalTime));
+        textVoiceTimeInEditMode.setText(memo.getMemCreatedDate());
+        textVoiceNameInEditMode.setText(memo.getMemName());
+        
         
         waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
         waveView.setCheapSoundFile(mSoundFile);

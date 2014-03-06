@@ -408,16 +408,16 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             vh.duration.setTag(secs);
         }
 
-        Long date = cursor.getLong(mCreateDateIdx);
-        String dateFormat = mContext.getString(R.string.date_time_format);
-        int labelType = cursor.getInt(mLabelTypeIdx);
-        if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE) {
-            dateFormat = mContext.getString(R.string.date_format);
-        }
-        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
-        Date d = new Date(date);
-        String dd = format.format(d);
-        vh.createDate.setText(dd);
+            Long date = cursor.getLong(mCreateDateIdx);
+            String dateFormat = mContext.getString(R.string.date_time_format);
+            int labelType = cursor.getInt(mLabelTypeIdx);
+            if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE) {
+                dateFormat = mContext.getString(R.string.date_format);
+            }
+            SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+            Date d = new Date(date);
+            final String dd = format.format(d);
+            vh.createDate.setText(dd);
 
         final String path = cursor.getString(mPathIdx);
         final int memoid = cursor.getInt(mMemoIdx);
@@ -430,42 +430,47 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         view.setBackgroundColor(mCurrentBgColor);
         vh.share.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                // MemosUtils.shareMemo(mContext,
-                // mCurrentPath);
-                Intent intent = new Intent(mContext, MemoShare.class);
-                intent.putExtra("path", mCurrentPath);
-                context.startActivity(intent);
-            }
-        });
-        vh.edit.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                mediaStatus = MEDIA_STATE_EDIT;
-
-                try {
-                    mFile = new File(path);
-                    mSoundFile = CheapSoundFile.create(path, null);
-                    mSoundFile.ReadFile(mFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    // MemosUtils.shareMemo(mContext,
+                    // mCurrentPath);
+                    Intent intent = new Intent(mContext, MemoShare.class);
+                    intent.putExtra("path", path);
+                    context.startActivity(intent);
                 }
+            });
+            vh.edit.setOnClickListener(new View.OnClickListener() {
 
-                // int[] framGains = mSoundFile.getFrameGains();
-                // int sampleRate = mSoundFile.getSampleRate();
-                // int numFrames = mSoundFile.getNumFrames();
-                // // double []gainHeights = computeGainHeights();
-                //
-                // double time = (mSoundFile.getSamplesPerFrame() *
-                // numFrames)/sampleRate;
-                setOnVoiceEditClicked(mSoundFile);
-            }
-        });
+                @Override
+                public void onClick(View v) {
+                    mediaStatus = MEDIA_STATE_EDIT;
+                    
+                    try {
+                        mFile = new File(path);
+                        mSoundFile = CheapSoundFile.create(path, null);
+                        mSoundFile.ReadFile(mFile);
+                        } catch (FileNotFoundException e) {
+                          e.printStackTrace();
+                          } catch (IOException e) {
+                            e.printStackTrace();
+                            }
+                    
+//                    int[] framGains = mSoundFile.getFrameGains();
+//                    int sampleRate = mSoundFile.getSampleRate();
+//                    int numFrames = mSoundFile.getNumFrames();
+////                    double []gainHeights = computeGainHeights();
+//                    
+//                    double time = (mSoundFile.getSamplesPerFrame() * numFrames)/sampleRate;
+                    VoiceMemo memo = new VoiceMemo();
+                    memo.setMemId(String.valueOf(memoid));
+                    memo.setMemCreatedDate(dd);
+                    memo.setMemName(itemname);
+                    memo.setMemPath(path);
+                    memo.setMemDuration(secs);
+                    setOnVoiceEditClicked(mSoundFile,memo);
+                }
+            });
 
         vh.del.setEnabled(true);
         vh.del.setOnClickListener(new View.OnClickListener() {

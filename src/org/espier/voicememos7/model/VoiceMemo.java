@@ -27,8 +27,56 @@ public final class VoiceMemo {
 
   public static final String AUTHORITY = "org.espier.voicememos7.Memo";
 
+  private String memId;
+  private String memPath;
+  private String memName;
+  private int memDuration;
+  private String memCreatedDate;
+
+  public String getMemId() {
+	return memId;
+  }
+
+  public void setMemId(String memId) {
+    this.memId = memId;
+  }
+
+  public String getMemPath() {
+  	return memPath;
+  }
+
+  public void setMemPath(String memPath) {
+	this.memPath = memPath;
+  }
+
+  public String getMemName() {
+	return memName;
+  }
+
+  public void setMemName(String memName) {
+	this.memName = memName;
+  }
+
+  public int getMemDuration() {
+	return memDuration;
+  }
+
+  public void setMemDuration(int memDuration) {
+	this.memDuration = memDuration;
+  }
+
+  public String getMemCreatedDate() {
+	return memCreatedDate;
+  }
+
+  public void setMemCreatedDate(String memCreatedDate) {
+	this.memCreatedDate = memCreatedDate;
+  }
+
+  
+  
   // This class cannot be instantiated
-  private VoiceMemo() {}
+  public VoiceMemo() {}
 
   /**
    * Notes table contract
