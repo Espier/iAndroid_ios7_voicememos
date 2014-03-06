@@ -120,6 +120,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private ImageView imageViewVoiceCropInEditMode;
     private TextView textViewVoiceEditFinishInEditMode;
     
+    private VoiceMemo currentEditMemo;
+    
     RelativeLayout titlelayout;
     ImageView sound;
     TextView textViewEdit, textviewmemo;
@@ -253,10 +255,21 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             public void onClick(View v) {
             if(mediaStatus == VoiceWaveView.VIEW_STATUS_EDIT)
             {
-            	
+                waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+                waveView.invalidate();
             }
          }
        });
+        
+        imageViewVoiceCropInEditMode.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+				// TODO Auto-generated method stub
+        	
+          }
+       });
+        
     }
     
     private CharSequence getRecordName() {
@@ -834,10 +847,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
         playLayout.setVisibility(View.GONE);
         
-        int sampleRate = mSoundFile.getSampleRate();
-        int numFrames = mSoundFile.getNumFrames();
-        int totalTime = numFrames * mSoundFile.getSamplesPerFrame()/sampleRate;
+//        int sampleRate = mSoundFile.getSampleRate();
+//        int numFrames = mSoundFile.getNumFrames();
+//        int totalTime = numFrames * mSoundFile.getSamplesPerFrame()/sampleRate;
         
+        currentEditMemo = memo;
         textVoiceTimeInEditMode.setVisibility(View.VISIBLE);
 //        textVoiceTimeInEditMode.setText(MemosUtils.makeTimeString(this, totalTime));
         textVoiceTimeInEditMode.setText(memo.getMemCreatedDate());
