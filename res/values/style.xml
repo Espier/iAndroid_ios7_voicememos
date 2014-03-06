@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="et1" parent="@android:style/Widget.EditText">
-        <!--
-        <item name="android:background">#1A4EA4</item>
-		<item name="android:textColor">#FFF111</item>
-        -->
-    </style>
-
     <style name="et2" parent="@android:style/Widget.EditText">
         <item name="android:background">#A6C60F</item>
         <item name="android:textColor">#EC02C3</item>
