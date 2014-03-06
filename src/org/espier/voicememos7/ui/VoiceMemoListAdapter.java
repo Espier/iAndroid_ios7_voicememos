@@ -337,6 +337,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         vh.tag.setClickable(false);
         vh.tag.setFocusable(false);
         list.add(v);
+        Log.d("asdf","list size="+String.valueOf(list.size()));
         return v;
     }
     
