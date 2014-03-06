@@ -67,7 +67,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public interface OnListViewChangedListener {
         public void onAChanged(Intent intent, int state);
 
-        public void onVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memos);
+        public void onVoiceEditClicked(CheapSoundFile mSoundFile, VoiceMemo memos);
 
         public void DisplayEditButton(boolean isDisplay);
 
@@ -87,7 +87,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         }
     };
 
-
     public void setOnListViewChangedListener(OnListViewChangedListener listener) {
         mOnListViewChangedListener = listener;
     }
@@ -102,11 +101,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             mOnListViewChangedListener.DisplayEditButton(isDisplay);
     }
 
-    private void setOnVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memos) {
+    private void setOnVoiceEditClicked(CheapSoundFile mSoundFile, VoiceMemo memos) {
 
         Log.d("asdf", "in C event");
         if (mOnListViewChangedListener != null)
-            mOnListViewChangedListener.onVoiceEditClicked(mSoundFile,memos);
+            mOnListViewChangedListener.onVoiceEditClicked(mSoundFile, memos);
     }
 
     public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
@@ -275,16 +274,14 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             @Override
             public void onClick(View v) {
                 // close view
-                if (openedListViewItem != null && isCollapsed ==  false) {
+                if (openedListViewItem != null && isCollapsed == false) {
                     DisplayEditButton(true);
                     vh.tag.setTextColor(mContext.getResources().getColor(R.color.black));
                     vh.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
                     vh.duration.setTextColor(mContext.getResources().getColor(R.color.black));
-                    LinearLayout layout = (LinearLayout) openedListViewItem.findViewById(R.id.playlayout);
-                    layout.setVisibility(View.GONE);
-                    LinearLayout sharelayout = (LinearLayout) openedListViewItem
-                            .findViewById(R.id.sharelayout);
-                    sharelayout.setVisibility(View.GONE);
+
+                    setItemVisible(openedListViewItem, false);
+
                     isCollapsed = true;
                     vh.bar.setProgress(0);
                     vh.tag.clearFocus();
@@ -305,41 +302,35 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                         view.setBackgroundColor(Color.WHITE);
                     }
                     return;
-                } else {
-                    // expand the view
-                    DisplayEditButton(false);
-                    LinearLayout layout = (LinearLayout) v.findViewById(R.id.playlayout);
-                    layout.setVisibility(View.VISIBLE);
+                }
+                // expand the view
+                DisplayEditButton(false);
+                setItemVisible(v, true);
 
-                    LinearLayout sharelayout = (LinearLayout) v.findViewById(R.id.sharelayout);
-                    sharelayout.setVisibility(View.VISIBLE);
+                vh.mCurrentRemain.setText("-" + vh.duration.getText());
+                isCollapsed = false;
+                for (int j = 0; j < list.size(); j++) {
+                    View view = (View) list.get(j);
+                    if (v == view) {
 
-                    vh.mCurrentRemain.setText("-" + vh.duration.getText());
-                    isCollapsed = false;
-                    for (int j = 0; j < list.size(); j++) {
-                        View view = (View) list.get(j);
-                        if (v == view) {
-
-                            continue;
-                        }
-
-                        view.setBackgroundColor(mContext.getResources()
-                                .getColor(R.color.light_gray));
-                        EditText et = (EditText) view.findViewById(R.id.memos_item_title);
-                        et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-                        TextView tvCreateDate = (TextView) view
-                                .findViewById(R.id.memos_item_create_date);
-                        TextView tvDuration = (TextView) view
-                                .findViewById(R.id.memos_item_duration);
-                        tvCreateDate.setTextColor(mContext.getResources().getColor(
-                                R.color.heavygray));
-                        tvDuration
-                                .setTextColor(mContext.getResources().getColor(R.color.heavygray));
+                        continue;
                     }
 
-                    openedListViewItem = v;
+                    view.setBackgroundColor(mContext.getResources()
+                            .getColor(R.color.light_gray));
+                    EditText et = (EditText) view.findViewById(R.id.memos_item_title);
+                    et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+                    TextView tvCreateDate = (TextView) view
+                            .findViewById(R.id.memos_item_create_date);
+                    TextView tvDuration = (TextView) view
+                            .findViewById(R.id.memos_item_duration);
+                    tvCreateDate.setTextColor(mContext.getResources().getColor(
+                            R.color.heavygray));
+                    tvDuration
+                            .setTextColor(mContext.getResources().getColor(R.color.heavygray));
                 }
 
+                openedListViewItem = v;
 
             }
         });
@@ -348,11 +339,26 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         list.add(v);
         return v;
     }
-
-    private void setItemVisible(boolean isVisible) {
+    
+    private void collapseAllItems() {
         
     }
-    
+
+    private void setItemVisible(View itemView, boolean isVisible) {
+        
+        LinearLayout layout = (LinearLayout) itemView.findViewById(R.id.playlayout);
+        LinearLayout sharelayout = (LinearLayout) itemView.findViewById(R.id.sharelayout);
+        if (isVisible) {
+            
+            layout.setVisibility(View.VISIBLE);
+            sharelayout.setVisibility(View.VISIBLE);
+        } else {
+            
+            layout.setVisibility(View.GONE);
+            sharelayout.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
 
@@ -408,16 +414,16 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             vh.duration.setTag(secs);
         }
 
-            Long date = cursor.getLong(mCreateDateIdx);
-            String dateFormat = mContext.getString(R.string.date_time_format);
-            int labelType = cursor.getInt(mLabelTypeIdx);
-            if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE) {
-                dateFormat = mContext.getString(R.string.date_format);
-            }
-            SimpleDateFormat format = new SimpleDateFormat(dateFormat);
-            Date d = new Date(date);
-            final String dd = format.format(d);
-            vh.createDate.setText(dd);
+        Long date = cursor.getLong(mCreateDateIdx);
+        String dateFormat = mContext.getString(R.string.date_time_format);
+        int labelType = cursor.getInt(mLabelTypeIdx);
+        if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE) {
+            dateFormat = mContext.getString(R.string.date_format);
+        }
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+        Date d = new Date(date);
+        final String dd = format.format(d);
+        vh.createDate.setText(dd);
 
         final String path = cursor.getString(mPathIdx);
         final int memoid = cursor.getInt(mMemoIdx);
@@ -430,47 +436,48 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         view.setBackgroundColor(mCurrentBgColor);
         vh.share.setOnClickListener(new View.OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    // MemosUtils.shareMemo(mContext,
-                    // mCurrentPath);
-                    Intent intent = new Intent(mContext, MemoShare.class);
-                    intent.putExtra("path", path);
-                    context.startActivity(intent);
-                }
-            });
-            vh.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                // MemosUtils.shareMemo(mContext,
+                // mCurrentPath);
+                Intent intent = new Intent(mContext, MemoShare.class);
+                intent.putExtra("path", path);
+                context.startActivity(intent);
+            }
+        });
+        vh.edit.setOnClickListener(new View.OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    mediaStatus = MEDIA_STATE_EDIT;
-                    
-                    try {
-                        mFile = new File(path);
-                        mSoundFile = CheapSoundFile.create(path, null);
-                        mSoundFile.ReadFile(mFile);
-                        } catch (FileNotFoundException e) {
-                          e.printStackTrace();
-                          } catch (IOException e) {
-                            e.printStackTrace();
-                            }
-                    
-//                    int[] framGains = mSoundFile.getFrameGains();
-//                    int sampleRate = mSoundFile.getSampleRate();
-//                    int numFrames = mSoundFile.getNumFrames();
-////                    double []gainHeights = computeGainHeights();
-//                    
-//                    double time = (mSoundFile.getSamplesPerFrame() * numFrames)/sampleRate;
-                    VoiceMemo memo = new VoiceMemo();
-                    memo.setMemId(String.valueOf(memoid));
-                    memo.setMemCreatedDate(dd);
-                    memo.setMemName(itemname);
-                    memo.setMemPath(path);
-                    memo.setMemDuration(secs);
-                    setOnVoiceEditClicked(mSoundFile,memo);
+            @Override
+            public void onClick(View v) {
+                mediaStatus = MEDIA_STATE_EDIT;
+
+                try {
+                    mFile = new File(path);
+                    mSoundFile = CheapSoundFile.create(path, null);
+                    mSoundFile.ReadFile(mFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+
+                // int[] framGains = mSoundFile.getFrameGains();
+                // int sampleRate = mSoundFile.getSampleRate();
+                // int numFrames = mSoundFile.getNumFrames();
+                // // double []gainHeights = computeGainHeights();
+                //
+                // double time = (mSoundFile.getSamplesPerFrame() *
+                // numFrames)/sampleRate;
+                VoiceMemo memo = new VoiceMemo();
+                memo.setMemId(String.valueOf(memoid));
+                memo.setMemCreatedDate(dd);
+                memo.setMemName(itemname);
+                memo.setMemPath(path);
+                memo.setMemDuration(secs);
+                setOnVoiceEditClicked(mSoundFile, memo);
+            }
+        });
 
         vh.del.setEnabled(true);
         vh.del.setOnClickListener(new View.OnClickListener() {
