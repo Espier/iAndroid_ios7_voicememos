@@ -110,8 +110,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     };
     
     private final int MEDIA_STATE_RECORDING = 0;
+    private final int RECORDING_STATE_INIT = 1;
+    private final int RECORDING_STATE_ONGOING = 2;
+    
     private final int MEDIA_STATE_EDIT = 1;
+    private final int EDIT_STATE_INIT = 2;
+    private final int EDIT_STATE_CROP_REDY = 3;
+    private final int EDIT_STATE_CROP_CHANGE = 4;
+    
     private int mediaStatus = 0;
+    private int recordingStatus = 1;
+    private int editStatus = 2;
     
     //Voice Edit Layout
     private TextView textVoiceNameInEditMode;
@@ -330,12 +339,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         	break;
         	case R.id.editfinished://User click finish button in edit mode.
         	{
-        		ScrollUp();
+        		ScollToBottom();
         	}
         	break;
             case R.id.finished:
+            	recordingStatus = RECORDING_STATE_INIT;
                 if (firstTime) {
-                    ScrollUp();
+                    ScollToBottom();
                     firstTime = false;
                 } else {
                     stop();
@@ -343,6 +353,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 break;
             case R.id.redButton:
             	mediaStatus = MEDIA_STATE_RECORDING;
+            	recordingStatus = RECORDING_STATE_ONGOING;
             	waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_RECORD);
                 firstTime = false;
                 if (!StorageUtil.hasDiskSpace()) {
@@ -367,7 +378,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     if(txtRecordName.getText().toString().equals("")){
                         txtRecordName.setText(getRecordName());
                     }
-                    ScrollDown();
+                    ScrollToTop();
                 }
 
                 break;
@@ -384,14 +395,27 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onClick(View v) {
-            	ScrollUp();
+            	if(mediaStatus == MEDIA_STATE_RECORDING && recordingStatus == RECORDING_STATE_ONGOING)
+            	{
+            		return;
+            	}
+//            	ScollToBottom();
             }
         });
         hiddenView.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
+            	if(mediaStatus == MEDIA_STATE_RECORDING && recordingStatus == RECORDING_STATE_ONGOING)
+            	{
+            		return false;
+            	}
+            	
+            	if(mediaStatus == MEDIA_STATE_EDIT && editStatus != EDIT_STATE_INIT)
+            	{
+            		return false;
+            	}
+            	
                 final int action = event.getAction();
 
                 int y = (int) event.getY();
@@ -419,10 +443,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         int viewY = location[1];
 
                         if (viewY > GetScreenCenter() / 2) {
-                            ScrollDown();
+                            ScrollToTop();
                         } else {
 
-                            ScrollUp();
+                            ScollToBottom();
                         }
                         break;
                     default:
@@ -433,40 +457,37 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         });
     }
 
-    private void ScrollUp() {
-    	RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
-        editLayout.setVisibility(View.GONE);
-        
+    private void ScollToBottom() {
+        RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
         RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+
+        editLayout.setVisibility(View.GONE);
         playLayout.setVisibility(View.VISIBLE);
         
         TextView text = (TextView)findViewById(R.id.txtRecordName);
         mainLayout.scrollTo(0, playLayout.getTop() );
        
         hiddenView.setVisibility(View.INVISIBLE);
-        txtRecordName.setVisibility(View.INVISIBLE);
+//        txtRecordName.setVisibility(View.INVISIBLE);
         waveView.setVisibility(View.INVISIBLE);
-        date.setVisibility(View.INVISIBLE);
-        titlelayout.setVisibility(View.VISIBLE);
-        finished.setVisibility(View.INVISIBLE);
+//        date.setVisibility(View.INVISIBLE);
+//        titlelayout.setVisibility(View.VISIBLE);
+//        finished.setVisibility(View.INVISIBLE);
 
     }
 
-    private void ScrollDown() {
+    private void ScrollToTop() {
+        RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
+        RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+
         if(mediaStatus == MEDIA_STATE_EDIT)
         {
-           RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
            editLayout.setVisibility(View.VISIBLE);
-        
-           RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
            playLayout.setVisibility(View.GONE);
         }
         else if(mediaStatus == MEDIA_STATE_RECORDING)
         {
-        	RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
             editLayout.setVisibility(View.GONE);
-         
-            RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
             playLayout.setVisibility(View.VISIBLE);
 		}
         
@@ -474,11 +495,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         if (hiddenView.getVisibility() != View.VISIBLE) {
             hiddenView.setVisibility(View.VISIBLE);
         }
-        txtRecordName.setVisibility(View.VISIBLE);
-        date.setVisibility(View.VISIBLE);
+//        txtRecordName.setVisibility(View.VISIBLE);
+//        date.setVisibility(View.VISIBLE);
         waveView.setVisibility(View.VISIBLE);
-        titlelayout.setVisibility(View.INVISIBLE);
-        finished.setVisibility(View.VISIBLE);
+//        titlelayout.setVisibility(View.INVISIBLE);
+//        finished.setVisibility(View.VISIBLE);
 
     }
 
@@ -797,7 +818,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 dialogdismiss.sendEmptyMessage(1);
                 txtRecordName.setText("");
-                ScrollUp();
+                ScollToBottom();
             }
         });
 //        AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this);
@@ -911,7 +932,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     public void onVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memo) {
 
-        ScrollDown();
+        mediaStatus = MEDIA_STATE_EDIT;
+        ScrollToTop();
         RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
         editLayout.setVisibility(View.VISIBLE);
         
