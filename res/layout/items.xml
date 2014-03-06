@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:ellipsize="end"
+        android:ems="10"
         android:gravity="center"
         android:text="@string/new_memo"
         android:textColor="@color/black"
@@ -33,10 +35,10 @@
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
         android:background="@drawable/edittextback"
-        android:ems="10"
         android:ellipsize="end"
-        android:singleLine="true"
-        style="@style/et1" >
+        android:ems="16"
+        android:inputType="text"
+        android:singleLine="true" >
 
         <requestFocus />
     </EditText>
@@ -46,6 +48,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/memoname"
+        android:contentDescription="@string/detail_title"
         android:src="@drawable/line_h" />
 
     <LinearLayout

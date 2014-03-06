@@ -75,7 +75,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private static final int DEL_REQUEST = 2;
     TextView date;
     AudioManager audioManager;
-    private AlertDialog dialog;
+    private Dialog dialog;
     boolean isSoundOn = false;
     TextView finished;
     Boolean isCurrentPosition;
@@ -616,8 +616,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     };
 
     private void stop() {
-        // TODO Auto-generated method stub
-        
         int state = mRecorder.getState();
         start.setBackgroundResource(R.drawable.record_red);
         if (state == Recorder.RECORDING_STATE || state == Recorder.RECORDER_PAUSE_STATE) {
@@ -659,9 +657,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         textlay.addRule(RelativeLayout.BELOW, R.id.textView2);
         text.setLayoutParams(textlay);
         text.setTextSize(ScalePx.scalePx(this, 18));
-//        text.setPadding(ScalePx.scalePx(this, 16), 
-//                ScalePx.scalePx(this, 16), 
-//                ScalePx.scalePx(this, 16), ScalePx.scalePx(this, 16));
+        text.setPadding(ScalePx.scalePx(this, 16), 
+                ScalePx.scalePx(this, 16), 
+                ScalePx.scalePx(this, 16), ScalePx.scalePx(this, 16));
         text.setSingleLine(true);
         text.setSelection(txtRecordName.getText().length());
         text.setBackgroundDrawable(getResources().getDrawable(R.drawable.memoseditteststyle));
@@ -709,7 +707,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             }
         });
 //        AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this);
-        Dialog dialog = new Dialog(EspierVoiceMemos7.this,R.style.dialog);
+        dialog = new Dialog(EspierVoiceMemos7.this,R.style.dialog);
 //        dialog = builder.create();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         RelativeLayout.LayoutParams viewrl = new RelativeLayout.LayoutParams(
