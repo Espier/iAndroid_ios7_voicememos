@@ -63,6 +63,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     Cursor c;
     protected View openedListViewItem = null;
     protected boolean isCollapsed = false;
+    ViewHolder currentViewHolder;
 
     public interface OnListViewChangedListener {
         public void onAChanged(Intent intent, int state);
@@ -451,7 +452,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             @Override
             public void onClick(View v) {
                 mediaStatus = MEDIA_STATE_EDIT;
-
+                currentViewHolder = vh;
                 try {
                     mFile = new File(path);
                     mSoundFile = CheapSoundFile.create(path, null);
@@ -499,34 +500,39 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
             @Override
             public void onClick(View arg0) {
-                int state = mRecorder.getState();
-                if (state == Recorder.IDLE_STATE) {
-                    mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
-                    mRecorder.startPlayback();
-                    vh.playControl.setImageResource(R.drawable.pause);
-                } else if (state == Recorder.PLAYER_PAUSE_STATE) {
-                    mRecorder.startPlayback();
-                    vh.playControl.setImageResource(R.drawable.pause);
-                } else if (state == Recorder.PLAYING_STATE) {
-                    mRecorder.pausePlayback();
-                    vh.playControl.setImageResource(R.drawable.play);
-                }
-
-                mCurrentMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        vh.playControl.setImageResource(R.drawable.play);
-                        mRecorder.stopPlayback();
-                    }
-                });
-                mCurrentDuration = (Integer) ((View) (vh.duration)).getTag();
-                long next = refreshNow(vh);
-                queueNextRefresh(next, vh);
-
+                currentViewHolder = vh;
+                playVoiceInViewHolder(path);
             }
         });
         // }
+    }
+    
+    public void playVoiceInViewHolder(String path)
+    {
+    	 int state = mRecorder.getState();
+         if (state == Recorder.IDLE_STATE) {
+             mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
+             mRecorder.startPlayback();
+             currentViewHolder.playControl.setImageResource(R.drawable.pause);
+         } else if (state == Recorder.PLAYER_PAUSE_STATE) {
+             mRecorder.startPlayback();
+             currentViewHolder.playControl.setImageResource(R.drawable.pause);
+         } else if (state == Recorder.PLAYING_STATE) {
+             mRecorder.pausePlayback();
+             currentViewHolder.playControl.setImageResource(R.drawable.play);
+         }
+
+         mCurrentMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+
+             @Override
+             public void onCompletion(MediaPlayer mp) {
+            	 currentViewHolder.playControl.setImageResource(R.drawable.play);
+                 mRecorder.stopPlayback();
+             }
+         });
+         mCurrentDuration = (Integer) ((View) (currentViewHolder.duration)).getTag();
+         long next = refreshNow(currentViewHolder);
+         queueNextRefresh(next, currentViewHolder);
     }
 
     protected void queueNextRefresh(long delay, ViewHolder vh) {
