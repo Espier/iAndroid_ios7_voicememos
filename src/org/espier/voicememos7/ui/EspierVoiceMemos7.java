@@ -274,22 +274,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         imageViewVoicePlayInEditMode = (ImageView)findViewById(R.id.editredButton);
         textViewVoiceEditFinishInEditMode = (TextView)findViewById(R.id.editfinished);
         imageViewVoicePlayInEditMode.setOnTouchListener(editPlayTouchListener);
-        imageViewVoicePlayInEditMode.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-               
-			}
-		});
-        
-        imageViewVoiceCropInEditMode.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-            	 waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
-                 waveView.invalidate();
-          }
-       });
+        imageViewVoicePlayInEditMode.setOnClickListener(this);
+        imageViewVoiceCropInEditMode.setOnClickListener(this);
         
     }
     
@@ -317,6 +303,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+        	case R.id.editredButton:
+        	mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath());
+        	break;
+        	case R.id.editimage:
+        		waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+                waveView.invalidate();
+        	break;
             case R.id.finished:
                 if (firstTime) {
                     ScrollUp();
@@ -326,6 +319,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                 break;
             case R.id.redButton:
+            	waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_RECORD);
                 firstTime = false;
                 if (!StorageUtil.hasDiskSpace()) {
                     Toast.makeText(this, R.string.storage_is_full, Toast.LENGTH_SHORT).show();
