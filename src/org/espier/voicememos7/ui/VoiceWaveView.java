@@ -124,7 +124,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     float timePerFrame;
     
     float edit_margin_left = 15;
-    float edit_margin_right = 30;
+    float edit_margin_right = 35;
     
     float left_edit_bar_pos;
     float right_edit_bar_pos;
