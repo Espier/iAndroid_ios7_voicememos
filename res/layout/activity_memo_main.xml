@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-    
+
     <RelativeLayout
         android:id="@+id/aboveLayout"
         android:layout_width="fill_parent"
@@ -15,80 +15,119 @@
             android:id="@+id/txtMainTitle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:gravity="center"
             android:text="@string/main_title"
-            android:textColor="@color/white"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white" />
 
         <org.espier.voicememos7.ui.VoiceWaveView
             android:id="@+id/waveView"
             android:layout_width="fill_parent"
-            android:layout_height="300dip"
+            android:layout_height="260dip"
             android:layout_below="@+id/txtMainTitle"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="1dp" />
-<RelativeLayout 
-    android:id="@+id/playlayout"
-    android:layout_height="wrap_content"
-    android:layout_width="fill_parent"
-    android:layout_below="@+id/waveView"
-    >
-        <TextView
-            android:id="@+id/txtRecordName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/waveView"
-            android:text="@string/record_name"
-            android:textColor="@color/white"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
-            android:id="@+id/txtDate"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/playlayout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/txtRecordName"
-            />
+            android:layout_below="@+id/waveView" >
 
-    
-    <LinearLayout
-            android:id="@+id/buttonLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtDate"
-            android:layout_centerHorizontal="true"
-            android:gravity="center" 
-            android:background="@drawable/ring" >
-
-            <ImageView
-                android:contentDescription="@string/finish"
-                android:id="@+id/redButton"
+            <TextView
+                android:id="@+id/txtRecordName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/waveView"
+                android:text="@string/record_name"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/txtRecordName" />
+
+            <LinearLayout
+                android:id="@+id/buttonLayout"
                 
-                android:scaleType="centerInside"
-                android:background="@drawable/record_red" />
-        </LinearLayout>
-        <TextView
-            android:id="@+id/finished"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/buttonLayout"
-            android:layout_marginBottom="19dp"
-            android:layout_marginLeft="10dip"
-            android:layout_toRightOf="@+id/buttonLayout"
-            android:text="@string/finish"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtDate"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/ring"
+                android:gravity="center" >
+
+                <ImageView
+                    android:id="@+id/redButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/record_red"
+                    android:contentDescription="@string/finish"
+                    android:scaleType="centerInside" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/finished"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/buttonLayout"
+                android:layout_marginBottom="19dp"
+                android:layout_marginLeft="10dip"
+                android:layout_toRightOf="@+id/buttonLayout"
+                android:text="@string/finish"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <RelativeLayout
+                android:id="@+id/titlelay"
+                android:visibility="invisible"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/buttonLayout"
+                android:layout_alignParentTop="true" >
+
+                <TextView
+                    android:id="@+id/editButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="left"
+                    android:text="@string/edit"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/font_color" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/memo"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <ImageView
+                    android:id="@+id/sound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toRightOf="@+id/name"
+                    android:src="@drawable/volume_blue" />
+            </RelativeLayout>
+            <!--
         <LinearLayout 
         android:id="@+id/titlelay"
         android:visibility="invisible"
         android:layout_width="fill_parent"
         android:layout_above="@id/buttonLayout"
         android:layout_height="wrap_content">
+            
         <TextView 
             android:id="@+id/editButton"
             android:layout_height="wrap_content"
@@ -96,7 +135,6 @@
             android:text="@string/edit"
             android:gravity="left"
             android:textColor="@color/font_color"
-            
             android:textAppearance="?android:attr/textAppearanceLarge"
             />
          <TextView 
@@ -104,7 +142,6 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/memo"
-            android:gravity="center"
             android:layout_gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             />
@@ -114,102 +151,90 @@
             android:layout_width="wrap_content"
             android:src="@drawable/volume_blue"
             android:layout_gravity="right"
-            
             />
         
     </LinearLayout>
-</RelativeLayout>
+            -->
+        </RelativeLayout>
 
-
-
-<RelativeLayout 
-    android:id="@+id/editlayout"
-    android:visibility="gone"
-    android:layout_height="wrap_content"
-    android:layout_width="fill_parent"
-    android:layout_below="@+id/waveView"
-    >
-        <TextView
-            android:id="@+id/edittxtRecordName"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/editlayout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_below="@+id/waveView"
-            android:text="@string/record_name"
-            android:textColor="@color/white"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-        <ImageView 
-            android:id="@+id/editimage"
-            android:layout_below="@+id/waveView"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dip"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:src="@drawable/edit"
-            />
+            android:visibility="gone" >
 
-        <TextView
-            android:id="@+id/edittxtDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/edittxtRecordName"
-            />
-
-    
-    <LinearLayout
-            android:id="@+id/editbuttonLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edittxtDate"
-            android:layout_centerHorizontal="true"
-            android:gravity="center" 
-             >
-
-            <ImageView
-                android:contentDescription="@string/finish"
-                android:id="@+id/editredButton"
+            <TextView
+                android:id="@+id/edittxtRecordName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                
-                android:scaleType="centerInside"
-                android:background="@drawable/trim_play" />
-        </LinearLayout>
-        <TextView
-            android:id="@+id/editfinished"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/editbuttonLayout"
-            android:layout_marginBottom="19dp"
-            android:layout_marginLeft="10dip"
-            android:layout_toRightOf="@+id/editbuttonLayout"
-            android:text="@string/finish"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-</RelativeLayout>
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/waveView"
+                android:text="@string/record_name"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/white" />
 
-        
-        
-       
+            <ImageView
+                android:id="@+id/editimage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/waveView"
+                android:layout_marginRight="20dip"
+                android:src="@drawable/edit" />
 
-        
+            <TextView
+                android:id="@+id/edittxtDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/edittxtRecordName" />
+
+            <LinearLayout
+                android:id="@+id/editbuttonLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edittxtDate"
+                android:layout_centerHorizontal="true"
+                android:gravity="center" >
+
+                <ImageView
+                    android:id="@+id/editredButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/trim_play"
+                    android:contentDescription="@string/finish"
+                    android:scaleType="centerInside" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/editfinished"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/editbuttonLayout"
+                android:layout_marginBottom="19dp"
+                android:layout_marginLeft="10dip"
+                android:layout_toRightOf="@+id/editbuttonLayout"
+                android:text="@string/finish"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </RelativeLayout>
     </RelativeLayout>
-    
+
     <RelativeLayout
         android:id="@+id/belowLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-
-            <org.espier.voicememos7.ui.SlideCutListView
-                android:id="@+id/listView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:divider="@drawable/line"
-                android:layout_below="@+id/hiddenView"
-                android:layout_marginTop="-100dip"
-                android:background="#ffffff" />
+        <org.espier.voicememos7.ui.SlideCutListView
+            android:id="@+id/listView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/hiddenView"
+            android:layout_marginTop="-100dip"
+            android:background="#ffffff"
+            android:divider="@drawable/line" />
 
         <Button
             android:id="@+id/hiddenView"
@@ -220,4 +245,3 @@
     </RelativeLayout>
 
 </LinearLayout>
-
