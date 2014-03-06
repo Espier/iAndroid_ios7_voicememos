@@ -33,7 +33,7 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.os.Environment;
 
 public class Recorder implements OnCompletionListener, OnErrorListener {
-    private static final String DIR_NAME = "Recorder";
+    private static final String DIR_NAME = "espier/evm7";
 
     static final String SAMPLE_PREFIX = "recording";
     static final String SAMPLE_SUFFIX = ".amr";

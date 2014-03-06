@@ -3,7 +3,8 @@
     android:id="@+id/mainlayout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+     >
 
     <RelativeLayout
         android:id="@+id/aboveLayout"
@@ -225,7 +226,8 @@
         android:id="@+id/belowLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical" 
+        android:background="#ffffff">
 
         <org.espier.voicememos7.ui.SlideCutListView
             android:id="@+id/listView"
