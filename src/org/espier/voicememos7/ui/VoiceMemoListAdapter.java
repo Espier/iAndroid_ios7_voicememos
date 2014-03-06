@@ -361,28 +361,28 @@ import java.util.List;
             System.out.println( cursor.getString(mLabelIdx)+"    "+cursor.getString(mPathIdx));
             final ViewHolder vh = (ViewHolder) view.getTag();
             final String itemname = cursor.getString(mLabelIdx);
-            vh.tag.setTag(itemname);
-            if(itemname.length()>10){
-                vh.tag.setText("");
-              String strDot = "...";
-              String str = itemname.substring(0, 10
-                              - strDot.length());
-              vh.tag.setText(str + strDot);
-              vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    // TODO Auto-generated method stub
-                    if(hasFocus){
-                        String strInput = (String) vh.tag.getTag();
-                        vh.tag.setText(strInput);
-                        vh.tag.setSelection(strInput.length());
-                    }
-                }
-            });
-            }else{
-                vh.tag.setText(itemname);
-            }
+            vh.tag.setText(itemname);
+//            if(itemname.length()>10){
+//                vh.tag.setText("");
+//              String strDot = "...";
+//              String str = itemname.substring(0, 10
+//                              - strDot.length());
+//              vh.tag.setText(str + strDot);
+//              vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                
+//                @Override
+//                public void onFocusChange(View v, boolean hasFocus) {
+//                    // TODO Auto-generated method stub
+//                    if(hasFocus){
+//                        String strInput = (String) vh.tag.getTag();
+//                        vh.tag.setText(strInput);
+//                        vh.tag.setSelection(strInput.length());
+//                    }
+//                }
+//            });
+//            }else{
+//                vh.tag.setText(itemname);
+//            }
             
 //            vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //                
