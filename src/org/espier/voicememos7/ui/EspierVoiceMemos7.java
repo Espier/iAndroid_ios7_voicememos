@@ -608,6 +608,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void stop() {
         // TODO Auto-generated method stub
+        
         int state = mRecorder.getState();
         start.setBackgroundResource(R.drawable.record_red);
         if (state == Recorder.RECORDING_STATE || state == Recorder.RECORDER_PAUSE_STATE) {
