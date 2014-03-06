@@ -482,7 +482,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
         
-        lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 0), 0);
+        lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 45), 0);
         lp3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);  
         sound.setLayoutParams(lp3);
         sound.setOnClickListener((new View.OnClickListener() {
