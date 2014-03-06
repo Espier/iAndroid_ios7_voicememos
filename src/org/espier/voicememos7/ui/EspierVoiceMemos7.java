@@ -831,7 +831,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
 
-    public void onVoiceEditClicked(CheapSoundFile mSoundFile) {
+    public void onVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memo) {
 
         ScrollDown();
         RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
@@ -845,7 +845,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         int totalTime = numFrames * mSoundFile.getSamplesPerFrame()/sampleRate;
         
         textVoiceTimeInEditMode.setVisibility(View.VISIBLE);
-        textVoiceTimeInEditMode.setText(MemosUtils.makeTimeString(this, totalTime));
+//        textVoiceTimeInEditMode.setText(MemosUtils.makeTimeString(this, totalTime));
+        textVoiceTimeInEditMode.setText(memo.getMemCreatedDate());
+        textVoiceNameInEditMode.setText(memo.getMemName());
+        
         
         waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
         waveView.setCheapSoundFile(mSoundFile);

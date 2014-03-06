@@ -30,7 +30,7 @@ public final class VoiceMemo {
   private String memId;
   private String memPath;
   private String memName;
-  private double memDuration;
+  private int memDuration;
   private String memCreatedDate;
 
   public String getMemId() {
@@ -57,11 +57,11 @@ public final class VoiceMemo {
 	this.memName = memName;
   }
 
-  public double getMemDuration() {
+  public int getMemDuration() {
 	return memDuration;
   }
 
-  public void setMemDuration(double memDuration) {
+  public void setMemDuration(int memDuration) {
 	this.memDuration = memDuration;
   }
 
@@ -76,7 +76,7 @@ public final class VoiceMemo {
   
   
   // This class cannot be instantiated
-  private VoiceMemo() {}
+  public VoiceMemo() {}
 
   /**
    * Notes table contract

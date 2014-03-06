@@ -65,7 +65,7 @@ import java.util.List;
         public interface OnListViewChangedListener {
             public void onAChanged(Intent intent,int state);
             public void onBChanged();
-            public void onVoiceEditClicked(CheapSoundFile mSoundFile);
+            public void onVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memo);
             public void DisplayEditButton(boolean isDisplay);
 
           }
@@ -104,10 +104,10 @@ import java.util.List;
         
         
 
-        private void setOnVoiceEditClicked(CheapSoundFile mSoundFile) {
+        private void setOnVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memo) {
 
             Log.d("asdf","in C event");
-            if (mOnListViewChangedListener != null) mOnListViewChangedListener.onVoiceEditClicked(mSoundFile);
+            if (mOnListViewChangedListener != null) mOnListViewChangedListener.onVoiceEditClicked(mSoundFile,memo);
         }
           
           
@@ -405,7 +405,7 @@ import java.util.List;
 //                }
 //                }
 //            });
-            int secs = cursor.getInt(mDurationIdx);
+            final int secs = cursor.getInt(mDurationIdx);
             if (secs == 0) {
                 vh.duration.setText("");
             } else {
@@ -421,7 +421,7 @@ import java.util.List;
             }
             SimpleDateFormat format = new SimpleDateFormat(dateFormat);
             Date d = new Date(date);
-            String dd = format.format(d);
+            final String dd = format.format(d);
             vh.createDate.setText(dd);
 
             final String path = cursor.getString(mPathIdx);
@@ -441,7 +441,7 @@ import java.util.List;
                     // MemosUtils.shareMemo(mContext,
                     // mCurrentPath);
                     Intent intent = new Intent(mContext, MemoShare.class);
-                    intent.putExtra("path", mCurrentPath);
+                    intent.putExtra("path", path);
                     context.startActivity(intent);
                 }
             });
@@ -467,7 +467,13 @@ import java.util.List;
 ////                    double []gainHeights = computeGainHeights();
 //                    
 //                    double time = (mSoundFile.getSamplesPerFrame() * numFrames)/sampleRate;
-                    setOnVoiceEditClicked(mSoundFile);
+                    VoiceMemo memo = new VoiceMemo();
+                    memo.setMemId(String.valueOf(memoid));
+                    memo.setMemCreatedDate(dd);
+                    memo.setMemName(itemname);
+                    memo.setMemPath(path);
+                    memo.setMemDuration(secs);
+                    setOnVoiceEditClicked(mSoundFile,memo);
                 }
             });
 
