@@ -885,4 +885,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         else 
             tvEdit.setVisibility(View.INVISIBLE);
     }
+    
+    @Override
+    public void onPlayStatusChanged(int status, long position)
+    {
+    	waveView.setTime_to_edit(position);
+    	waveView.invalidate();
+    }
 }
