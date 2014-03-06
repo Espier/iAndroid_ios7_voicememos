@@ -43,6 +43,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     TimerTask timerTask;
     Paint voiceLinePaint;
     Paint slideLinePaint;
+    Paint editBarPaint;
     Paint timeTopPaint;
     Paint timeTextPaint;
     Paint grayLinePaint;
@@ -100,8 +101,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     float down_x;
     GestureDetector gestureDetector;
-    
-    float voice_item_len;
+
+    float time_voice_all;
 
     /***
      * view status
@@ -112,6 +113,21 @@ public class VoiceWaveView extends View implements OnGestureListener {
     public static final int VIEW_STATUS_EDIT = 2;
 
     CheapSoundFile cheapSoundFile;
+
+    int frameGains[];
+    int sampleRate;
+    int numFrames;
+    float factor;
+    int display_num;
+    float step_width;
+    int currentFramPos;
+    float timePerFrame;
+
+    float edit_margin_left = 15;
+    float edit_margin_right = 35;
+
+    float left_edit_bar_pos;
+    float right_edit_bar_pos;
 
     /**
      * @return the cheapSoundFile
@@ -125,6 +141,28 @@ public class VoiceWaveView extends View implements OnGestureListener {
      */
     public void setCheapSoundFile(CheapSoundFile cheapSoundFile) {
         this.cheapSoundFile = cheapSoundFile;
+        if (cheapSoundFile != null) {
+            frameGains = cheapSoundFile.getFrameGains();
+            sampleRate = cheapSoundFile.getSampleRate();
+            numFrames = cheapSoundFile.getNumFrames();
+
+            // 计算比例
+            int max = getMax(frameGains);
+            float height = (y_bottom_line - y_top_line) / 2;
+            factor = height * 0.9f / max;
+
+            // 帧间距
+            int mSamplePerFrame = cheapSoundFile.getSamplesPerFrame();
+            timePerFrame = mSamplePerFrame * 1000 / sampleRate;
+            step_width = w * timePerFrame / (time_x * 1000);
+            // double time = (mSamplePerFrame * numFrames)/sampleRate;
+            time_voice_all = numFrames * timePerFrame;
+
+            // 能显示的帧数
+            display_num = (int) (time_x * 1000 / timePerFrame);
+
+        }
+
     }
 
     /**
@@ -198,6 +236,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
         blueColor = Color.parseColor(blueColorString);
         slideLinePaint.setColor(blueColor);
         slideLinePaint.setStrokeWidth(1f);
+
+        editBarPaint = new Paint();
+        editBarPaint.setColor(Color.RED);
+        editBarPaint.setStrokeWidth(1f);
 
         timeTopPaint = new Paint();
         timeTopPaint.setTextSize(ScalePx.scalePx(context, 24));
@@ -294,24 +336,32 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawEditView(Canvas canvas)
     {
-        x = w / 2;
+        float s = w - edit_margin_left - edit_margin_right;
+        float s_v = numFrames * step_width;
+        //float t = s / (grid_width * 4);
+        float fac = s_v/s;
+        // fac = (fac<1)?1:fac;
+        int _factor = (int) (fac + 0.5);
+        float start_pos;
+        float end_pos;
+        float delt_x;
+        float num = numFrames / _factor;
+        float s_dis = num*step_width;
 
-        time_list.clear();
-        for (int i = 0; i <= time_x + 1; i++)
-        {
-            time_list.add(i);
-        }
-
-        // v = w / (time_x * 1000);
+        
+        delt_x = s_dis / num;
+        
+        start_pos = (s - s_dis) / 2 + edit_margin_left;
+        end_pos = start_pos+s_dis;
 
         float start_move_time_textview = 80;
-
-        float q = (x < start_move_time_textview) ? 0 : (x - start_move_time_textview);
+        float q = (w / 2 - start_move_time_textview);
         try {
             drawSlideLine(canvas, x);
-            drawVoice(canvas, x, margin_lef_init);
+            drawEditBar(canvas,start_pos,end_pos);
+            drawVoiceEdit(canvas, _factor, start_pos, delt_x);
             drawTimeTextView(canvas, q);
-            drawXAxis(canvas, margin_lef_init);
+            drawXAxisEdit(canvas, margin_lef_init);
             drawYAxis(canvas);
         } catch (Exception e) {
             Log.e("draw err", e.toString());
@@ -321,18 +371,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawToEditView(Canvas canvas)
     {
         x = w / 2;
-
-        time_list.clear();
-        for (int i = 0; i <= time_x + 1; i++)
-        {
-            time_list.add(i);
-        }
-
-        // v = w / (time_x * 1000);
-
         float start_move_time_textview = 80;
-
-        float q = (x < start_move_time_textview) ? 0 : (x - start_move_time_textview);
+        float q = (w / 2 - start_move_time_textview);
         try {
             drawSlideLine(canvas, x);
 
@@ -378,19 +418,33 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawSlideLine(Canvas canvas, float offset)
     {
         float x = offset;
-
-        canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
-        // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
-        canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
-        canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
-                slideLinePaint);
-
+        if (viewStatus != VIEW_STATUS_EDIT) {
+            canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
+            // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
+            canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
+            canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
+                    slideLinePaint);
+        }
         canvas.drawLine(0, y_top_line, getWidth(), y_top_line, grayLinePaint);
         canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
                 , grayLinePaint);
 
         canvas.drawLine(0, y_mid_line, getWidth(), y_mid_line, darkGrayLinePaint);
 
+    }
+
+    private void drawEditBar(Canvas canvas,float start_pos,float end_pos)
+    {
+        
+        canvas.drawLine(start_pos, y_top_line, start_pos, y_bottom_line, editBarPaint);
+        // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
+        canvas.drawCircle(start_pos, y_top_line - cicle_radius, cicle_radius, editBarPaint);
+
+       
+        canvas.drawLine(end_pos, y_top_line, end_pos, y_bottom_line, editBarPaint);
+        // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
+        canvas.drawCircle(end_pos, y_bottom_line + cicle_radius, cicle_radius,
+                editBarPaint);
     }
 
     private void drawVoice(Canvas canvas, float s, float offset)
@@ -438,42 +492,22 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawVoiceToEdit(Canvas canvas, float s, float offset)
     {
         if (cheapSoundFile != null) {
-            int frameGains[] = cheapSoundFile.getFrameGains();
-            int sampleRate = cheapSoundFile.getSampleRate();
-            int numFrames = cheapSoundFile.getNumFrames();
-            // double heights[] = this.computeGainHeights(cheapSoundFile);
-            
-
-            // 计算比例
-            int max = getMax(frameGains);
-            float height = (y_bottom_line - y_top_line) / 2;
-            float factor = height * 0.9f / max;
-
-            float x_ = 0;
-            // 帧间距
-            int mSamplePerFrame = cheapSoundFile.getSamplesPerFrame();
-            float timePerFrame = mSamplePerFrame * 1000 / sampleRate;
-            float step_width = w * timePerFrame / (time_x * 1000);
-            // double time = (mSamplePerFrame * numFrames)/sampleRate;
-            voice_item_len = numFrames*timePerFrame;
-
-            // 能显示的帧数
-            int display_num = (int) (time_x * 1000 / timePerFrame);
-
             // 计算当前时间帧位置
-            int index = (int) (time_to_edit / timePerFrame);
-            for (int i = index, j = display_num / 2; i > 0 && j > 0; i--, j--)
+            currentFramPos = (int) (time_to_edit / timePerFrame);
+            float x_ = 0;
+
+            for (int i = currentFramPos, j = display_num / 2; i > 0 && j > 0; i--, j--)
             {
-                x_ = w / 2 - (index - i) * step_width;
+                x_ = w / 2 - (currentFramPos - i) * step_width;
                 canvas.drawLine(x_, y_mid_line - (float) frameGains[i] * factor,
                         x_, y_mid_line + (float) frameGains[i] * factor, voiceLinePaint);
             }
-            for (int i = index, j = 0; i < numFrames && j < display_num / 2; i++, j++)
+            for (int i = currentFramPos, j = 0; i < numFrames && j < display_num / 2; i++, j++)
             {
-                x_ = w / 2 + (i - index) * step_width;
+                x_ = w / 2 + (i - currentFramPos) * step_width;
                 canvas.drawLine(x_, y_mid_line - (float) frameGains[i] * factor,
                         x_, y_mid_line + (float) frameGains[i] * factor, voiceLinePaint);
-                if (x_>w-num_margin_right*3) {
+                if (x_ > w - num_margin_right * 3) {
                     break;
                 }
             }
@@ -481,91 +515,72 @@ public class VoiceWaveView extends View implements OnGestureListener {
         }
 
     }
-    /*
 
-    private double[] computeGainHeights(CheapSoundFile mSoundFile)
+    private void drawVoiceEdit(Canvas canvas, int fac, float start_pos, float delt_x)
     {
-        int numFrames = mSoundFile.getNumFrames();
-        int[] frameGains = mSoundFile.getFrameGains();
-        double[] smoothedGains = new double[numFrames];
-        if (numFrames == 1) {
-            smoothedGains[0] = frameGains[0];
-        } else if (numFrames == 2) {
-            smoothedGains[0] = frameGains[0];
-            smoothedGains[1] = frameGains[1];
-        } else if (numFrames > 2) {
-            smoothedGains[0] = (double) (
-                    (frameGains[0] / 2.0) +
-                    (frameGains[1] / 2.0));
-            for (int i = 1; i < numFrames - 1; i++) {
-                smoothedGains[i] = (double) (
-                        (frameGains[i - 1] / 3.0) +
-                                (frameGains[i] / 3.0) +
-                        (frameGains[i + 1] / 3.0));
+
+        int m = numFrames / fac;
+        // if (fac >1) {
+        // float x_ = 0;
+        // for (int i = 0; i < m; i++) {
+        // int pos = i*fac;
+        // if (pos>numFrames-1 || x_>w-edit_margin_right) {
+        // break;
+        // }
+        // x_ = start_pos+i*step_width;
+        // canvas.drawLine(x_, y_mid_line - (float) frameGains[pos] * factor,
+        // x_, y_mid_line + (float) frameGains[pos] * factor, voiceLinePaint);
+        // }
+        // }
+        //
+        // else {
+
+        for (int i = 0; i < m; i++) {
+
+            int pos = i * fac;
+            if (pos > numFrames - 1) {
+                break;
             }
-            smoothedGains[numFrames - 1] = (double) (
-                    (frameGains[numFrames - 2] / 2.0) +
-                    (frameGains[numFrames - 1] / 2.0));
-        }
 
-        // Make sure the range is no more than 0 - 255
-        double maxGain = 1.0;
-        for (int i = 0; i < numFrames; i++) {
-            if (smoothedGains[i] > maxGain) {
-                maxGain = smoothedGains[i];
-            }
+            canvas.drawLine(start_pos + i * delt_x, y_mid_line - (float) frameGains[pos] * factor,
+                    start_pos + i * delt_x, y_mid_line + (float) frameGains[pos] * factor,
+                    voiceLinePaint);
         }
-        double scaleFactor = 1.0;
-        if (maxGain > 255.0) {
-            scaleFactor = 255 / maxGain;
-        }
+        // }
 
-        // Build histogram of 256 bins and figure out the new scaled max
-        maxGain = 0;
-        int gainHist[] = new int[256];
-        for (int i = 0; i < numFrames; i++) {
-            int smoothedGain = (int) (smoothedGains[i] * scaleFactor);
-            if (smoothedGain < 0)
-                smoothedGain = 0;
-            if (smoothedGain > 255)
-                smoothedGain = 255;
-
-            if (smoothedGain > maxGain)
-                maxGain = smoothedGain;
-
-            gainHist[smoothedGain]++;
-        }
-
-        // Re-calibrate the min to be 5%
-        double minGain = 0;
-        int sum = 0;
-        while (minGain < 255 && sum < numFrames / 20) {
-            sum += gainHist[(int) minGain];
-            minGain++;
-        }
-
-        // Re-calibrate the max to be 99%
-        sum = 0;
-        while (maxGain > 2 && sum < numFrames / 100) {
-            sum += gainHist[(int) maxGain];
-            maxGain--;
-        }
-
-        // Compute the heights
-        double[] heights = new double[numFrames];
-        double range = maxGain - minGain;
-        for (int i = 0; i < numFrames; i++) {
-            double value = (smoothedGains[i] * scaleFactor - minGain) / range;
-            if (value < 0.0)
-                value = 0.0;
-            if (value > 1.0)
-                value = 1.0;
-            heights[i] = value * value;
-        }
-        return heights;
     }
 
-*/
+    /*
+     * private double[] computeGainHeights(CheapSoundFile mSoundFile) { int
+     * numFrames = mSoundFile.getNumFrames(); int[] frameGains =
+     * mSoundFile.getFrameGains(); double[] smoothedGains = new
+     * double[numFrames]; if (numFrames == 1) { smoothedGains[0] =
+     * frameGains[0]; } else if (numFrames == 2) { smoothedGains[0] =
+     * frameGains[0]; smoothedGains[1] = frameGains[1]; } else if (numFrames >
+     * 2) { smoothedGains[0] = (double) ( (frameGains[0] / 2.0) + (frameGains[1]
+     * / 2.0)); for (int i = 1; i < numFrames - 1; i++) { smoothedGains[i] =
+     * (double) ( (frameGains[i - 1] / 3.0) + (frameGains[i] / 3.0) +
+     * (frameGains[i + 1] / 3.0)); } smoothedGains[numFrames - 1] = (double) (
+     * (frameGains[numFrames - 2] / 2.0) + (frameGains[numFrames - 1] / 2.0)); }
+     * // Make sure the range is no more than 0 - 255 double maxGain = 1.0; for
+     * (int i = 0; i < numFrames; i++) { if (smoothedGains[i] > maxGain) {
+     * maxGain = smoothedGains[i]; } } double scaleFactor = 1.0; if (maxGain >
+     * 255.0) { scaleFactor = 255 / maxGain; } // Build histogram of 256 bins
+     * and figure out the new scaled max maxGain = 0; int gainHist[] = new
+     * int[256]; for (int i = 0; i < numFrames; i++) { int smoothedGain = (int)
+     * (smoothedGains[i] * scaleFactor); if (smoothedGain < 0) smoothedGain = 0;
+     * if (smoothedGain > 255) smoothedGain = 255; if (smoothedGain > maxGain)
+     * maxGain = smoothedGain; gainHist[smoothedGain]++; } // Re-calibrate the
+     * min to be 5% double minGain = 0; int sum = 0; while (minGain < 255 && sum
+     * < numFrames / 20) { sum += gainHist[(int) minGain]; minGain++; } //
+     * Re-calibrate the max to be 99% sum = 0; while (maxGain > 2 && sum <
+     * numFrames / 100) { sum += gainHist[(int) maxGain]; maxGain--; } //
+     * Compute the heights double[] heights = new double[numFrames]; double
+     * range = maxGain - minGain; for (int i = 0; i < numFrames; i++) { double
+     * value = (smoothedGains[i] * scaleFactor - minGain) / range; if (value <
+     * 0.0) value = 0.0; if (value > 1.0) value = 1.0; heights[i] = value *
+     * value; } return heights; }
+     */
     private void drawXAxis(Canvas canvas, float offset)
     {
         int grid_num = 4;
@@ -598,6 +613,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     {
 
         int time_ms = (int) (time_to_edit % 1000);
+        Log.e("ms", time_ms + "");
 
         float text_offset = ScalePx.scalePx(context, 8);
         // 当前时间整数点
@@ -628,6 +644,19 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
             }
 
+        }
+
+    }
+
+    private void drawXAxisEdit(Canvas canvas, float offset)
+    {
+
+        for (int i = 0; i < time_x * 4 + 1; i++) {
+            float h;
+            h = (i % 4 == 0) ? h_high_line : h_low_line;
+            canvas.drawLine(i * grid_width, y_xaxis + h_high_line, i * grid_width, y_xaxis
+                    + h_high_line - h,
+                    darkGrayLinePaint);
         }
 
     }
@@ -934,13 +963,13 @@ public class VoiceWaveView extends View implements OnGestureListener {
             if (time_to_edit < 0) {
                 time_to_edit = 0;
             }
-            if (time_to_edit>voice_item_len) {
-                time_to_edit = (long)voice_item_len;
+            if (time_to_edit > time_voice_all) {
+                time_to_edit = (long) time_voice_all;
             }
 
             invalidate();
         }
-        
+
         return true;
     }
 
