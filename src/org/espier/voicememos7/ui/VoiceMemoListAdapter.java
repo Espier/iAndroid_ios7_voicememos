@@ -67,7 +67,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public interface OnListViewChangedListener {
         public void onAChanged(Intent intent, int state);
 
-        public void onVoiceEditClicked(CheapSoundFile mSoundFile);
+        public void onVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memos);
 
         public void DisplayEditButton(boolean isDisplay);
 
@@ -102,11 +102,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             mOnListViewChangedListener.DisplayEditButton(isDisplay);
     }
 
-    private void setOnVoiceEditClicked(CheapSoundFile mSoundFile) {
+    private void setOnVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memos) {
 
         Log.d("asdf", "in C event");
         if (mOnListViewChangedListener != null)
-            mOnListViewChangedListener.onVoiceEditClicked(mSoundFile);
+            mOnListViewChangedListener.onVoiceEditClicked(mSoundFile,memos);
     }
 
     public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
@@ -400,7 +400,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         // }
         // }
         // });
-        int secs = cursor.getInt(mDurationIdx);
+        final int secs = cursor.getInt(mDurationIdx);
         if (secs == 0) {
             vh.duration.setText("");
         } else {
