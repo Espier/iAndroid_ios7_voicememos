@@ -390,6 +390,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         TextView text = (TextView)findViewById(R.id.txtRecordName);
         mainLayout.scrollTo(0, playLayout.getTop() );
+       
         hiddenView.setVisibility(View.INVISIBLE);
         txtRecordName.setVisibility(View.INVISIBLE);
         waveView.setVisibility(View.INVISIBLE);
@@ -417,6 +418,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void init() {
+        
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         listViewaddData();
         titlelayout = (LinearLayout) findViewById(R.id.titlelay);
@@ -578,6 +580,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         lp2.height = (int) (height * 0.9);
         lp2.width = width;
         belowLayout.setLayoutParams(lp2);
+        RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+        RelativeLayout.LayoutParams lp_list =new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,android.widget.RelativeLayout.LayoutParams.FILL_PARENT);
+        lp_list.height = height-playLayout.getHeight()-10;
+        System.out.println("height-playLayout.getHeight() "+(height-playLayout.getHeight()));
+////        lp_list.addRule(RelativeLayout.BELOW,R.id.hiddenView);
+        slideCutListView = (SlideCutListView) findViewById(R.id.listView);
+        slideCutListView.setLayoutParams(lp_list);
 
     }
 
@@ -810,12 +819,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void onAChanged(Intent intent, int state) {
         startActivityForResult(intent, state);
-        
-    }
-
-    @Override
-    public void onBChanged() {
-        
         
     }
 
