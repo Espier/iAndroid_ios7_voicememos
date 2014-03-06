@@ -169,6 +169,31 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             return false;
         }
     };
+    
+    private OnTouchListener editPlayTouchListener = new View.OnTouchListener() {
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    imageViewVoicePlayInEditMode.getBackground().setColorFilter(
+                            new ColorMatrixColorFilter(BT_SELECTED));
+                    imageViewVoicePlayInEditMode.setBackgroundDrawable(imageViewVoicePlayInEditMode.getBackground());
+
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                	imageViewVoicePlayInEditMode.getBackground().setColorFilter(
+                            new ColorMatrixColorFilter(BT_NOT_SELECTED));
+                	imageViewVoicePlayInEditMode.setBackgroundDrawable(imageViewVoicePlayInEditMode.getBackground());
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -248,25 +273,21 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         imageViewVoiceCropInEditMode = (ImageView)findViewById(R.id.editimage);
         imageViewVoicePlayInEditMode = (ImageView)findViewById(R.id.editredButton);
         textViewVoiceEditFinishInEditMode = (TextView)findViewById(R.id.editfinished);
-        
+        imageViewVoicePlayInEditMode.setOnTouchListener(editPlayTouchListener);
         imageViewVoicePlayInEditMode.setOnClickListener(new View.OnClickListener() {
-        
-            @Override
-            public void onClick(View v) {
-            if(mediaStatus == VoiceWaveView.VIEW_STATUS_EDIT)
-            {
-                waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
-                waveView.invalidate();
-            }
-         }
-       });
+			
+			@Override
+			public void onClick(View arg0) {
+               
+			}
+		});
         
         imageViewVoiceCropInEditMode.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-				// TODO Auto-generated method stub
-        	
+            	 waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+                 waveView.invalidate();
           }
        });
         
