@@ -25,6 +25,7 @@ import android.os.Message;
 import android.sax.TextElementListener;
 import android.text.format.DateFormat;
 
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -120,7 +121,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private ImageView imageViewVoiceCropInEditMode;
     private TextView textViewVoiceEditFinishInEditMode;
     
-    LinearLayout titlelayout;
+    RelativeLayout titlelayout;
     ImageView sound;
     TextView textViewEdit, textviewmemo;
     Handler dialogdismiss = new Handler() {
@@ -421,21 +422,22 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         listViewaddData();
-        titlelayout = (LinearLayout) findViewById(R.id.titlelay);
+        titlelayout = (RelativeLayout) findViewById(R.id.titlelay);
+        
         textViewEdit = (TextView) findViewById(R.id.editButton);
-        LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp = new android.widget.RelativeLayout.LayoutParams(
+                android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.setMargins(ScalePx.scalePx(this, 19), ScalePx.scalePx(this, 28), 0, 0);
-        lp.weight = 1;
         textViewEdit.setLayoutParams(lp);
         
         textviewmemo = (TextView) findViewById(R.id.name);
-        LinearLayout.LayoutParams lp1 = new android.widget.LinearLayout.LayoutParams(
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp1.setMargins(0, ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 36));
-        lp1.weight = 1;
+        RelativeLayout.LayoutParams lp1 = new android.widget.RelativeLayout.LayoutParams(
+                android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp1.addRule(RelativeLayout.CENTER_HORIZONTAL,RelativeLayout.TRUE);
+        lp1.setMargins(ScalePx.scalePx(this, 25), ScalePx.scalePx(this, 28), 0, ScalePx.scalePx(this, 36));
+       
         textviewmemo.setLayoutParams(lp1);
         
         int H = textviewmemo.getHeight();
@@ -443,12 +445,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         sound.setScaleType(ScaleType.CENTER_INSIDE);
         sound.setMaxHeight( H);
-        LinearLayout.LayoutParams lp3 = new LinearLayout.LayoutParams(
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
+                android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
         
         lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 0), 0);
-        lp3.weight = 1;
+        lp3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);  
         sound.setLayoutParams(lp3);
         sound.setOnClickListener((new View.OnClickListener() {
             

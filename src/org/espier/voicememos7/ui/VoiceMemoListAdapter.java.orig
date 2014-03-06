@@ -340,12 +340,70 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                     openedListViewItem = v;
                 }
 
-
+<<<<<<< HEAD
+=======
+        @Override
+        public void bindView(View view, final Context context, final Cursor cursor) {
+            System.out.println( cursor.getString(mLabelIdx)+"    "+cursor.getString(mPathIdx));
+            final ViewHolder vh = (ViewHolder) view.getTag();
+            final String itemname = cursor.getString(mLabelIdx);
+            vh.tag.setTag(itemname);
+            if(itemname.length()>10){
+                vh.tag.setText("");
+              String strDot = "...";
+              String str = itemname.substring(0, 10
+                              - strDot.length());
+              vh.tag.setText(str + strDot);
+              vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    // TODO Auto-generated method stub
+                    if(hasFocus){
+                        String strInput = (String) vh.tag.getTag();
+                        vh.tag.setText(strInput);
+                        vh.tag.setSelection(strInput.length());
+                    }
+                }
+            });
+            }else{
+                vh.tag.setText(itemname);
+            }
+            
+//            vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                
+//                @Override
+//                public void onFocusChange(View v, boolean hasFocus) {
+//                    // TODO Auto-generated method stub
+//                    String strInput = vh.tag.getText().toString();
+//                    if (!hasFocus) {
+//                        if (strInput.length() > 10) {
+//                            vh.tag.setText("");
+//                                String strDot = "...";
+//                                String str = strInput.substring(0, 10
+//                                                - strDot.length());
+//                                vh.tag.setText(str + strDot);
+//                        }
+//                } else {
+//                    vh.tag.setText("");
+//                    vh.tag.setText(strInput);
+//                    vh.tag.setSelection(strInput.length());
+//                }
+//                }
+//            });
+            int secs = cursor.getInt(mDurationIdx);
+            if (secs == 0) {
+                vh.duration.setText("");
+            } else {
+                vh.duration.setText(MemosUtils.makeTimeString(context, secs / 1000));
+                vh.duration.setTag(secs);
+>>>>>>> 5151cf587364abd0856a148a3982a4d004060626
             }
         });
         vh.tag.setClickable(false);
         vh.tag.setFocusable(false);
         list.add(v);
+
         return v;
     }
 
