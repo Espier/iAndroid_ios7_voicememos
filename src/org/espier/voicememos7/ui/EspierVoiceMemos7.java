@@ -5,6 +5,7 @@ package org.espier.voicememos7.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -31,6 +32,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
 
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -95,6 +97,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     int indexnum;
     private CheapSoundFile mSoundFile;
     private File mFile;
+    private boolean firstTime = true;
     TextView txtRecordName;
     View emptyView;
     public final float[] BT_SELECTED = new float[] {
@@ -281,9 +284,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.finished:
-                stop();
+                if (firstTime) {
+                    ScrollUp();
+                    firstTime = false;
+                } else {
+                    stop();
+                }
                 break;
             case R.id.redButton:
+                firstTime = false;
                 if (!StorageUtil.hasDiskSpace()) {
                     Toast.makeText(this, R.string.storage_is_full, Toast.LENGTH_SHORT).show();
                     return;
@@ -411,7 +420,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
         listViewaddData();
         titlelayout = (LinearLayout) findViewById(R.id.titlelay);
-        textViewEdit = (TextView) findViewById(R.id.edititem);
+        textViewEdit = (TextView) findViewById(R.id.editButton);
         LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -617,20 +626,27 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         } else {
 //            return;
         }
-        AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this);
+        
         final View view = this.getLayoutInflater().inflate(R.layout.items, null);
+        view.setPadding(0, 0, 0, 0);
+//        view.setBackgroundColor(getResources().getColor(R.color.blue));
+        view.setBackgroundDrawable(getResources().getDrawable(R.drawable.radius));
         RelativeLayout.LayoutParams rellay = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        rellay.setMargins(0, ScalePx.scalePx(this, 42), 0, 0);
+        rellay.setMargins(0, ScalePx.scalePx(this, 30), 0, 0);
         TextView title = (TextView) view.findViewById(R.id.textView1);
+        title.setPadding(0, 0, 0, 0);
         title.setWidth(ScalePx.scalePx(this, 540));
         title.setLayoutParams(rellay);
+        
         RelativeLayout.LayoutParams rellay2 = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        rellay2.setMargins(0, ScalePx.scalePx(this, 18), 0, 0);
+        rellay2.setMargins(0, ScalePx.scalePx(this, 12), 0, 0);
         rellay2.addRule(RelativeLayout.BELOW, title.getId());
         TextView text2 = (TextView) view.findViewById(R.id.textView2);
         text2.setLayoutParams(rellay2);
+        text2.setPadding(0, 0, 0, 0);
+        
         EditText text = (EditText) view.findViewById(R.id.memoname);
         memoName = txtRecordName.getText().toString();
         text.setText(memoName);
@@ -638,16 +654,24 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         text.setWidth(ScalePx.scalePx(this, 478));
         RelativeLayout.LayoutParams textlay = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        textlay.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 48),
-                ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 29));
+        textlay.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 30),
+                ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 24));
         textlay.addRule(RelativeLayout.BELOW, R.id.textView2);
         text.setLayoutParams(textlay);
+        text.setTextSize(ScalePx.scalePx(this, 18));
+//        text.setPadding(ScalePx.scalePx(this, 16), 
+//                ScalePx.scalePx(this, 16), 
+//                ScalePx.scalePx(this, 16), ScalePx.scalePx(this, 16));
+        text.setSingleLine(true);
+        text.setSelection(txtRecordName.getText().length());
+        text.setBackgroundDrawable(getResources().getDrawable(R.drawable.memoseditteststyle));
         ImageView imag = (ImageView) view.findViewById(R.id.h_line);
         imag.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, ScalePx.scalePx(this, 88)));
 
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
         TextView ok = (TextView) view.findViewById(R.id.ok);
+        //ok.setBackgroundColor(getResources().getColor(R.color.red));
         cancel.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -684,9 +708,20 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 ScrollUp();
             }
         });
-
-        dialog = builder.create();
-        dialog.setView(view, 0, 0, 0, 0);
+//        AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this);
+        Dialog dialog = new Dialog(EspierVoiceMemos7.this,R.style.dialog);
+//        dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        RelativeLayout.LayoutParams viewrl = new RelativeLayout.LayoutParams(
+                LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        viewrl.setMargins(0, 0, 0, 0);
+        dialog.setContentView(view,viewrl);
+//        dialog.setView(view, 0, 0, 0, 0);
+        Window dialogWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        lp.width = ScalePx.scalePx(this, 540);
+        lp.height = ScalePx.scalePx(this, 344);
+        dialogWindow.setAttributes(lp);
         dialog.show();
 
     }
@@ -799,5 +834,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
         waveView.setCheapSoundFile(mSoundFile);
+    }
+
+    @Override
+    public void DisplayEditButton(boolean isDisplay) {
+        TextView tvEdit = (TextView)findViewById(R.id.editButton);
+        if (isDisplay)
+            tvEdit.setVisibility(View.VISIBLE);
+        else 
+            tvEdit.setVisibility(View.INVISIBLE);
     }
 }
