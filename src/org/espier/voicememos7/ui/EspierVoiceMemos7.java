@@ -273,9 +273,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         imageViewVoiceCropInEditMode = (ImageView)findViewById(R.id.editimage);
         imageViewVoicePlayInEditMode = (ImageView)findViewById(R.id.editredButton);
         textViewVoiceEditFinishInEditMode = (TextView)findViewById(R.id.editfinished);
+        
         imageViewVoicePlayInEditMode.setOnTouchListener(editPlayTouchListener);
         imageViewVoicePlayInEditMode.setOnClickListener(this);
         imageViewVoiceCropInEditMode.setOnClickListener(this);
+        textViewVoiceEditFinishInEditMode.setOnClickListener(this);
         
     }
     
@@ -300,15 +302,36 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         return memo_name;
     }
 
+    private void updateEditModeButtonStatus()
+    {
+    	int state = mRecorder.getState();
+        if (state == Recorder.IDLE_STATE) {
+            imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
+        } else if (state == Recorder.PLAYER_PAUSE_STATE) {
+            imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
+        } else if (state == Recorder.PLAYING_STATE) {
+            imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_pause);
+        }
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-        	case R.id.editredButton:
-        	mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath());
+        	case R.id.editredButton://User click play button in Edit mode
+        	{
+                mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath());
+                updateEditModeButtonStatus();
+        	}
         	break;
-        	case R.id.editimage:
+        	case R.id.editimage://User click crop button in edit mode.
+        	{
         		waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
                 waveView.invalidate();
+        	}
+        	break;
+        	case R.id.editfinished://User click finish button in edit mode.
+        	{
+        		ScrollUp();
+        	}
         	break;
             case R.id.finished:
                 if (firstTime) {
@@ -319,6 +342,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                 break;
             case R.id.redButton:
+            	mediaStatus = MEDIA_STATE_RECORDING;
             	waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_RECORD);
                 firstTime = false;
                 if (!StorageUtil.hasDiskSpace()) {
@@ -429,6 +453,23 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void ScrollDown() {
+        if(mediaStatus == MEDIA_STATE_EDIT)
+        {
+           RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
+           editLayout.setVisibility(View.VISIBLE);
+        
+           RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+           playLayout.setVisibility(View.GONE);
+        }
+        else if(mediaStatus == MEDIA_STATE_RECORDING)
+        {
+        	RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);
+            editLayout.setVisibility(View.GONE);
+         
+            RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+            playLayout.setVisibility(View.VISIBLE);
+		}
+        
         mainLayout.scrollTo(0, 0);
         if (hiddenView.getVisibility() != View.VISIBLE) {
             hiddenView.setVisibility(View.VISIBLE);
@@ -872,7 +913,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         textVoiceTimeInEditMode.setText(memo.getMemCreatedDate());
         textVoiceNameInEditMode.setText(memo.getMemName());
         
-        
+        updateEditModeButtonStatus();
         waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
         waveView.setCheapSoundFile(mSoundFile);
     }
