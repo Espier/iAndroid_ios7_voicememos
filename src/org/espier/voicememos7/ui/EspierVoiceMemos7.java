@@ -274,22 +274,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         imageViewVoicePlayInEditMode = (ImageView)findViewById(R.id.editredButton);
         textViewVoiceEditFinishInEditMode = (TextView)findViewById(R.id.editfinished);
         imageViewVoicePlayInEditMode.setOnTouchListener(editPlayTouchListener);
-        imageViewVoicePlayInEditMode.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-               
-			}
-		});
-        
-        imageViewVoiceCropInEditMode.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-            	 waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
-                 waveView.invalidate();
-          }
-       });
+        imageViewVoicePlayInEditMode.setOnClickListener(this);
+        imageViewVoiceCropInEditMode.setOnClickListener(this);
         
     }
     
@@ -317,6 +303,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+        	case R.id.editredButton:
+        	mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath());
+        	break;
+        	case R.id.editimage:
+        		waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+                waveView.invalidate();
+        	break;
             case R.id.finished:
                 if (firstTime) {
                     ScrollUp();
@@ -326,6 +319,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                 break;
             case R.id.redButton:
+            	waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_RECORD);
                 firstTime = false;
                 if (!StorageUtil.hasDiskSpace()) {
                     Toast.makeText(this, R.string.storage_is_full, Toast.LENGTH_SHORT).show();
@@ -482,7 +476,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
         
-        lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 0), 0);
+        lp3.setMargins(0, ScalePx.scalePx(this, 28), ScalePx.scalePx(this, 45), 0);
         lp3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);  
         sound.setLayoutParams(lp3);
         sound.setOnClickListener((new View.OnClickListener() {
@@ -513,7 +507,22 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         waveView.setRecorder(mRecorder);
         finished = (TextView) findViewById(R.id.finished);
         finished.setOnClickListener(this);
-        
+        finished.setOnTouchListener(new View.OnTouchListener() {
+            
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        finished.setTextColor(getResources().getColor(R.color.finish_text_color));
+                        break;
+
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
         slideCutListView.setRemoveListener(this);
         date = (TextView) findViewById(R.id.txtDate);
         String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
