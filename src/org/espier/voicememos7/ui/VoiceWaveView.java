@@ -43,6 +43,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     TimerTask timerTask;
     Paint voiceLinePaint;
     Paint slideLinePaint;
+    Paint editBarPaint;
     Paint timeTopPaint;
     Paint timeTextPaint;
     Paint grayLinePaint;
@@ -101,7 +102,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     float down_x;
     GestureDetector gestureDetector;
     
-    float voice_item_len;
+    float time_voice_all;
 
     /***
      * view status
@@ -112,6 +113,21 @@ public class VoiceWaveView extends View implements OnGestureListener {
     public static final int VIEW_STATUS_EDIT = 2;
 
     CheapSoundFile cheapSoundFile;
+    
+    int frameGains[] ;
+    int sampleRate ;
+    int numFrames ;
+    float factor;
+    int display_num;
+    float step_width;
+    int currentFramPos;
+    float timePerFrame;
+    
+    float edit_margin_left = 15;
+    float edit_margin_right = 30;
+    
+    float left_edit_bar_pos;
+    float right_edit_bar_pos;
 
     /**
      * @return the cheapSoundFile
@@ -125,6 +141,29 @@ public class VoiceWaveView extends View implements OnGestureListener {
      */
     public void setCheapSoundFile(CheapSoundFile cheapSoundFile) {
         this.cheapSoundFile = cheapSoundFile;
+        if (cheapSoundFile!=null) {
+             frameGains = cheapSoundFile.getFrameGains();
+             sampleRate = cheapSoundFile.getSampleRate();
+             numFrames = cheapSoundFile.getNumFrames();
+             
+          // 计算比例
+             int max = getMax(frameGains);
+             float height = (y_bottom_line - y_top_line) / 2;
+             factor = height * 0.9f / max;
+             
+          // 帧间距
+             int mSamplePerFrame = cheapSoundFile.getSamplesPerFrame();
+             timePerFrame = mSamplePerFrame * 1000 / sampleRate;
+             step_width = w * timePerFrame / (time_x * 1000);
+             // double time = (mSamplePerFrame * numFrames)/sampleRate;
+             time_voice_all = numFrames*timePerFrame;
+
+             // 能显示的帧数
+             display_num = (int) (time_x * 1000 / timePerFrame);
+
+             
+        }
+        
     }
 
     /**
@@ -198,6 +237,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
         blueColor = Color.parseColor(blueColorString);
         slideLinePaint.setColor(blueColor);
         slideLinePaint.setStrokeWidth(1f);
+        
+        editBarPaint = new Paint();
+        editBarPaint.setColor(Color.RED);
+        editBarPaint.setStrokeWidth(1f);
 
         timeTopPaint = new Paint();
         timeTopPaint.setTextSize(ScalePx.scalePx(context, 24));
@@ -294,24 +337,20 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawEditView(Canvas canvas)
     {
-        x = w / 2;
-
-        time_list.clear();
-        for (int i = 0; i <= time_x + 1; i++)
-        {
-            time_list.add(i);
-        }
-
-        // v = w / (time_x * 1000);
-
+        float s = w-edit_margin_left-edit_margin_right;
+        float t = s/(grid_width*4);
+        float fac = time_voice_all/1000/t;
+        fac = (fac<1)?1:fac;
+        int _factor = (int)(fac+0.5);
+        
         float start_move_time_textview = 80;
-
-        float q = (x < start_move_time_textview) ? 0 : (x - start_move_time_textview);
+        float q =  (w / 2 - start_move_time_textview);
         try {
             drawSlideLine(canvas, x);
-            drawVoice(canvas, x, margin_lef_init);
+            drawEditBar(canvas);
+            drawVoiceEdit(canvas,  _factor);
             drawTimeTextView(canvas, q);
-            drawXAxis(canvas, margin_lef_init);
+            drawXAxisEdit(canvas, margin_lef_init);
             drawYAxis(canvas);
         } catch (Exception e) {
             Log.e("draw err", e.toString());
@@ -320,19 +359,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawToEditView(Canvas canvas)
     {
-        x = w / 2;
-
-        time_list.clear();
-        for (int i = 0; i <= time_x + 1; i++)
-        {
-            time_list.add(i);
-        }
-
-        // v = w / (time_x * 1000);
-
+        x = w/2;
         float start_move_time_textview = 80;
-
-        float q = (x < start_move_time_textview) ? 0 : (x - start_move_time_textview);
+        float q =  (w / 2 - start_move_time_textview);
         try {
             drawSlideLine(canvas, x);
 
@@ -378,19 +407,33 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawSlideLine(Canvas canvas, float offset)
     {
         float x = offset;
-
-        canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
-        // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
-        canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
-        canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
-                slideLinePaint);
-
+        if (viewStatus !=VIEW_STATUS_EDIT) {
+            canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
+            // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
+            canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
+            canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
+                    slideLinePaint);
+        }
         canvas.drawLine(0, y_top_line, getWidth(), y_top_line, grayLinePaint);
         canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
                 , grayLinePaint);
 
         canvas.drawLine(0, y_mid_line, getWidth(), y_mid_line, darkGrayLinePaint);
 
+    }
+    
+    private void drawEditBar(Canvas canvas)
+    {
+        float x_l = edit_margin_left;
+        canvas.drawLine(x_l, y_top_line, x_l, y_bottom_line, editBarPaint);
+        // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
+        canvas.drawCircle(x_l, y_top_line - cicle_radius, cicle_radius, editBarPaint);
+        
+        float x_r = w-edit_margin_right;
+        canvas.drawLine(x_r, y_top_line, x_r, y_bottom_line, editBarPaint);
+        // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
+        canvas.drawCircle(x_r, y_bottom_line + cicle_radius, cicle_radius,
+                editBarPaint);
     }
 
     private void drawVoice(Canvas canvas, float s, float offset)
@@ -438,44 +481,45 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawVoiceToEdit(Canvas canvas, float s, float offset)
     {
         if (cheapSoundFile != null) {
-            int frameGains[] = cheapSoundFile.getFrameGains();
-            int sampleRate = cheapSoundFile.getSampleRate();
-            int numFrames = cheapSoundFile.getNumFrames();
-            // double heights[] = this.computeGainHeights(cheapSoundFile);
-            
-
-            // 计算比例
-            int max = getMax(frameGains);
-            float height = (y_bottom_line - y_top_line) / 2;
-            float factor = height * 0.9f / max;
-
+         // 计算当前时间帧位置
+            currentFramPos = (int) (time_to_edit / timePerFrame);
             float x_ = 0;
-            // 帧间距
-            int mSamplePerFrame = cheapSoundFile.getSamplesPerFrame();
-            float timePerFrame = mSamplePerFrame * 1000 / sampleRate;
-            float step_width = w * timePerFrame / (time_x * 1000);
-            // double time = (mSamplePerFrame * numFrames)/sampleRate;
-            voice_item_len = numFrames*timePerFrame;
-
-            // 能显示的帧数
-            int display_num = (int) (time_x * 1000 / timePerFrame);
-
-            // 计算当前时间帧位置
-            int index = (int) (time_to_edit / timePerFrame);
-            for (int i = index, j = display_num / 2; i > 0 && j > 0; i--, j--)
+            
+            for (int i = currentFramPos, j = display_num / 2; i > 0 && j > 0; i--, j--)
             {
-                x_ = w / 2 - (index - i) * step_width;
+                x_ = w / 2 - (currentFramPos - i) * step_width;
                 canvas.drawLine(x_, y_mid_line - (float) frameGains[i] * factor,
                         x_, y_mid_line + (float) frameGains[i] * factor, voiceLinePaint);
             }
-            for (int i = index, j = 0; i < numFrames && j < display_num / 2; i++, j++)
+            for (int i = currentFramPos, j = 0; i < numFrames && j < display_num / 2; i++, j++)
             {
-                x_ = w / 2 + (i - index) * step_width;
+                x_ = w / 2 + (i - currentFramPos) * step_width;
                 canvas.drawLine(x_, y_mid_line - (float) frameGains[i] * factor,
                         x_, y_mid_line + (float) frameGains[i] * factor, voiceLinePaint);
                 if (x_>w-num_margin_right*3) {
                     break;
                 }
+            }
+
+        }
+
+    }
+    
+    private void drawVoiceEdit(Canvas canvas, int fac)
+    {
+        if (cheapSoundFile != null) {
+//         
+            int m = numFrames/fac;
+            float delt_x = (w-edit_margin_left-edit_margin_right)/m;
+            float x_ = 0;
+            for (int i = 0; i < m; i++) {
+                int pos = i*fac;
+                if (pos>numFrames-1 || x_>w-edit_margin_right) {
+                    break;
+                }
+                x_ = edit_margin_left+i*delt_x;
+                canvas.drawLine(x_, y_mid_line - (float) frameGains[pos] * factor,
+                        x_, y_mid_line + (float) frameGains[pos] * factor, voiceLinePaint);
             }
 
         }
@@ -630,6 +674,20 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
         }
 
+    }
+    
+    private void drawXAxisEdit(Canvas canvas, float offset)
+    {
+        
+        
+        for (int i = 0; i < time_x*4+1; i++) {
+            float h;
+            h = (i % 4 == 0) ? h_high_line : h_low_line;
+            canvas.drawLine(i*grid_width, y_xaxis + h_high_line, i*grid_width, y_xaxis + h_high_line - h,
+                    darkGrayLinePaint);
+        }
+        
+        
     }
 
     private void drawYAxis(Canvas canvas)
@@ -934,8 +992,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
             if (time_to_edit < 0) {
                 time_to_edit = 0;
             }
-            if (time_to_edit>voice_item_len) {
-                time_to_edit = (long)voice_item_len;
+            if (time_to_edit>time_voice_all) {
+                time_to_edit = (long)time_voice_all;
             }
 
             invalidate();
