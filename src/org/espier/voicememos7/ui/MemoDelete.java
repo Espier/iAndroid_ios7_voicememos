@@ -3,6 +3,7 @@ package org.espier.voicememos7.ui;
 
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.util.AMRFileUtils;
+import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.ScalePx;
 
 import android.app.Activity;
@@ -41,7 +42,12 @@ public class MemoDelete extends Activity implements OnClickListener {
                 ScalePx.scalePx(this, 16), 0);
         del.setLayoutParams(lay);
         del.setOnClickListener(this);
-        del.setText(getResources().getString(R.string.delete) + "\"" + memoname + "\"");
+//        if(memoname.length()>16){
+//          String strDot = "...";
+//          String str = itemname.substring(0, 16- strDot.length());
+          
+        String shortName = MemosUtils.Ellipsize(memoname);
+        del.setText(getResources().getString(R.string.delete) + "\"" + shortName + "\"");
         cancel = (Button) findViewById(R.id.memo_del_cancel);
         LinearLayout.LayoutParams lay2 = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);

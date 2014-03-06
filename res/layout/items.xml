@@ -35,8 +35,6 @@
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
         android:background="@drawable/edittextback"
-        android:ellipsize="end"
-        android:ems="16"
         android:inputType="text"
         android:singleLine="true" >
 

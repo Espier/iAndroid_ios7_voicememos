@@ -362,12 +362,12 @@ import java.util.List;
             final ViewHolder vh = (ViewHolder) view.getTag();
             final String itemname = cursor.getString(mLabelIdx);
             vh.tag.setTag(itemname);
-            if(itemname.length()>10){
-                vh.tag.setText("");
-              String strDot = "...";
-              String str = itemname.substring(0, 10
-                              - strDot.length());
-              vh.tag.setText(str + strDot);
+            String displayString = MemosUtils.Ellipsize(itemname);
+            vh.tag.setText(displayString);
+            if (displayString.equals(itemname)) {
+              
+            }
+
               vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 
                 @Override
@@ -380,9 +380,7 @@ import java.util.List;
                     }
                 }
             });
-            }else{
-                vh.tag.setText(itemname);
-            }
+
             
 //            vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //                

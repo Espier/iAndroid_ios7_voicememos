@@ -14,6 +14,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package org.espier.voicememos7.util;
 
 import android.content.Context;
@@ -29,47 +30,58 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
-
 public class MemosUtils {
-  private static StringBuilder sFormatBuilder = new StringBuilder();
-  private static Formatter sFormatter = new Formatter(sFormatBuilder, Locale.getDefault());
-  private static final Object[] sTimeArgs = new Object[5];
+    private static StringBuilder sFormatBuilder = new StringBuilder();
+    private static Formatter sFormatter = new Formatter(sFormatBuilder, Locale.getDefault());
+    private static final Object[] sTimeArgs = new Object[5];
 
-  public static String makeTimeString(Context context, long secs) {
-    String durationformat =
-        context.getString(secs < 3600 ? R.string.durationformatshort : R.string.durationformatlong);
+    public static String makeTimeString(Context context, long secs) {
+        String durationformat =
+                context.getString(secs < 3600 ? R.string.durationformatshort
+                        : R.string.durationformatlong);
 
-    /*
-     * Provide multiple arguments so the format can be changed easily by modifying the xml.
-     */
-    sFormatBuilder.setLength(0);
+        /*
+         * Provide multiple arguments so the format can be changed easily by
+         * modifying the xml.
+         */
+        sFormatBuilder.setLength(0);
 
-    final Object[] timeArgs = sTimeArgs;
-    timeArgs[0] = secs / 3600;
-    timeArgs[1] = secs / 60;
-    timeArgs[2] = (secs / 60) % 60;
-    timeArgs[3] = secs;
-    timeArgs[4] = secs % 60;
+        final Object[] timeArgs = sTimeArgs;
+        timeArgs[0] = secs / 3600;
+        timeArgs[1] = secs / 60;
+        timeArgs[2] = (secs / 60) % 60;
+        timeArgs[3] = secs;
+        timeArgs[4] = secs % 60;
 
-    return sFormatter.format(durationformat, timeArgs).toString();
-  }
+        return sFormatter.format(durationformat, timeArgs).toString();
+    }
 
-  public static void shareMemo(Context context, String path) {
-    Uri uri = Uri.parse("file:///" + path);
-    Intent it = new Intent(Intent.ACTION_SEND);
-    it.putExtra(Intent.EXTRA_STREAM, uri);
-    it.setType("audio/*");
-    context.startActivity(Intent.createChooser(it, context.getString(R.string.list_share_title)));
-  }
-  public static List<ResolveInfo> getShareApps(Context context) {  
-      List<ResolveInfo> mApps = new ArrayList<ResolveInfo>();
-      Intent intent = new Intent(Intent.ACTION_SEND, null);
-      intent.addCategory(Intent.CATEGORY_DEFAULT);
-      intent.setType("audio/*");
-      PackageManager pManager = context.getPackageManager();
-      mApps = pManager.queryIntentActivities(intent, 
-              PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
-      return mApps;
-  }
+    public static void shareMemo(Context context, String path) {
+        Uri uri = Uri.parse("file:///" + path);
+        Intent it = new Intent(Intent.ACTION_SEND);
+        it.putExtra(Intent.EXTRA_STREAM, uri);
+        it.setType("audio/*");
+        context.startActivity(Intent.createChooser(it, context.getString(R.string.list_share_title)));
+    }
 
+    public static List<ResolveInfo> getShareApps(Context context) {
+        List<ResolveInfo> mApps = new ArrayList<ResolveInfo>();
+        Intent intent = new Intent(Intent.ACTION_SEND, null);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setType("audio/*");
+        PackageManager pManager = context.getPackageManager();
+        mApps = pManager.queryIntentActivities(intent,
+                PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+        return mApps;
+    }
+
+    public static String Ellipsize(String str) {
+
+        final int LENGTH = 12;
+        if (str.length() > LENGTH) {
+            return str.substring(0, LENGTH) + "...";
+        } else {
+            return str;
+        }
+    }
 }
