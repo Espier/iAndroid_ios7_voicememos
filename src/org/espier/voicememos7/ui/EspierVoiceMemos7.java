@@ -384,7 +384,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onClick(View v) {
-
+            	ScrollUp();
             }
         });
         hiddenView.setOnTouchListener(new View.OnTouchListener() {
