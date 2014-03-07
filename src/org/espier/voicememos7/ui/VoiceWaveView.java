@@ -441,9 +441,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
         float start_move_time_textview = 80;
         float q = (w / 2 - start_move_time_textview);
         try {
-            drawSlideLine(canvas, x);
+            
             drawEditBar(canvas);
             drawVoiceEdit(canvas, start_pos, voice_distance);
+            drawSlideLineEdit(canvas, x);
             drawTimeTextViewEdit(canvas, q);
             drawXAxisEdit(canvas, margin_lef_init);
             drawYAxis(canvas);
@@ -502,7 +503,29 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawSlideLine(Canvas canvas, float offset)
     {
         float x = offset;
-        if (viewStatus != VIEW_STATUS_EDIT) {
+        
+            canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
+            // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
+            canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
+            canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
+                    slideLinePaint);
+       
+        canvas.drawLine(0, y_top_line, getWidth(), y_top_line, grayLinePaint);
+        canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
+                , grayLinePaint);
+
+        canvas.drawLine(0, y_mid_line, getWidth(), y_mid_line, darkGrayLinePaint);
+
+    }
+    
+    private void drawSlideLineEdit(Canvas canvas, float offset)
+    {
+        float x = offset;
+        if (isPlayMode && time_to_edit>0) {
+            
+            long t = (time_to_edit - clip_left_time);
+            float v = (right_edit_bar_pos-left_edit_bar_pos)/(clip_right_time-clip_left_time);
+            x=+left_edit_bar_pos+t*v;
             canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
             // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
             canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
@@ -999,13 +1022,16 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (isPlayMode) {
+            return true;
+        }
+
         if (getViewStatus() == VIEW_STATUS_TO_EDIT || getViewStatus() == VIEW_STATUS_EDIT) {
             if (event.getAction() == MotionEvent.ACTION_UP)
             {
                 isZoomLeft = false;
                 isZoomRight = false;
                 invalidate();
-                Log.e("up", "up");
             }
             return gestureDetector.onTouchEvent(event);
 
@@ -1071,7 +1097,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-
+        
+        
         if (viewStatus == VIEW_STATUS_TO_EDIT) {
             int t = (int) (distanceX * time_per_pixel);
             time_to_edit += t;
@@ -1098,6 +1125,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                     clip_left_time = clip_right_time - 1000;
                     return true;
                 }
+                
             }
 
             if (isZoomRight) {
