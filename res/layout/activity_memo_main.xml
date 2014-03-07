@@ -175,7 +175,7 @@
                 android:layout_height="wrap_content"
                 >
                    <TextView 
-                       android:id="@+id/cancel"
+                       android:id="@+id/textViewCropCancel"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:layout_alignParentLeft="true"
@@ -183,11 +183,11 @@
                        android:textAppearance="?android:attr/textAppearanceLarge"
                        /> 
                     <TextView 
-                       android:id="@+id/edit"
+                       android:id="@+id/textViewCropEdit"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:layout_alignParentRight="true"
-                       android:text="@string/edit"
+                       android:text="@string/crop"
                        android:textAppearance="?android:attr/textAppearanceLarge"
                        /> 
                     
