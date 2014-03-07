@@ -66,6 +66,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     protected View openedListViewItem = null;
     protected boolean isCollapsed = true;
     ViewHolder currentViewHolder;
+    VoiceMemo currentMemo;
 
     public interface OnListViewChangedListener {
         public void onAChanged(Intent intent, int state);
@@ -416,6 +417,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
             @Override
             public void onClick(View v) {
+            	setOnPlayPositionChanged(0, 0);
                 mediaStatus = MEDIA_STATE_EDIT;
                 currentViewHolder = holder;
                 try {
@@ -427,7 +429,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
+                
+                if(currentMemo!=null&&!String.valueOf(memoid).endsWith(currentMemo.getMemId()))
+                {
+                	mRecorder.stopPlayback();
+                }
                 // int[] framGains = mSoundFile.getFrameGains();
                 // int sampleRate = mSoundFile.getSampleRate();
                 // int numFrames = mSoundFile.getNumFrames();
@@ -441,6 +447,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 memo.setMemName(itemname);
                 memo.setMemPath(path);
                 memo.setMemDuration(secs);
+                currentMemo = memo;
                 setOnVoiceEditClicked(mSoundFile, memo);
             }
         });
