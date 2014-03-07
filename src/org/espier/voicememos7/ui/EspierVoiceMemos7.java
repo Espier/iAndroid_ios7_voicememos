@@ -328,10 +328,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     	int state = mRecorder.getState();
         if (state == Recorder.IDLE_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
+            imageViewVoiceCropInEditMode.setEnabled(true);
         } else if (state == Recorder.PLAYER_PAUSE_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
+            imageViewVoiceCropInEditMode.setEnabled(true);
         } else if (state == Recorder.PLAYING_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_pause);
+            imageViewVoiceCropInEditMode.setEnabled(false);
         }
     }
     
@@ -341,11 +344,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     	{
     		layoutCrop.setVisibility(View.GONE);
     		layoutEdit.setVisibility(View.VISIBLE);
+    		textViewVoiceEditFinishInEditMode.setVisibility(View.VISIBLE);
     	}
     	else if(editStatus == EDIT_STATE_CROP_REDY || editStatus == EDIT_STATE_CROP_CHANGE)
     	{
     		layoutCrop.setVisibility(View.VISIBLE);
     		layoutEdit.setVisibility(View.GONE);
+    		textViewVoiceEditFinishInEditMode.setVisibility(View.GONE);
     	}
     }
     
@@ -725,7 +730,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         height = getWindowManager().getDefaultDisplay().getHeight() - top;
         int width = getWindowManager().getDefaultDisplay().getWidth();
-
+        
+        RelativeLayout.LayoutParams relP = new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,(int) (height * 0.9*4/7));
+        relP.addRule(RelativeLayout.BELOW,R.id.txtMainTitle);
+        waveView.setLayoutParams(relP);
+        RelativeLayout.LayoutParams relP2 = new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,(int) (height * 0.9*2.5/7));
+        RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+        relP2.addRule(RelativeLayout.BELOW,R.id.waveView);
+        playLayout.setLayoutParams(relP2);
         LayoutParams lp1 = aboveLayout.getLayoutParams();
         lp1.height = (int) (height * 0.9);
         lp1.width = width;
@@ -735,7 +747,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         lp2.height = (int) (height * 0.9);
         lp2.width = width;
         belowLayout.setLayoutParams(lp2);
-        RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+        
         RelativeLayout.LayoutParams lp_list =new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,android.widget.RelativeLayout.LayoutParams.FILL_PARENT);
         lp_list.height = height-playLayout.getHeight()-10;
         System.out.println("height-playLayout.getHeight() "+(height-playLayout.getHeight()));
@@ -1018,6 +1030,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public void onPlayStatusChanged(int status, long position)
     {
     	waveView.setTime_to_edit(position);
+    	waveView.invalidate();
+    }
+    
+    @Override
+    public void onPlayStopFired()
+    {
+    	editStatus = EDIT_STATE_INIT;
+    	updateEditModeButtonStatus();
+//    	waveView.setTime_to_edit(0);
     	waveView.invalidate();
     }
 }
