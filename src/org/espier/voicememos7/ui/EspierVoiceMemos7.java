@@ -676,7 +676,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         height = getWindowManager().getDefaultDisplay().getHeight() - top;
         int width = getWindowManager().getDefaultDisplay().getWidth();
-
+        
+        RelativeLayout.LayoutParams relP = new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,(int) (height * 0.9*4/7));
+        relP.addRule(RelativeLayout.BELOW,R.id.txtMainTitle);
+        waveView.setLayoutParams(relP);
+        RelativeLayout.LayoutParams relP2 = new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,(int) (height * 0.9*2.5/7));
+        RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+        relP2.addRule(RelativeLayout.BELOW,R.id.waveView);
+        playLayout.setLayoutParams(relP2);
         LayoutParams lp1 = aboveLayout.getLayoutParams();
         lp1.height = (int) (height * 0.9);
         lp1.width = width;
@@ -686,7 +693,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         lp2.height = (int) (height * 0.9);
         lp2.width = width;
         belowLayout.setLayoutParams(lp2);
-        RelativeLayout playLayout = (RelativeLayout)findViewById(R.id.playlayout);
+        
         RelativeLayout.LayoutParams lp_list =new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,android.widget.RelativeLayout.LayoutParams.FILL_PARENT);
         lp_list.height = height-playLayout.getHeight()-10;
         System.out.println("height-playLayout.getHeight() "+(height-playLayout.getHeight()));
