@@ -140,6 +140,21 @@ public class VoiceWaveView extends View implements OnGestureListener {
     long clip_right_time;
 
     boolean isPlayMode;
+    boolean isVoiceClipped;
+
+    /**
+     * @return the isVoiceClipped
+     */
+    public boolean isVoiceClipped() {
+        return isVoiceClipped;
+    }
+
+    /**
+     * @param isVoiceClipped the isVoiceClipped to set
+     */
+    public void setVoiceClipped(boolean isVoiceClipped) {
+        this.isVoiceClipped = isVoiceClipped;
+    }
 
     /**
      * @return the isPlayMode
@@ -1126,7 +1141,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 clip_left_time -= distanceX * time_voice_all / (zoomLevel * voice_distance);
                 if (clip_right_time - clip_left_time <= 1000) {
                     clip_left_time = clip_right_time - 1000;
-                    return true;
+                   
                 }
                 if (clip_left_time<0) {
                     clip_left_time = 0;
@@ -1143,11 +1158,18 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 clip_right_time -= distanceX * time_voice_all / (zoomLevel * voice_distance);
                 if (clip_right_time - clip_left_time <= 1000) {
                     clip_right_time = clip_right_time + 1000;
-                    return true;
+                    
                 }
                 if (clip_right_time>time_voice_all) {
                     clip_right_time = time_voice_all;
                 }
+            }
+            
+            if (time_voice_all -(clip_right_time-clip_left_time)>=1000) {
+                setVoiceClipped(true);
+            }
+            else {
+                setVoiceClipped(false);
             }
 
             invalidate();
