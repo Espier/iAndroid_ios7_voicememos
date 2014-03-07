@@ -121,6 +121,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private int mediaStatus = 0;
     private int recordingStatus = 1;
     private int editStatus = 2;
+    private long toMSeconds = 0;
     
     //Voice Edit Layout
     private TextView textVoiceNameInEditMode;
@@ -359,9 +360,18 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         switch (v.getId()) {
         	case R.id.editredButton://User click play button in Edit mode
         	{
-        		long fromMSeconds = waveView.getTime_to_edit();
-                mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath(),fromMSeconds,0);
-                updateEditModeButtonStatus();
+        		if(editStatus == EDIT_STATE_INIT)
+        		{
+        			long fromMSeconds = waveView.getTime_to_edit();
+        			mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath(),fromMSeconds,0);
+        			updateEditModeButtonStatus();
+        		}
+        		else {
+        			long fromMSeconds = waveView.getClip_left_time();
+        			toMSeconds = waveView.getClip_right_time();
+        			mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath(),fromMSeconds,0);
+        			updateEditModeButtonStatus();
+				}
         	}
         	break;
         	case R.id.editimage://User click crop button in edit mode.
@@ -1029,6 +1039,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void onPlayStatusChanged(int status, long position)
     {
+    	if(editStatus == EDIT_STATE_CROP_REDY || editStatus == EDIT_STATE_CROP_CHANGE)
+    	{
+             if(position >= toMSeconds)
+             {
+                 mRecorder.pausePlayback();
+                 updateEditModeButtonStatus();
+             }
+    	}
     	waveView.setTime_to_edit(position);
     	waveView.invalidate();
     }
