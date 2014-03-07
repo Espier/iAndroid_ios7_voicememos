@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -145,13 +146,18 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        return super.getView(position, convertView, parent);
+        if (convertView==null)
+//            Log.d("getView","exist view:"+String.valueOf(convertView.toString())+","+String.valueOf(position));
+//        else
+            Log.d("getView","new view is null"+","+String.valueOf(position));
+        return super.getView(position, null, parent);
+
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         final View view = super.newView(context, cursor, parent);
-
+        //Log.d("newView","view:"+String.valueOf(view.toString()));
         ViewHolder holder = new ViewHolder();
         holder.playControl = (ImageView) view.findViewById(R.id.memos_item_play);
         holder.txtRecordName = (EditText) view.findViewById(R.id.memos_item_title);
@@ -166,6 +172,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.share = (ImageView) view.findViewById(R.id.share);
         holder.edit = (TextView) view.findViewById(R.id.edit);
         holder.del = (ImageView) view.findViewById(R.id.del);
+        holder.position = cursor.getPosition();
         view.setTag(holder);
         RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.FILL_PARENT,
@@ -254,12 +261,15 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         lpDelete.weight = 0;
         holder.del.setLayoutParams(lpDelete);
         list.add(view);
+        
         return view;
     }
 
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
 
+        final int position = cursor.getPosition();
+        //Log.d("bindView", "view:" + view.toString());
         final ViewHolder holder = (ViewHolder) view.getTag();
 
         final String itemname = cursor.getString(mLabelIdx);
@@ -281,6 +291,10 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         String displayString = MemosUtils.Ellipsize(itemname);
         // TODO: do not remember to change view.toString to displayString
         holder.txtRecordName.setText(displayString);
+        if (displayString.equals(itemname)) {
+
+        }
+        
 
         if (secs == 0) {
             holder.duration.setText("");
@@ -290,7 +304,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         }
 
         String dateFormat = mContext.getString(R.string.date_time_format);
-
         if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE) {
             dateFormat = mContext.getString(R.string.date_format);
         }
@@ -299,6 +312,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         final String dd = format.format(d);
         holder.createDate.setText(dd);
 
+        
         if (holder.bar instanceof SeekBar) {
             SeekBar seeker = (SeekBar) holder.bar;
             seeker.setOnSeekBarChangeListener(mSeekListener);
@@ -309,8 +323,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
             @Override
             public void onClick(View v) {
+                if (position != holder.position)
+                    return;
                 // close view
                 if (openedListViewItem != null && isCollapsed == false) {
+                    openedListViewItem = null;
                     DisplayEditButton(true);
                     holder.txtRecordName.setTextColor(mContext.getResources().getColor(
                             R.color.black));
@@ -371,12 +388,10 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
             }
         });
-        if (displayString.equals(itemname)) {
 
-        }
         if (!isCollapsed && view != openedListViewItem) {
-            Log.d("in not collapsed", "view id =" + view.toString());
-            Log.d("in not collapsed", "openedListViewItem id =" + openedListViewItem.toString());
+//            Log.d("in not collapsed", "view id =" + view.toString());
+//            Log.d("in not collapsed", "openedListViewItem id =" + openedListViewItem.toString());
             view.setBackgroundColor(mContext.getResources()
                     .getColor(R.color.light_gray));
             holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.heavygray));
@@ -585,6 +600,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         ImageView share;
         ImageView del;
         TextView edit;
+        int position;
     }
 
     private void setupColumnIndices(Cursor cursor) {

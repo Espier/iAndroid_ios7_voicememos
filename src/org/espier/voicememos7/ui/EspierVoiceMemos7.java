@@ -39,6 +39,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -85,6 +86,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     ImageView start;
     protected TimerTask timerTask;
     private org.espier.voicememos7.ui.SlideCutListView slideCutListView;
+    
     private ArrayAdapter<String> adapter;
     private org.espier.voicememos7.ui.VoiceWaveView waveView;
     private org.espier.voicememos7.util.Recorder mRecorder;
@@ -654,6 +656,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private void listViewaddData() {
         // TODO Auto-generated method stub
         Cursor cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
+        
         mVoiceMemoListAdapter =
                 new VoiceMemoListAdapter(EspierVoiceMemos7.this, R.layout.listview_item, cs,
                         new String[] {},
