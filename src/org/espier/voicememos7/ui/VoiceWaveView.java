@@ -358,18 +358,22 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
         
         delt_x = s_dis / num;
-        
+        int zoomLevel = 3;
         start_pos = (s - s_dis) / 2 + edit_margin_left;
         end_pos = start_pos+s_dis;
         left_edit_bar_pos = start_pos;
+        if (isZoom) {
+            end_pos = start_pos+s_dis*zoomLevel;
+        }
         right_edit_bar_pos = end_pos;
+        
 
         float start_move_time_textview = 80;
         float q = (w / 2 - start_move_time_textview);
         try {
             drawSlideLine(canvas, x);
             drawEditBar(canvas,start_pos,end_pos);
-            drawVoiceEdit(canvas, _factor, start_pos, delt_x);
+            drawVoiceEdit(canvas, _factor, start_pos, delt_x,zoomLevel);
             drawTimeTextViewEdit(canvas, q);
             drawXAxisEdit(canvas, margin_lef_init);
             drawYAxis(canvas);
@@ -529,15 +533,19 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     }
 
-    private void drawVoiceEdit(Canvas canvas, int fac, float start_pos, float delt_x)
+    private void drawVoiceEdit(Canvas canvas, int fac, float start_pos, float delt_x,int zoomLevel)
     {
 
         int m;
         if (isZoom) {
-            m = numFrames ;
+            m = numFrames / fac;
             for (int i = 0; i < m; i++) {
-                canvas.drawLine(start_pos + i * delt_x, y_mid_line - (float) frameGains[i] * factor,
-                        start_pos + i * delt_x, y_mid_line + (float) frameGains[i] * factor,
+                int pos = i * fac;
+                if (pos > numFrames - 1) {
+                    break;
+                }
+                canvas.drawLine(start_pos + i * delt_x*zoomLevel, y_mid_line - (float) frameGains[pos] * factor,
+                        start_pos + i * delt_x*zoomLevel, y_mid_line + (float) frameGains[pos] * factor,
                         voiceLinePaint);
             }
         }
@@ -907,17 +915,34 @@ public class VoiceWaveView extends View implements OnGestureListener {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         // TODO Auto-generated method stub
-        Log.e("scroll", l - oldl + "");
+        
         super.onScrollChanged(l, t, oldl, oldt);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (getViewStatus() == VIEW_STATUS_TO_EDIT || getViewStatus()==VIEW_STATUS_EDIT) {
+            if(event.getAction()==MotionEvent.ACTION_UP)
+            {
+               isZoom = false;
+               invalidate();
+               Log.e("up","up");
+            }
             return gestureDetector.onTouchEvent(event);
 
             
         }
+        
+        if (getViewStatus()==VIEW_STATUS_EDIT)
+        {
+            if(event.getAction()==MotionEvent.ACTION_UP)
+            {
+               isZoom = false;
+               invalidate();
+               Log.e("up","up");
+            }
+        }
+        
         return true;
     }
 
@@ -931,6 +956,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         }
         return true;
     }
+    
+    
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -975,6 +1002,12 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
             invalidate();
         }
+        
+        if (viewStatus == VIEW_STATUS_EDIT)
+        {
+            
+            invalidate();
+        }
 
         return true;
     }
@@ -990,6 +1023,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         // TODO Auto-generated method stub
         return true;
     }
+    
+    
 
     private int getMax(int[] arr) {
 
