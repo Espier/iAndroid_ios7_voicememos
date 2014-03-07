@@ -53,5 +53,7 @@
 	<string name="ok">ok</string>
 	<string name="memo">Voice memo</string>
 	<string name="no_memo">no memo</string>
-	<string name="crop">Crop</string>
+	<string name="crop">Trim</string>
+	<string name="trim_origin_voice">Trim origin memo</string>
+    <string name="trim_save_new">Save as new memo</string>
 </resources>
