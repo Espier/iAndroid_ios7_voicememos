@@ -144,41 +144,35 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Log.d("memo", "getView, mCurrentPosition:" + mCurrentPosition);
-        // if (mCurrentPosition == position) {
-        // isCurrentPosition = true;
-        // } else {
-        // isCurrentPosition = false;
-        // }
+
         return super.getView(position, convertView, parent);
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View v = super.newView(context, cursor, parent);
-        Log.d("newView","view id ="+v.toString());
+        final View view = super.newView(context, cursor, parent);
 
-        final ViewHolder vh = new ViewHolder();
-        vh.playControl = (ImageView) v.findViewById(R.id.memos_item_play);
-        vh.tag = (EditText) v.findViewById(R.id.memos_item_title);
-        vh.createDate = (TextView) v.findViewById(R.id.memos_item_create_date);
-        vh.duration = (TextView) v.findViewById(R.id.memos_item_duration);
-        vh.id = (TextView) v.findViewById(R.id.memos_item__id);
-        vh.path = (TextView) v.findViewById(R.id.memos_item_path);
-        vh.bar = (SeekBar) v.findViewById(android.R.id.progress);
-        vh.mCurrentRemain = (TextView) v.findViewById(R.id.current_remain);
-        vh.mCurrentTime = (TextView) v.findViewById(R.id.current_positon);
-        vh.cellGrayLine = (ImageView) v.findViewById(R.id.cell_GaryLine);
-        vh.share = (ImageView) v.findViewById(R.id.share);
-        vh.edit = (TextView) v.findViewById(R.id.edit);
-        vh.del = (ImageView) v.findViewById(R.id.del);
-
+        ViewHolder holder= new ViewHolder();
+        holder.playControl = (ImageView) view.findViewById(R.id.memos_item_play);
+        holder.txtRecordName = (EditText) view.findViewById(R.id.memos_item_title);
+        holder.createDate = (TextView) view.findViewById(R.id.memos_item_create_date);
+        holder.duration = (TextView) view.findViewById(R.id.memos_item_duration);
+        holder.id = (TextView) view.findViewById(R.id.memos_item__id);
+        holder.path = (TextView) view.findViewById(R.id.memos_item_path);
+        holder.bar = (SeekBar) view.findViewById(android.R.id.progress);
+        holder.mCurrentRemain = (TextView) view.findViewById(R.id.current_remain);
+        holder.mCurrentTime = (TextView) view.findViewById(R.id.current_positon);
+        holder.cellGrayLine = (ImageView) view.findViewById(R.id.cell_GaryLine);
+        holder.share = (ImageView) view.findViewById(R.id.share);
+        holder.edit = (TextView) view.findViewById(R.id.edit);
+        holder.del = (ImageView) view.findViewById(R.id.del);
+        view.setTag(holder);
         RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.FILL_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpTitle.setMargins(ScalePx.scalePx(mContext, 31),
                 ScalePx.scalePx(mContext, 13), 0, 0);
-        vh.tag.setLayoutParams(lpTitle);
+        holder.txtRecordName.setLayoutParams(lpTitle);
 
         RelativeLayout.LayoutParams lpCreateDate = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -186,7 +180,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         lpCreateDate.setMargins(ScalePx.scalePx(mContext, 31),
                 ScalePx.scalePx(mContext, 0), 0, 0);
         lpCreateDate.addRule(RelativeLayout.BELOW, R.id.memos_item_title);
-        vh.createDate.setLayoutParams(lpCreateDate);
+        holder.createDate.setLayoutParams(lpCreateDate);
 
         RelativeLayout.LayoutParams lpDuration = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -195,42 +189,42 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 0), 0, 0);
         lpDuration.addRule(RelativeLayout.RIGHT_OF, R.id.memos_item_create_date);
         lpDuration.addRule(RelativeLayout.BELOW, R.id.memos_item_title);
-        vh.duration.setLayoutParams(lpDuration);
+        holder.duration.setLayoutParams(lpDuration);
 
         LinearLayout.LayoutParams lpPlay = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         lpPlay.setMargins(ScalePx.scalePx(mContext, 36),
                 ScalePx.scalePx(mContext, 13), 0, 0);
-        vh.playControl.setLayoutParams(lpPlay);
+        holder.playControl.setLayoutParams(lpPlay);
 
         LinearLayout.LayoutParams lpLeftTime = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         lpLeftTime.setMargins(ScalePx.scalePx(mContext, 36),
                 0, 0, 0);
-        vh.mCurrentTime.setLayoutParams(lpLeftTime);
+        holder.mCurrentTime.setLayoutParams(lpLeftTime);
 
         LinearLayout.LayoutParams lpSeekBar = new LinearLayout.LayoutParams(
                 ScalePx.scalePx(mContext, 340),
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         lpSeekBar.setMargins(ScalePx.scalePx(mContext, 18),
                 ScalePx.scalePx(mContext, 13), 0, 0);
-        vh.bar.setLayoutParams(lpSeekBar);
+        holder.bar.setLayoutParams(lpSeekBar);
 
         LinearLayout.LayoutParams lpRightTime = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         lpRightTime.setMargins(ScalePx.scalePx(mContext, 18),
                 0, 0, 0);
-        vh.mCurrentRemain.setLayoutParams(lpRightTime);
+        holder.mCurrentRemain.setLayoutParams(lpRightTime);
 
         LinearLayout.LayoutParams lpLine = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.FILL_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         lpLine.setMargins(ScalePx.scalePx(mContext, 36),
                 ScalePx.scalePx(mContext, 38), 0, 0);
-        vh.cellGrayLine.setLayoutParams(lpLine);
+        holder.cellGrayLine.setLayoutParams(lpLine);
 
         LinearLayout.LayoutParams lpShare = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -239,7 +233,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 16), 0,
                 ScalePx.scalePx(mContext, 24));
         lpShare.weight = 0;
-        vh.share.setLayoutParams(lpShare);
+        holder.share.setLayoutParams(lpShare);
 
         LinearLayout.LayoutParams lpEdit = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -248,7 +242,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 16), 0, ScalePx.scalePx(mContext, 24));
         lpEdit.weight = 1;
         lpEdit.gravity = Gravity.CENTER_VERTICAL;
-        vh.edit.setLayoutParams(lpEdit);
+        holder.edit.setLayoutParams(lpEdit);
 
         LinearLayout.LayoutParams lpDelete = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -258,59 +252,85 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 32),
                 0);
         lpDelete.weight = 0;
-        vh.del.setLayoutParams(lpDelete);
+        holder.del.setLayoutParams(lpDelete);
+        list.add(view);
+        return view;
+    }
 
-        if (vh.bar instanceof SeekBar) {
-            SeekBar seeker = (SeekBar) vh.bar;
+
+    @Override
+    public void bindView(View view, final Context context, final Cursor cursor) {
+
+        final ViewHolder holder = (ViewHolder) view.getTag();
+        
+        final String itemname = cursor.getString(mLabelIdx);
+        final int secs = cursor.getInt(mDurationIdx);
+        final Long date = cursor.getLong(mCreateDateIdx);
+        final int labelType = cursor.getInt(mLabelTypeIdx);
+        final String path = cursor.getString(mPathIdx);
+        final int memoid = cursor.getInt(mMemoIdx);
+        
+
+        holder.path.setTag(path);
+        holder.id.setTag(memoid);
+
+        mCurrentMemoId = (Integer) view.findViewById(R.id.memos_item__id).getTag();
+        mCurrentPath = (String) view.findViewById(R.id.memos_item_path).getTag();
+        
+
+        
+        holder.txtRecordName.setClickable(false);
+        holder.txtRecordName.setFocusable(false);
+        holder.txtRecordName.setTag(itemname);
+        String displayString = MemosUtils.Ellipsize(itemname);
+        //TODO: do not remember to change view.toString to displayString
+        holder.txtRecordName.setText(displayString);
+        
+        
+        if (secs == 0) {
+            holder.duration.setText("");
+        } else {
+            holder.duration.setText(MemosUtils.makeTimeString(context, secs / 1000));
+            holder.duration.setTag(secs);
+        }
+
+        String dateFormat = mContext.getString(R.string.date_time_format);
+        
+        if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE) {
+            dateFormat = mContext.getString(R.string.date_format);
+        }
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+        Date d = new Date(date);
+        final String dd = format.format(d);
+        holder.createDate.setText(dd);
+        
+        
+
+        if (holder.bar instanceof SeekBar) {
+            SeekBar seeker = (SeekBar) holder.bar;
             seeker.setOnSeekBarChangeListener(mSeekListener);
         }
-        vh.bar.setMax(1000);
-
-        // vh.tag.setOnClickListener(new View.OnClickListener() {
-        //
-        // @Override
-        // public void onClick(View v) {
-        // vh.tag.getParent().
-        //
-        // // v.setFocusable(true);
-        // // v.requestFocus();
-        // }
-        // });
-        // vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-        //
-        // @Override
-        // public void onFocusChange(View v, boolean hasFocus) {
-        // // if (hasFocus) {
-        // // v.clearFocus();
-        // // InputMethodManager imm =
-        // //
-        // (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        // // imm.hideSoftInputFromWindow(v.getWindowToken(),0);
-        // // }
-        //
-        // }
-        // });
-        v.setTag(vh);
+        holder.bar.setMax(1000);
         
-        v.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // close view
                 if (openedListViewItem != null && isCollapsed == false) {
                     DisplayEditButton(true);
-                    vh.tag.setTextColor(mContext.getResources().getColor(R.color.black));
-                    vh.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
-                    vh.duration.setTextColor(mContext.getResources().getColor(R.color.black));
+                    holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
+                    holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
+                    holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
 
                     setItemVisible(openedListViewItem, false);
 
                     isCollapsed = true;
-                    vh.bar.setProgress(0);
-                    vh.tag.clearFocus();
+                    holder.bar.setProgress(0);
+                    holder.txtRecordName.clearFocus();
                     InputMethodManager imm = (InputMethodManager) mContext
                             .getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(vh.tag.getWindowToken(), 0);
+                    imm.hideSoftInputFromWindow(holder.txtRecordName.getWindowToken(), 0);
                     for (int j = 0; j < list.size(); j++) {
                         View view = (View) list.get(j);
 
@@ -330,7 +350,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 DisplayEditButton(false);
                 setItemVisible(v, true);
 
-                vh.mCurrentRemain.setText("-" + vh.duration.getText());
+                holder.mCurrentRemain.setText("-" + holder.duration.getText());
                 isCollapsed = false;
                 for (int j = 0; j < list.size(); j++) {
                     View view = (View) list.get(j);
@@ -357,43 +377,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
             }
         });
-        vh.tag.setClickable(false);
-        vh.tag.setFocusable(false);
-        list.add(v);
-        Log.d("asdf","list size="+String.valueOf(list.size()));
-        return v;
-    }
-    
-    private void collapseAllItems() {
-        
-    }
-
-    private void setItemVisible(View itemView, boolean isVisible) {
-        
-        LinearLayout layout = (LinearLayout) itemView.findViewById(R.id.playlayout);
-        LinearLayout sharelayout = (LinearLayout) itemView.findViewById(R.id.sharelayout);
-        if (isVisible) {
-            
-            layout.setVisibility(View.VISIBLE);
-            sharelayout.setVisibility(View.VISIBLE);
-        } else {
-            
-            layout.setVisibility(View.GONE);
-            sharelayout.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void bindView(View view, final Context context, final Cursor cursor) {
-        Log.d("bindView","view id ="+view.toString());
-        Log.d("bindView","isCollapse="+String.valueOf(isCollapsed));
-
-        final ViewHolder vh = (ViewHolder) view.getTag();
-        final String itemname = cursor.getString(mLabelIdx);
-
-        vh.tag.setTag(itemname);
-        String displayString = MemosUtils.Ellipsize(itemname);
-        vh.tag.setText(view.toString());
         if (displayString.equals(itemname)) {
 
         }
@@ -402,73 +385,26 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             Log.d("in not collapsed","openedListViewItem id ="+openedListViewItem.toString());
             view.setBackgroundColor(mContext.getResources()
                     .getColor(R.color.light_gray));
-            vh.tag.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-            vh.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-            vh.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            holder.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            holder.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
         }
-        vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        holder.txtRecordName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 // TODO Auto-generated method stub
                 if (hasFocus) {
-                    String strInput = (String) vh.tag.getTag();
-                    vh.tag.setText(strInput);
-                    vh.tag.setSelection(strInput.length());
+                    String strInput = (String) holder.txtRecordName.getTag();
+                    holder.txtRecordName.setText(strInput);
+                    holder.txtRecordName.setSelection(strInput.length());
                 }
             }
         });
 
-        // vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-        //
-        // @Override
-        // public void onFocusChange(View v, boolean hasFocus) {
-        // // TODO Auto-generated method stub
-        // String strInput = vh.tag.getText().toString();
-        // if (!hasFocus) {
-        // if (strInput.length() > 10) {
-        // vh.tag.setText("");
-        // String strDot = "...";
-        // String str = strInput.substring(0, 10
-        // - strDot.length());
-        // vh.tag.setText(str + strDot);
-        // }
-        // } else {
-        // vh.tag.setText("");
-        // vh.tag.setText(strInput);
-        // vh.tag.setSelection(strInput.length());
-        // }
-        // }
-        // });
-        final int secs = cursor.getInt(mDurationIdx);
-        if (secs == 0) {
-            vh.duration.setText("");
-        } else {
-            vh.duration.setText(MemosUtils.makeTimeString(context, secs / 1000));
-            vh.duration.setTag(secs);
-        }
 
-        Long date = cursor.getLong(mCreateDateIdx);
-        String dateFormat = mContext.getString(R.string.date_time_format);
-        int labelType = cursor.getInt(mLabelTypeIdx);
-        if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE) {
-            dateFormat = mContext.getString(R.string.date_format);
-        }
-        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
-        Date d = new Date(date);
-        final String dd = format.format(d);
-        vh.createDate.setText(dd);
-
-        final String path = cursor.getString(mPathIdx);
-        final int memoid = cursor.getInt(mMemoIdx);
-        final Integer id = cursor.getInt(mMemoIdx);
-        vh.path.setTag(path);
-        vh.id.setTag(id);
-
-        mCurrentMemoId = (Integer) view.findViewById(R.id.memos_item__id).getTag();
-        mCurrentPath = (String) view.findViewById(R.id.memos_item_path).getTag();
         //view.setBackgroundColor(mCurrentBgColor);
-        vh.share.setOnClickListener(new View.OnClickListener() {
+        holder.share.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -480,12 +416,12 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 context.startActivity(intent);
             }
         });
-        vh.edit.setOnClickListener(new View.OnClickListener() {
+        holder.edit.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 mediaStatus = MEDIA_STATE_EDIT;
-                currentViewHolder = vh;
+                currentViewHolder = holder;
                 try {
                     mFile = new File(path);
                     mSoundFile = CheapSoundFile.create(path, null);
@@ -513,8 +449,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             }
         });
 
-        vh.del.setEnabled(true);
-        vh.del.setOnClickListener(new View.OnClickListener() {
+        holder.del.setEnabled(true);
+        holder.del.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -529,15 +465,37 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 // startActivityForResult(delIntent, DEL_REQUEST);
             }
         });
-        vh.playControl.setOnClickListener(new View.OnClickListener() {
+        holder.playControl.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-                currentViewHolder = vh;
+                currentViewHolder = holder;
                 playVoiceInViewHolder(path);
             }
         });
         // }
+    }
+    
+    
+
+    
+    private void collapseAllItems() {
+        
+    }
+
+    private void setItemVisible(View itemView, boolean isVisible) {
+        
+        LinearLayout layout = (LinearLayout) itemView.findViewById(R.id.playlayout);
+        LinearLayout sharelayout = (LinearLayout) itemView.findViewById(R.id.sharelayout);
+        if (isVisible) {
+            
+            layout.setVisibility(View.VISIBLE);
+            sharelayout.setVisibility(View.VISIBLE);
+        } else {
+            
+            layout.setVisibility(View.GONE);
+            sharelayout.setVisibility(View.GONE);
+        }
     }
     
     public void playVoiceInViewHolder(String path)
@@ -615,14 +573,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         return smoothrefreshtime;
     }
 
-    @Override
-    public void changeCursor(Cursor cursor) {
-
-    }
-
-    class ViewHolder {
+    final static class ViewHolder {
         ImageView playControl;
-        EditText tag;
+        EditText txtRecordName;
         TextView createDate;
         TextView duration;
         TextView path;
