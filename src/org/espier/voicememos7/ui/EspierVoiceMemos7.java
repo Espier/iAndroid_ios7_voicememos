@@ -1070,6 +1070,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     {
     	editStatus = EDIT_STATE_INIT;
     	updateEditModeButtonStatus();
+    	waveView.setPlayMode(false);
 //    	waveView.setTime_to_edit(0);
     	waveView.invalidate();
     }
