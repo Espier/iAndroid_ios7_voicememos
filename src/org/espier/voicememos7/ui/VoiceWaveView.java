@@ -133,11 +133,59 @@ public class VoiceWaveView extends View implements OnGestureListener {
     boolean isZoomLeft;
     boolean isZoomRight;
     
-    long clip_left_time;
-    long clip_right_time;
+    
     long clip_time;
     int zoomLevel = 3;
     int num_dis;
+    long clip_left_time;
+    long clip_right_time;
+    
+    boolean isPlayMode;
+    
+
+    
+
+    /**
+     * @return the isPlayMode
+     */
+    public boolean isPlayMode() {
+        return isPlayMode;
+    }
+
+    /**
+     * @param isPlayMode the isPlayMode to set
+     */
+    public void setPlayMode(boolean isPlayMode) {
+        this.isPlayMode = isPlayMode;
+    }
+
+    /**
+     * @return the clip_left_time
+     */
+    public long getClip_left_time() {
+        return clip_left_time;
+    }
+
+    /**
+     * @param clip_left_time the clip_left_time to set
+     */
+    public void setClip_left_time(long clip_left_time) {
+        this.clip_left_time = clip_left_time;
+    }
+
+    /**
+     * @return the clip_right_time
+     */
+    public long getClip_right_time() {
+        return clip_right_time;
+    }
+
+    /**
+     * @param clip_right_time the clip_right_time to set
+     */
+    public void setClip_right_time(long clip_right_time) {
+        this.clip_right_time = clip_right_time;
+    }
 
     /**
      * @return the cheapSoundFile
