@@ -238,6 +238,7 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
         mPlayer = new MediaPlayer();
         try {
             mPlayer.setDataSource(path);
+            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.setOnCompletionListener(this);
             mPlayer.setOnErrorListener(this);
             mPlayer.prepare();

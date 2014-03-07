@@ -134,7 +134,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private VoiceMemo currentEditMemo;
     private TextView textViewCrop;
     private TextView textViewCropCancel;
-    
+        
     RelativeLayout titlelayout;
     ImageView sound;
     TextView textViewEdit, textviewmemo;
@@ -379,6 +379,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         	case R.id.textViewCropCancel:
         	{
         		editStatus = EDIT_STATE_INIT;
+    			waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
         		updateUIByCropStatus();
         	}
         		break;
@@ -601,15 +602,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             public void onClick(View v) {
                 
                 if(isSoundOn) {
+                	audioManager.setMode(AudioManager.STREAM_MUSIC);
                     audioManager.setSpeakerphoneOn(true);
                     isSoundOn = false;
                     sound.setImageResource(R.drawable.volume_blue);
             } else {
-                    audioManager.setSpeakerphoneOn(false);//关闭扬声器
-                    audioManager.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
-                    setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
-                    //把声音设定成Earpiece（听筒）出来，设定为正在通话中
-                    audioManager.setMode(AudioManager.MODE_IN_CALL);
+                	audioManager.setMode(AudioManager.STREAM_MUSIC);
+                    audioManager.setSpeakerphoneOn(false);
                     sound.setImageResource(R.drawable.volume_gray);
                     isSoundOn = true;
             }

@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> 
     <application android:label="@string/evm7_app_name" android:icon="@drawable/icon">
         
         <provider android:name="org.espier.voicememos7.db.MemosProvider"
