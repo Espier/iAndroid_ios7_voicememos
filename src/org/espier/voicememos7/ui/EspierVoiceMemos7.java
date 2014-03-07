@@ -46,10 +46,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.espier.voicememos7.R;
+import org.espier.voicememos7.db.MemosProvider;
 import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveDirection;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
+import org.espier.voicememos7.util.AMRFileUtils;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
@@ -665,6 +667,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void listViewaddData() {
         // TODO Auto-generated method stub
+        Cursor cs1 = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
+        while(cs1.moveToNext()){
+            String path = cs1.getString(cs1.getColumnIndexOrThrow("data"));
+            if(!AMRFileUtils.isExist(path)){
+               int id = cs1.getInt(cs1.getColumnIndexOrThrow("_id"));
+                Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI,
+                        id);
+                System.out.println(memoUri.toString());
+                getContentResolver().delete(memoUri, null, null);
+            }
+        }
         Cursor cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
         mVoiceMemoListAdapter =
                 new VoiceMemoListAdapter(EspierVoiceMemos7.this, R.layout.listview_item, cs,
