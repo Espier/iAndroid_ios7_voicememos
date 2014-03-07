@@ -27,6 +27,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
+import org.espier.voicememos7.util.AMRFileUtils;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
@@ -268,7 +269,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         final int labelType = cursor.getInt(mLabelTypeIdx);
         final String path = cursor.getString(mPathIdx);
         final int memoid = cursor.getInt(mMemoIdx);
-
+        if(!AMRFileUtils.isExist(path)){
+            return;
+        }
         holder.path.setTag(path);
         holder.id.setTag(memoid);
 
