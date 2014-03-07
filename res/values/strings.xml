@@ -53,4 +53,5 @@
 	<string name="ok">ok</string>
 	<string name="memo">Voice memo</string>
 	<string name="no_memo">no memo</string>
+	<string name="crop">Crop</string>
 </resources>

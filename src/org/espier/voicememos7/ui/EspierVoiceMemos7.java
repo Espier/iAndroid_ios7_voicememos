@@ -129,7 +129,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private ImageView imageViewVoiceCropInEditMode;
     private TextView textViewVoiceEditFinishInEditMode;
     
+    private RelativeLayout layoutCrop;
+    private RelativeLayout layoutEdit;
     private VoiceMemo currentEditMemo;
+    private TextView textViewCrop;
+    private TextView textViewCropCancel;
     
     RelativeLayout titlelayout;
     ImageView sound;
@@ -288,6 +292,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         imageViewVoiceCropInEditMode.setOnClickListener(this);
         textViewVoiceEditFinishInEditMode.setOnClickListener(this);
         
+        layoutEdit = (RelativeLayout)findViewById(R.id.layoutwitheditimage);
+        layoutCrop = (RelativeLayout)findViewById(R.id.layoutwithtextview);
+        
+        textViewCrop = (TextView)findViewById(R.id.textViewCropEdit);
+        textViewCropCancel = (TextView)findViewById(R.id.textViewCropCancel);
+        
+        textViewCrop.setOnClickListener(this);
+        textViewCropCancel.setOnClickListener(this);
     }
     
     private CharSequence getRecordName() {
@@ -322,6 +334,21 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_pause);
         }
     }
+    
+    private void updateUIByCropStatus()
+    {
+    	if(editStatus == EDIT_STATE_INIT)
+    	{
+    		layoutCrop.setVisibility(View.GONE);
+    		layoutEdit.setVisibility(View.VISIBLE);
+    	}
+    	else if(editStatus == EDIT_STATE_CROP_REDY || editStatus == EDIT_STATE_CROP_CHANGE)
+    	{
+    		layoutCrop.setVisibility(View.VISIBLE);
+    		layoutEdit.setVisibility(View.GONE);
+    	}
+    }
+    
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -334,12 +361,34 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         	case R.id.editimage://User click crop button in edit mode.
         	{
         		waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+        		editStatus = EDIT_STATE_CROP_REDY;
+        		updateUIByCropStatus();
                 waveView.invalidate();
         	}
         	break;
         	case R.id.editfinished://User click finish button in edit mode.
         	{
         		ScollToBottom();
+        	}
+        	break;
+        	case R.id.textViewCropCancel:
+        	{
+        		editStatus = EDIT_STATE_INIT;
+        		updateUIByCropStatus();
+        	}
+        		break;
+        	case R.id.textViewCropEdit:
+        	{
+        		if(editStatus == EDIT_STATE_CROP_CHANGE)
+        		{
+        			
+        		}
+        		else if(editStatus == EDIT_STATE_CROP_REDY)
+        		{
+        			editStatus = EDIT_STATE_INIT;
+        			waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
+        			updateUIByCropStatus();
+        		}
         	}
         	break;
             case R.id.finished:
@@ -468,11 +517,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         mainLayout.scrollTo(0, playLayout.getTop() );
        
         hiddenView.setVisibility(View.INVISIBLE);
-//        txtRecordName.setVisibility(View.INVISIBLE);
+        txtRecordName.setVisibility(View.INVISIBLE);
         waveView.setVisibility(View.INVISIBLE);
-//        date.setVisibility(View.INVISIBLE);
-//        titlelayout.setVisibility(View.VISIBLE);
-//        finished.setVisibility(View.INVISIBLE);
+        date.setVisibility(View.INVISIBLE);
+        titlelayout.setVisibility(View.VISIBLE);
+        finished.setVisibility(View.INVISIBLE);
 
     }
 
@@ -495,11 +544,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         if (hiddenView.getVisibility() != View.VISIBLE) {
             hiddenView.setVisibility(View.VISIBLE);
         }
-//        txtRecordName.setVisibility(View.VISIBLE);
-//        date.setVisibility(View.VISIBLE);
+        txtRecordName.setVisibility(View.VISIBLE);
+        date.setVisibility(View.VISIBLE);
         waveView.setVisibility(View.VISIBLE);
-//        titlelayout.setVisibility(View.INVISIBLE);
-//        finished.setVisibility(View.VISIBLE);
+        titlelayout.setVisibility(View.INVISIBLE);
+        finished.setVisibility(View.VISIBLE);
 
     }
 
@@ -791,6 +840,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 dialogdismiss.sendEmptyMessage(1);
+                ScollToBottom();
                 return;
             }
         });
