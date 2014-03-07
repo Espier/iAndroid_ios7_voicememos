@@ -47,10 +47,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.espier.voicememos7.R;
+import org.espier.voicememos7.db.MemosProvider;
 import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveDirection;
 import org.espier.voicememos7.ui.SlideCutListView.RemoveListener;
+import org.espier.voicememos7.util.AMRFileUtils;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
@@ -123,6 +125,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private int mediaStatus = 0;
     private int recordingStatus = 1;
     private int editStatus = 2;
+    private long toMSeconds = 0;
     
     //Voice Edit Layout
     private TextView textVoiceNameInEditMode;
@@ -334,9 +337,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         } else if (state == Recorder.PLAYER_PAUSE_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
             imageViewVoiceCropInEditMode.setEnabled(true);
+            waveView.setPlayMode(false);
         } else if (state == Recorder.PLAYING_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_pause);
             imageViewVoiceCropInEditMode.setEnabled(false);
+            waveView.setPlayMode(true);
         }
     }
     
@@ -361,9 +366,18 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         switch (v.getId()) {
         	case R.id.editredButton://User click play button in Edit mode
         	{
-        		long fromMSeconds = waveView.getTime_to_edit();
-                mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath(),fromMSeconds,0);
-                updateEditModeButtonStatus();
+        		if(editStatus == EDIT_STATE_INIT)
+        		{
+        			long fromMSeconds = waveView.getTime_to_edit();
+        			mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath(),fromMSeconds,0);
+        			updateEditModeButtonStatus();
+        		}
+        		else {
+        			long fromMSeconds = waveView.getClip_left_time();
+        			toMSeconds = waveView.getClip_right_time();
+        			mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath(),fromMSeconds,0);
+        			updateEditModeButtonStatus();
+				}
         	}
         	break;
         	case R.id.editimage://User click crop button in edit mode.
@@ -655,6 +669,16 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void listViewaddData() {
         // TODO Auto-generated method stub
+        Cursor cs1 = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
+        while(cs1.moveToNext()){
+            String path = cs1.getString(cs1.getColumnIndexOrThrow("data"));
+            if(!AMRFileUtils.isExist(path)){
+               int id = cs1.getInt(cs1.getColumnIndexOrThrow("_id"));
+                Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI,
+                        id);
+                getContentResolver().delete(memoUri, null, null);
+            }
+        }
         Cursor cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
         
         mVoiceMemoListAdapter =
@@ -734,7 +758,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         height = getWindowManager().getDefaultDisplay().getHeight() - top;
         int width = getWindowManager().getDefaultDisplay().getWidth();
         
-        RelativeLayout.LayoutParams relP = new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,(int) (height * 0.9*4/7));
+        RelativeLayout.LayoutParams relP = new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,(int) (height * 0.9*4/7-30));
         relP.addRule(RelativeLayout.BELOW,R.id.txtMainTitle);
         waveView.setLayoutParams(relP);
         RelativeLayout.LayoutParams relP2 = new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,(int) (height * 0.9*2.5/7));
@@ -1032,6 +1056,16 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void onPlayStatusChanged(int status, long position)
     {
+    	if(editStatus == EDIT_STATE_CROP_REDY || editStatus == EDIT_STATE_CROP_CHANGE)
+    	{
+             if(position >= toMSeconds)
+             {
+            	 mRecorder.stopPlayback();
+//                 mRecorder.pausePlayback();
+                 waveView.setPlayMode(false);
+                 updateEditModeButtonStatus();
+             }
+    	}
     	waveView.setTime_to_edit(position);
     	waveView.invalidate();
     }
@@ -1041,6 +1075,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     {
     	editStatus = EDIT_STATE_INIT;
     	updateEditModeButtonStatus();
+    	waveView.setPlayMode(false);
 //    	waveView.setTime_to_edit(0);
     	waveView.invalidate();
     }

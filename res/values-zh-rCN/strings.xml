@@ -45,4 +45,6 @@
 	<string name="memo">语音备忘录</string>
 	<string name="no_memo">无新录音</string>
 	<string name="crop">修剪</string>
+	<string name="trim_origin_voice">修剪原始项</string>
+	<string name="trim_save_new">存储为新录音</string>
 </resources>

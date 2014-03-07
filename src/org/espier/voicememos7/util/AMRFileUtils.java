@@ -682,5 +682,9 @@ public class AMRFileUtils {
       if(str == null || str.equals("")) return true ;  
       return false;  
   }  
+  public static boolean isExist(String filePathName) {  
+      File file = new File(filePathName);  
+      return (!file.isDirectory() && file.exists());  
+  }  
 
 };
