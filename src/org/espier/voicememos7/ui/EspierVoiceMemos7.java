@@ -341,11 +341,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     	{
     		layoutCrop.setVisibility(View.GONE);
     		layoutEdit.setVisibility(View.VISIBLE);
+    		textViewVoiceEditFinishInEditMode.setVisibility(View.VISIBLE);
     	}
     	else if(editStatus == EDIT_STATE_CROP_REDY || editStatus == EDIT_STATE_CROP_CHANGE)
     	{
     		layoutCrop.setVisibility(View.VISIBLE);
     		layoutEdit.setVisibility(View.GONE);
+    		textViewVoiceEditFinishInEditMode.setVisibility(View.GONE);
     	}
     }
     
