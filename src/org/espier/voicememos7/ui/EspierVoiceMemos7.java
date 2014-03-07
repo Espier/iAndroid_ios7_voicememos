@@ -468,11 +468,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         mainLayout.scrollTo(0, playLayout.getTop() );
        
         hiddenView.setVisibility(View.INVISIBLE);
-//        txtRecordName.setVisibility(View.INVISIBLE);
+        txtRecordName.setVisibility(View.INVISIBLE);
         waveView.setVisibility(View.INVISIBLE);
-//        date.setVisibility(View.INVISIBLE);
-//        titlelayout.setVisibility(View.VISIBLE);
-//        finished.setVisibility(View.INVISIBLE);
+        date.setVisibility(View.INVISIBLE);
+        titlelayout.setVisibility(View.VISIBLE);
+        finished.setVisibility(View.INVISIBLE);
 
     }
 
@@ -495,11 +495,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         if (hiddenView.getVisibility() != View.VISIBLE) {
             hiddenView.setVisibility(View.VISIBLE);
         }
-//        txtRecordName.setVisibility(View.VISIBLE);
-//        date.setVisibility(View.VISIBLE);
+        txtRecordName.setVisibility(View.VISIBLE);
+        date.setVisibility(View.VISIBLE);
         waveView.setVisibility(View.VISIBLE);
-//        titlelayout.setVisibility(View.INVISIBLE);
-//        finished.setVisibility(View.VISIBLE);
+        titlelayout.setVisibility(View.INVISIBLE);
+        finished.setVisibility(View.VISIBLE);
 
     }
 
