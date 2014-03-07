@@ -120,51 +120,27 @@
                     android:layout_toRightOf="@+id/name"
                     android:src="@drawable/volume_blue" />
             </RelativeLayout>
-            <!--
-        <LinearLayout 
-        android:id="@+id/titlelay"
-        android:visibility="invisible"
-        android:layout_width="fill_parent"
-        android:layout_above="@id/buttonLayout"
-        android:layout_height="wrap_content">
-            
-        <TextView 
-            android:id="@+id/editButton"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/edit"
-            android:gravity="left"
-            android:textColor="@color/font_color"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            />
-         <TextView 
-            android:id="@+id/name"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/memo"
-            android:layout_gravity="center"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            />
-          <ImageView 
-            android:id="@+id/sound"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:src="@drawable/volume_blue"
-            android:layout_gravity="right"
-            />
-        
-    </LinearLayout>
-            -->
+
         </RelativeLayout>
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/editlayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/waveView"
-            android:visibility="gone" >
-
-            <TextView
+             >
+            <RelativeLayout 
+                android:id="@+id/layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+                <RelativeLayout 
+                android:id="@+id/layoutwitheditimage"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+                    <TextView
                 android:id="@+id/edittxtRecordName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -189,12 +165,41 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/edittxtRecordName" />
+                
+                </RelativeLayout>
+                <!-- 点击edit图片显示  layoutwithtextview 隐藏上面layoutwithtexteditimage-->
+                <RelativeLayout 
+                android:visibility="gone"
+                android:id="@+id/layoutwithtextview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+                   <TextView 
+                       android:id="@+id/textViewCropCancel"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentLeft="true"
+                       android:text="@string/cancel"
+                       android:textAppearance="?android:attr/textAppearanceLarge"
+                       /> 
+                    <TextView 
+                       android:id="@+id/textViewCropEdit"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentRight="true"
+                       android:text="@string/crop"
+                       android:textAppearance="?android:attr/textAppearanceLarge"
+                       /> 
+                    
+                </RelativeLayout>
+            </RelativeLayout>
+            
 
             <LinearLayout
                 android:id="@+id/editbuttonLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/edittxtDate"
+                android:layout_below="@+id/layout"
                 android:layout_centerHorizontal="true"
                 android:gravity="center" >
 
