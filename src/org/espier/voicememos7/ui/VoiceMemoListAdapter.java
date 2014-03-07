@@ -1,6 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
+import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -72,6 +73,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
         public void DisplayEditButton(boolean isDisplay);
 
+		void onPlayStatusChanged(int status, long position);
+
     }
 
     OnListViewChangedListener mOnListViewChangedListener = null;
@@ -107,6 +110,12 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         Log.d("asdf", "in C event");
         if (mOnListViewChangedListener != null)
             mOnListViewChangedListener.onVoiceEditClicked(mSoundFile, memos);
+    }
+    
+    private void setOnPlayPositionChanged(int status,long position)
+    {
+    	 if (mOnListViewChangedListener != null)
+             mOnListViewChangedListener.onPlayStatusChanged(status, position);
     }
 
     public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
@@ -554,6 +563,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
         // try {
         long pos = mCurrentMediaPlayer.getCurrentPosition();
+        setOnPlayPositionChanged(0,pos);
         if ((pos >= 0) && (mCurrentDuration > 0)) {
             view.mCurrentTime.setText(MemosUtils.makeTimeString(mContext,
                     pos / 1000));
