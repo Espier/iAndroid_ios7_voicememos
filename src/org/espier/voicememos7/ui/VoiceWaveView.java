@@ -218,6 +218,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
             clip_left_time = 0;
             clip_right_time = (int) time_voice_all;
             clip_time = clip_right_time - clip_left_time;
+            
+            time_to_edit = 0;
 
         }
 
@@ -444,10 +446,11 @@ public class VoiceWaveView extends View implements OnGestureListener {
             
             drawEditBar(canvas);
             drawVoiceEdit(canvas, start_pos, voice_distance);
-            drawSlideLineEdit(canvas, x);
+            
             drawTimeTextViewEdit(canvas, q);
             drawXAxisEdit(canvas, margin_lef_init);
             drawYAxis(canvas);
+            drawSlideLineEdit(canvas, x);
         } catch (Exception e) {
             Log.e("draw err", e.toString());
         }
@@ -1125,6 +1128,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
                     clip_left_time = clip_right_time - 1000;
                     return true;
                 }
+                if (clip_left_time<0) {
+                    clip_left_time = 0;
+                }
                 
             }
 
@@ -1138,6 +1144,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 if (clip_right_time - clip_left_time <= 1000) {
                     clip_right_time = clip_right_time + 1000;
                     return true;
+                }
+                if (clip_right_time>time_voice_all) {
+                    clip_right_time = time_voice_all;
                 }
             }
 
