@@ -75,6 +75,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
 		void onPlayStatusChanged(int status, long position);
 
+		void onPlayStopFired();
+
     }
 
     OnListViewChangedListener mOnListViewChangedListener = null;
@@ -110,6 +112,14 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         Log.d("asdf", "in C event");
         if (mOnListViewChangedListener != null)
             mOnListViewChangedListener.onVoiceEditClicked(mSoundFile, memos);
+    }
+    
+    private void notifyPlayCompletion()
+    {
+    	if(mOnListViewChangedListener != null)
+    	{
+    		mOnListViewChangedListener.onPlayStopFired();
+    	}
     }
     
     private void setOnPlayPositionChanged(int status,long position)
@@ -551,6 +561,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
              public void onCompletion(MediaPlayer mp) {
             	 currentViewHolder.playControl.setImageResource(R.drawable.play);
                  mRecorder.stopPlayback();
+                 notifyPlayCompletion();
              }
          });
          mCurrentDuration = (Integer) ((View) (currentViewHolder.duration)).getTag();

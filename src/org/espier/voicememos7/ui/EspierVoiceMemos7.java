@@ -328,10 +328,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     	int state = mRecorder.getState();
         if (state == Recorder.IDLE_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
+            imageViewVoiceCropInEditMode.setEnabled(true);
         } else if (state == Recorder.PLAYER_PAUSE_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
+            imageViewVoiceCropInEditMode.setEnabled(true);
         } else if (state == Recorder.PLAYING_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_pause);
+            imageViewVoiceCropInEditMode.setEnabled(false);
         }
     }
     
@@ -1020,6 +1023,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public void onPlayStatusChanged(int status, long position)
     {
     	waveView.setTime_to_edit(position);
+    	waveView.invalidate();
+    }
+    
+    @Override
+    public void onPlayStopFired()
+    {
+    	editStatus = EDIT_STATE_INIT;
+    	updateEditModeButtonStatus();
+//    	waveView.setTime_to_edit(0);
     	waveView.invalidate();
     }
 }
