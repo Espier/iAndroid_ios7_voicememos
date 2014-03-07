@@ -1058,7 +1058,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     	{
              if(position >= toMSeconds)
              {
-                 mRecorder.pausePlayback();
+            	 mRecorder.stopPlayback();
+//                 mRecorder.pausePlayback();
+                 waveView.setPlayMode(false);
                  updateEditModeButtonStatus();
              }
     	}
