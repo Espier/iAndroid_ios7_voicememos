@@ -359,7 +359,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         switch (v.getId()) {
         	case R.id.editredButton://User click play button in Edit mode
         	{
-                mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath());
+        		long fromMSeconds = waveView.getTime_to_edit();
+                mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath(),fromMSeconds,0);
                 updateEditModeButtonStatus();
         	}
         	break;

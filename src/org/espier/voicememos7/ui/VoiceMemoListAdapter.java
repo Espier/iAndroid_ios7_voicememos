@@ -534,20 +534,28 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             @Override
             public void onClick(View arg0) {
                 currentViewHolder = vh;
-                playVoiceInViewHolder(path);
+                playVoiceInViewHolder(path,0,0);
             }
         });
         // }
     }
     
-    public void playVoiceInViewHolder(String path)
+    public void playVoiceInViewHolder(String path,long from, long to)
     {
     	 int state = mRecorder.getState();
          if (state == Recorder.IDLE_STATE) {
              mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
+             if(from>0)
+        	 {
+        		 mRecorder.seekTo((int)from);
+        	 }
              mRecorder.startPlayback();
              currentViewHolder.playControl.setImageResource(R.drawable.pause);
          } else if (state == Recorder.PLAYER_PAUSE_STATE) {
+        	 if(from>0)
+        	 {
+        		 mRecorder.seekTo((int)from);
+        	 }
              mRecorder.startPlayback();
              currentViewHolder.playControl.setImageResource(R.drawable.pause);
          } else if (state == Recorder.PLAYING_STATE) {
