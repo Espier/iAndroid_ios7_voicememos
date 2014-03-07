@@ -333,9 +333,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         } else if (state == Recorder.PLAYER_PAUSE_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
             imageViewVoiceCropInEditMode.setEnabled(true);
+            waveView.setPlayMode(false);
         } else if (state == Recorder.PLAYING_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_pause);
             imageViewVoiceCropInEditMode.setEnabled(false);
+            waveView.setPlayMode(true);
         }
     }
     
