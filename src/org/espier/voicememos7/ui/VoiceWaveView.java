@@ -141,7 +141,31 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     boolean isPlayMode;
     boolean isVoiceClipped;
+    
+    long fromPlayTime;
 
+    /**
+     * @return the fromPlayTime
+     */
+    public long getFromPlayTime() {
+        if (time_to_edit>clip_left_time) {
+            fromPlayTime = this.time_to_edit;
+        }
+        else {
+            fromPlayTime = clip_left_time;
+        }
+       
+        return fromPlayTime;
+    }
+
+    /**
+     * @param fromPlayTime the fromPlayTime to set
+     */
+    public void setFromPlayTime(long fromPlayTime) {
+        this.fromPlayTime = fromPlayTime;
+    }
+
+    
     /**
      * @return the isVoiceClipped
      */
@@ -539,8 +563,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawSlideLineEdit(Canvas canvas, float offset)
     {
         float x = offset;
-        if (isPlayMode && time_to_edit>clip_left_time && time_to_edit<clip_right_time) {
-            
+        if (getFromPlayTime()>clip_left_time && time_to_edit<clip_right_time) {
             long t = (time_to_edit - clip_left_time);
             float v = (right_edit_bar_pos-left_edit_bar_pos)/(clip_right_time-clip_left_time);
             x=+left_edit_bar_pos+t*v;
@@ -550,6 +573,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
                     slideLinePaint);
         }
+        
         canvas.drawLine(0, y_top_line, getWidth(), y_top_line, grayLinePaint);
         canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
                 , grayLinePaint);
@@ -1172,6 +1196,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
             else {
                 setVoiceClipped(false);
             }
+            
+            
 
             invalidate();
         }
