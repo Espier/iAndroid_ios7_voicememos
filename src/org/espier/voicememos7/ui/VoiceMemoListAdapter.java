@@ -63,7 +63,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public org.espier.voicememos7.util.Recorder mRecorder;
     Cursor c;
     protected View openedListViewItem = null;
-    protected boolean isCollapsed = false;
+    protected boolean isCollapsed = true;
     ViewHolder currentViewHolder;
 
     public interface OnListViewChangedListener {
@@ -74,6 +74,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         public void DisplayEditButton(boolean isDisplay);
 
 		void onPlayStatusChanged(int status, long position);
+
+		void onPlayStopFired();
 
     }
 
@@ -112,6 +114,14 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             mOnListViewChangedListener.onVoiceEditClicked(mSoundFile, memos);
     }
     
+    private void notifyPlayCompletion()
+    {
+    	if(mOnListViewChangedListener != null)
+    	{
+    		mOnListViewChangedListener.onPlayStopFired();
+    	}
+    }
+    
     private void setOnPlayPositionChanged(int status,long position)
     {
     	 if (mOnListViewChangedListener != null)
@@ -132,6 +142,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         return c.getCount();
     }
 
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Log.d("memo", "getView, mCurrentPosition:" + mCurrentPosition);
         // if (mCurrentPosition == position) {
@@ -145,6 +156,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View v = super.newView(context, cursor, parent);
+        Log.d("newView","view id ="+v.toString());
 
         final ViewHolder vh = new ViewHolder();
         vh.playControl = (ImageView) v.findViewById(R.id.memos_item_play);
@@ -279,6 +291,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         // }
         // });
         v.setTag(vh);
+        
         v.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -372,17 +385,27 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
+        Log.d("bindView","view id ="+view.toString());
+        Log.d("bindView","isCollapse="+String.valueOf(isCollapsed));
 
         final ViewHolder vh = (ViewHolder) view.getTag();
         final String itemname = cursor.getString(mLabelIdx);
 
         vh.tag.setTag(itemname);
         String displayString = MemosUtils.Ellipsize(itemname);
-        vh.tag.setText(displayString);
+        vh.tag.setText(view.toString());
         if (displayString.equals(itemname)) {
 
         }
-
+        if (!isCollapsed && view != openedListViewItem) {
+            Log.d("in not collapsed","view id ="+view.toString());
+            Log.d("in not collapsed","openedListViewItem id ="+openedListViewItem.toString());
+            view.setBackgroundColor(mContext.getResources()
+                    .getColor(R.color.light_gray));
+            vh.tag.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            vh.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            vh.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+        }
         vh.tag.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
@@ -444,7 +467,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
         mCurrentMemoId = (Integer) view.findViewById(R.id.memos_item__id).getTag();
         mCurrentPath = (String) view.findViewById(R.id.memos_item_path).getTag();
-        view.setBackgroundColor(mCurrentBgColor);
+        //view.setBackgroundColor(mCurrentBgColor);
         vh.share.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -538,6 +561,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
              public void onCompletion(MediaPlayer mp) {
             	 currentViewHolder.playControl.setImageResource(R.drawable.play);
                  mRecorder.stopPlayback();
+                 notifyPlayCompletion();
              }
          });
          mCurrentDuration = (Integer) ((View) (currentViewHolder.duration)).getTag();

@@ -129,7 +129,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private ImageView imageViewVoiceCropInEditMode;
     private TextView textViewVoiceEditFinishInEditMode;
     
+    private RelativeLayout layoutCrop;
+    private RelativeLayout layoutEdit;
     private VoiceMemo currentEditMemo;
+    private TextView textViewCrop;
+    private TextView textViewCropCancel;
     
     RelativeLayout titlelayout;
     ImageView sound;
@@ -288,6 +292,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         imageViewVoiceCropInEditMode.setOnClickListener(this);
         textViewVoiceEditFinishInEditMode.setOnClickListener(this);
         
+        layoutEdit = (RelativeLayout)findViewById(R.id.layoutwitheditimage);
+        layoutCrop = (RelativeLayout)findViewById(R.id.layoutwithtextview);
+        
+        textViewCrop = (TextView)findViewById(R.id.textViewCropEdit);
+        textViewCropCancel = (TextView)findViewById(R.id.textViewCropCancel);
+        
+        textViewCrop.setOnClickListener(this);
+        textViewCropCancel.setOnClickListener(this);
     }
     
     private CharSequence getRecordName() {
@@ -316,12 +328,32 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     	int state = mRecorder.getState();
         if (state == Recorder.IDLE_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
+            imageViewVoiceCropInEditMode.setEnabled(true);
         } else if (state == Recorder.PLAYER_PAUSE_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_play);
+            imageViewVoiceCropInEditMode.setEnabled(true);
         } else if (state == Recorder.PLAYING_STATE) {
             imageViewVoicePlayInEditMode.setBackgroundResource(R.drawable.trim_pause);
+            imageViewVoiceCropInEditMode.setEnabled(false);
         }
     }
+    
+    private void updateUIByCropStatus()
+    {
+    	if(editStatus == EDIT_STATE_INIT)
+    	{
+    		layoutCrop.setVisibility(View.GONE);
+    		layoutEdit.setVisibility(View.VISIBLE);
+    		textViewVoiceEditFinishInEditMode.setVisibility(View.VISIBLE);
+    	}
+    	else if(editStatus == EDIT_STATE_CROP_REDY || editStatus == EDIT_STATE_CROP_CHANGE)
+    	{
+    		layoutCrop.setVisibility(View.VISIBLE);
+    		layoutEdit.setVisibility(View.GONE);
+    		textViewVoiceEditFinishInEditMode.setVisibility(View.GONE);
+    	}
+    }
+    
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -334,12 +366,34 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         	case R.id.editimage://User click crop button in edit mode.
         	{
         		waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+        		editStatus = EDIT_STATE_CROP_REDY;
+        		updateUIByCropStatus();
                 waveView.invalidate();
         	}
         	break;
         	case R.id.editfinished://User click finish button in edit mode.
         	{
         		ScollToBottom();
+        	}
+        	break;
+        	case R.id.textViewCropCancel:
+        	{
+        		editStatus = EDIT_STATE_INIT;
+        		updateUIByCropStatus();
+        	}
+        		break;
+        	case R.id.textViewCropEdit:
+        	{
+        		if(editStatus == EDIT_STATE_CROP_CHANGE)
+        		{
+        			
+        		}
+        		else if(editStatus == EDIT_STATE_CROP_REDY)
+        		{
+        			editStatus = EDIT_STATE_INIT;
+        			waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
+        			updateUIByCropStatus();
+        		}
         	}
         	break;
             case R.id.finished:
@@ -798,6 +852,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 dialogdismiss.sendEmptyMessage(1);
+                ScollToBottom();
                 return;
             }
         });
@@ -975,6 +1030,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public void onPlayStatusChanged(int status, long position)
     {
     	waveView.setTime_to_edit(position);
+    	waveView.invalidate();
+    }
+    
+    @Override
+    public void onPlayStopFired()
+    {
+    	editStatus = EDIT_STATE_INIT;
+    	updateEditModeButtonStatus();
+//    	waveView.setTime_to_edit(0);
     	waveView.invalidate();
     }
 }
