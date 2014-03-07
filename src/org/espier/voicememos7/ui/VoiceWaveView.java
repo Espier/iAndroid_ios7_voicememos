@@ -539,7 +539,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawSlideLineEdit(Canvas canvas, float offset)
     {
         float x = offset;
-        if (isPlayMode && time_to_edit>0) {
+        if (isPlayMode && time_to_edit>clip_left_time && time_to_edit<clip_right_time) {
             
             long t = (time_to_edit - clip_left_time);
             float v = (right_edit_bar_pos-left_edit_bar_pos)/(clip_right_time-clip_left_time);
@@ -1164,6 +1164,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                     clip_right_time = time_voice_all;
                 }
             }
+            
             
             if (time_voice_all -(clip_right_time-clip_left_time)>=1000) {
                 setVoiceClipped(true);
