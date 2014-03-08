@@ -314,23 +314,71 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.del.setEnabled(true);
         holder.del.setOnClickListener(new OnClickDelete(path, itemname, memoid));
         holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
+
         
-        
-        if (!isCollapsed && expandedPosition != holder.position) {
+        if (isCollapsed) {
             view.setBackgroundColor(mContext.getResources()
-                    .getColor(R.color.light_gray));
-            holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-            holder.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-            holder.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+                    .getColor(R.color.white));
+            holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
+            holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
+            holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
+        } else {
+            if (holder.position == expandedPosition) {
+                
+                view.setBackgroundColor(mContext.getResources()
+                        .getColor(R.color.white));
+                holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
+                holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
+                holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
+                setItemVisible(view,true);
+            } else {
+                view.setBackgroundColor(mContext.getResources()
+                        .getColor(R.color.light_gray));
+                holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+                holder.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+                holder.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+                setItemVisible(view,false);
+            }
         }
         
-        
-
-        // }
     }
 
     private void collapseAllItems() {
-
+        for (int j = 0; j < list.size(); j++) {
+            View view = (View) list.get(j);
+            setItemVisible(view, false);
+            ViewHolder itemHolder = (ViewHolder)view.getTag();
+            itemHolder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
+            itemHolder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
+            itemHolder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
+            view.setBackgroundColor(Color.WHITE);
+        }
+    }
+    
+    private void expandItem(View v) {
+        for (int j = 0; j < list.size(); j++) {
+            View view = (View) list.get(j);
+            if (v == view) {
+                continue;
+            }
+            ViewHolder itemHolder = (ViewHolder)view.getTag();
+            itemHolder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            itemHolder.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            itemHolder.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            
+            view.setBackgroundColor(mContext.getResources()
+                    .getColor(R.color.light_gray));
+//            EditText et = (EditText) view.findViewById(R.id.memos_item_title);
+//            et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+//            TextView tvCreateDate = (TextView) view
+//                    .findViewById(R.id.memos_item_create_date);
+//            TextView tvDuration = (TextView) view
+//                    .findViewById(R.id.memos_item_duration);
+//            tvCreateDate.setTextColor(mContext.getResources().getColor(
+//                    R.color.heavygray));
+//            tvDuration
+//                    .setTextColor(mContext.getResources().getColor(R.color.heavygray));
+        }
     }
 
     private void setItemVisible(View itemView, boolean isVisible) {
@@ -376,66 +424,47 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
         @Override
         public void onClick(View v) {
-            if (position != holder.position)
+            //if click the expanded item, ignore the click operation
+            ViewHolder holder = (ViewHolder)v.getTag();
+            if (expandedPosition == holder.position)
                 return;
-            // close view
+
+            //if status is not collapsed(expanded), and the item clicked is not the expanded one,
+            //then collapse it, and restore the color to white and black.
             if (expandedPosition >= 0 && isCollapsed == false) {
-                expandedPosition = -1;
                 DisplayEditButton(true);
-                holder.txtRecordName.setTextColor(mContext.getResources().getColor(
-                        R.color.black));
-                holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
-                holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
-
-                setItemVisible(v, false);
-
-                isCollapsed = true;
+                collapseAllItems();
                 holder.bar.setProgress(0);
-                holder.txtRecordName.clearFocus();
-                InputMethodManager imm = (InputMethodManager) mContext
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(holder.txtRecordName.getWindowToken(), 0);
-                for (int j = 0; j < list.size(); j++) {
-                    View view = (View) list.get(j);
-
-                    EditText etTitle = (EditText) view.findViewById(R.id.memos_item_title);
-                    TextView tvCreateDate = (TextView) view
-                            .findViewById(R.id.memos_item_create_date);
-                    TextView tvDuration = (TextView) view
-                            .findViewById(R.id.memos_item_duration);
-                    etTitle.setTextColor(mContext.getResources().getColor(R.color.black));
-                    tvCreateDate.setTextColor(mContext.getResources().getColor(R.color.black));
-                    tvDuration.setTextColor(mContext.getResources().getColor(R.color.black));
-                    view.setBackgroundColor(Color.WHITE);
-                }
+                expandedPosition = -1;
+                isCollapsed = true;
                 return;
             }
             // expand the view
             DisplayEditButton(false);
             setItemVisible(v, true);
-
             holder.mCurrentRemain.setText("-" + holder.duration.getText());
             isCollapsed = false;
-            for (int j = 0; j < list.size(); j++) {
-                View view = (View) list.get(j);
-                if (v == view) {
-
-                    continue;
-                }
-
-                view.setBackgroundColor(mContext.getResources()
-                        .getColor(R.color.light_gray));
-                EditText et = (EditText) view.findViewById(R.id.memos_item_title);
-                et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-                TextView tvCreateDate = (TextView) view
-                        .findViewById(R.id.memos_item_create_date);
-                TextView tvDuration = (TextView) view
-                        .findViewById(R.id.memos_item_duration);
-                tvCreateDate.setTextColor(mContext.getResources().getColor(
-                        R.color.heavygray));
-                tvDuration
-                        .setTextColor(mContext.getResources().getColor(R.color.heavygray));
-            }
+            
+            expandItem(v);
+//            for (int j = 0; j < list.size(); j++) {
+//                View view = (View) list.get(j);
+//                if (v == view) {
+//                    continue;
+//                }
+//
+//                view.setBackgroundColor(mContext.getResources()
+//                        .getColor(R.color.light_gray));
+//                EditText et = (EditText) view.findViewById(R.id.memos_item_title);
+//                et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+//                TextView tvCreateDate = (TextView) view
+//                        .findViewById(R.id.memos_item_create_date);
+//                TextView tvDuration = (TextView) view
+//                        .findViewById(R.id.memos_item_duration);
+//                tvCreateDate.setTextColor(mContext.getResources().getColor(
+//                        R.color.heavygray));
+//                tvDuration
+//                        .setTextColor(mContext.getResources().getColor(R.color.heavygray));
+//            }
 
             expandedPosition = holder.position;
 
