@@ -935,13 +935,19 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         ContentValues cv = new ContentValues();
         long current = System.currentTimeMillis();
         File file = mRecorder.sampleFile();
-        long modDate = file.lastModified();
         Date date = new Date(current);
-        SimpleDateFormat formatter = new SimpleDateFormat(res.getString(R.string.time_format));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String title = formatter.format(date);
+        
+        long modDate = file.lastModified();
+       
+        
         // long sampleLengthMillis = mRecorder.sampleLength() * 1000L;
         String filepath = file.getAbsolutePath();
-        MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(filepath);
+        String path = filepath.substring(0,filepath.lastIndexOf("/")+1);
+        String newname = path+memoname+"-"+title+".amr";
+        AMRFileUtils.rename(filepath, newname);
+        MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(newname);
         if (mediaPlayer == null) {
             return;
         }
@@ -951,7 +957,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             return;
         }
 
-        cv.put(VoiceMemo.Memos.DATA, filepath);
+        cv.put(VoiceMemo.Memos.DATA, newname);
         cv.put(VoiceMemo.Memos.LABEL, memoname);
         cv.put(VoiceMemo.Memos.LABEL_TYPE, LABEL_TYPE_NONE);
         cv.put(VoiceMemo.Memos.CREATE_DATE, current);
