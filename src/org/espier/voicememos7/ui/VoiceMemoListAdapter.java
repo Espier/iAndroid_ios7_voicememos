@@ -9,11 +9,9 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,7 +24,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
-import org.espier.voicememos7.ui.VoiceMemoListAdapter.ViewHolder;
 import org.espier.voicememos7.util.AMRFileUtils;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
@@ -35,9 +32,7 @@ import org.espier.voicememos7.util.ScalePx;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 class VoiceMemoListAdapter extends SimpleCursorAdapter {
@@ -67,7 +62,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     ViewHolder currentViewHolder;
     VoiceMemo currentMemo;
 
-    
     public interface OnListViewChangedListener {
         public void onAChanged(Intent intent, int state);
 
@@ -167,7 +161,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.edit = (TextView) view.findViewById(R.id.edit);
         holder.del = (ImageView) view.findViewById(R.id.del);
         holder.position = cursor.getPosition();
-        
+
         RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.FILL_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -263,7 +257,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
 
-        final int position = cursor.getPosition();
         final ViewHolder holder = (ViewHolder) view.getTag();
 
         final String itemname = cursor.getString(mLabelIdx);
@@ -297,7 +290,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             holder.duration.setTag(secs);
         }
 
-
         final String strDate = MemosUtils.makeDateString(context, labelType, date);
         holder.createDate.setText(strDate);
 
@@ -307,15 +299,15 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         }
         holder.bar.setMax(1000);
 
-        view.setOnClickListener(new OnClickItem(position, holder));
+        view.setOnClickListener(new OnClickItem());
         holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
-        holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate, memoid));
+        holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate,
+                memoid));
         holder.del.setEnabled(true);
         holder.del.setOnClickListener(new OnClickDelete(path, itemname, memoid));
         holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
 
-        
         if (isCollapsed) {
             view.setBackgroundColor(mContext.getResources()
                     .getColor(R.color.white));
@@ -324,48 +316,50 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
         } else {
             if (holder.position == expandedPosition) {
-                
+
                 view.setBackgroundColor(mContext.getResources()
                         .getColor(R.color.white));
                 holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
                 holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
                 holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
-                setItemVisible(view,true);
+                setItemVisible(view, true);
             } else {
                 view.setBackgroundColor(mContext.getResources()
                         .getColor(R.color.light_gray));
-                holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+                holder.txtRecordName.setTextColor(mContext.getResources().getColor(
+                        R.color.heavygray));
                 holder.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
                 holder.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-                setItemVisible(view,false);
+                setItemVisible(view, false);
             }
         }
-        
+
     }
 
     private void collapseAllItems() {
         for (int j = 0; j < list.size(); j++) {
             View view = (View) list.get(j);
             setItemVisible(view, false);
-            ViewHolder itemHolder = (ViewHolder)view.getTag();
+            ViewHolder itemHolder = (ViewHolder) view.getTag();
             itemHolder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
             itemHolder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
             itemHolder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
             view.setBackgroundColor(Color.WHITE);
         }
     }
-    
+
     private void expandItem(View v) {
         for (int j = 0; j < list.size(); j++) {
             View view = (View) list.get(j);
             if (v == view) {
                 continue;
             }
-            ViewHolder itemHolder = (ViewHolder)view.getTag();
-            itemHolder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            ViewHolder itemHolder = (ViewHolder) view.getTag();
+            itemHolder.txtRecordName.setTextColor(mContext.getResources().getColor(
+                    R.color.heavygray));
             itemHolder.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
             itemHolder.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-            
+
             view.setBackgroundColor(mContext.getResources()
                     .getColor(R.color.light_gray));
         }
@@ -404,23 +398,17 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     }
 
     private final class OnClickItem implements View.OnClickListener {
-        private final int position;
-        private final ViewHolder holder;
-
-        private OnClickItem(int position, ViewHolder holder) {
-            this.position = position;
-            this.holder = holder;
-        }
 
         @Override
         public void onClick(View v) {
-            //if click the expanded item, ignore the click operation
-            ViewHolder holder = (ViewHolder)v.getTag();
+            // if click the expanded item, ignore the click operation
+            ViewHolder holder = (ViewHolder) v.getTag();
             if (expandedPosition == holder.position)
                 return;
 
-            //if status is not collapsed(expanded), and the item clicked is not the expanded one,
-            //then collapse it, and restore the color to white and black.
+            // if status is not collapsed(expanded), and the item clicked is not
+            // the expanded one,
+            // then collapse it, and restore the color to white and black.
             if (expandedPosition >= 0 && isCollapsed == false) {
                 DisplayEditButton(true);
                 collapseAllItems();
@@ -546,7 +534,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
         @Override
         public void onClick(View v) {
-            // TODO Auto-generated method stub
             // MemosUtils.shareMemo(mContext,
             // mCurrentPath);
             Intent intent = new Intent(mContext, MemoShare.class);
