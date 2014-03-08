@@ -382,10 +382,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         	break;
         	case R.id.editimage://User click crop button in edit mode.
         	{
-        		waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
-        		editStatus = EDIT_STATE_CROP_REDY;
-        		updateUIByCropStatus();
-                waveView.invalidate();
+                    waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+                    waveView.resetClipStatus();
+                    editStatus = EDIT_STATE_CROP_REDY;
+                    updateUIByCropStatus();
+                    waveView.invalidate();
         	}
         	break;
         	case R.id.editfinished://User click finish button in edit mode.
@@ -402,16 +403,18 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         		break;
         	case R.id.textViewCropEdit:
         	{
-        		if(editStatus == EDIT_STATE_CROP_CHANGE)
-        		{
-        			
-        		}
-        		else if(editStatus == EDIT_STATE_CROP_REDY)
-        		{
-        			editStatus = EDIT_STATE_INIT;
-        			waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
-        			updateUIByCropStatus();
-        		}
+        	    if(waveView.isVoiceClipped())
+                {
+                    Intent trimIntent = new Intent(EspierVoiceMemos7.this,MemoTrim.class);
+                    startActivity(trimIntent);
+                }
+                else
+                {
+                    waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+                    editStatus = EDIT_STATE_INIT;
+                    updateUIByCropStatus();
+                    waveView.invalidate();
+                }
         	}
         	break;
             case R.id.finished:
