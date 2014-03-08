@@ -651,7 +651,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     case MotionEvent.ACTION_DOWN:
                         finished.setTextColor(getResources().getColor(R.color.finish_text_color));
                         break;
-
+                    case MotionEvent.ACTION_UP:
+                        finished.setTextColor(getResources().getColor(R.color.white));
                     default:
                         break;
                 }
