@@ -412,7 +412,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         	    if(waveView.isVoiceClipped())
                 {
                     Intent trimIntent = new Intent(EspierVoiceMemos7.this,MemoTrim.class);
-                    trimIntent.putExtra("mempPath", currentEditMemo.getMemPath());
+                    trimIntent.putExtra("memoPath", currentEditMemo.getMemPath());
                     trimIntent.putExtra("memoId", currentEditMemo.getMemId());
                     trimIntent.putExtra("memoName", currentEditMemo.getMemName());
                     trimIntent.putExtra("start", waveView.getClip_left_time());
@@ -991,18 +991,18 @@ System.out.println("insert 1");
             {
               //Get Extra parameters
                 
-                String mMemName = getIntent().getStringExtra("memoName");
-                String mMemoId = getIntent().getStringExtra("memoId");
-                String mMemPath = getIntent().getStringExtra("memoPath");
+                String mMemName = data.getStringExtra("memoName");
+                String mMemoId = data.getStringExtra("memoId");
+                String mMemPath = data.getStringExtra("memoPath");
                 
                 currentEditMemo.setMemPath(mMemPath);
                 onVoiceEditClicked(null, currentEditMemo);
                 
-//                editStatus = EDIT_STATE_INIT;
-//                waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
-//                waveView.setTime_to_edit(0);
-//                updateUIByCropStatus();
-//                mVoiceMemoListAdapter.notifyDataSetChanged();
+                editStatus = EDIT_STATE_INIT;
+                waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
+                waveView.setTime_to_edit(0);
+                updateUIByCropStatus();
+                mVoiceMemoListAdapter.notifyDataSetChanged();
             }
         }
         if (resultCode == Activity.RESULT_OK) {

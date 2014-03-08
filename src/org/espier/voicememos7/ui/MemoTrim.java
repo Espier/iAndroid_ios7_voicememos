@@ -139,6 +139,7 @@ public class MemoTrim extends Activity implements OnClickListener {
                 intent.putExtra("memoId",mMemoId);
                 intent.putExtra("memoPath", mMemPath);
                 setResult(9001, intent);
+                finish();
             }
             break;
             
@@ -150,6 +151,7 @@ public class MemoTrim extends Activity implements OnClickListener {
                 intent.putExtra("memoId",mMemoId);
                 intent.putExtra("memoPath", mMemPath);
                 setResult(9001, intent);
+                finish();
             }
             break;
             
