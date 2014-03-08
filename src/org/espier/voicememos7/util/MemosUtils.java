@@ -101,10 +101,10 @@ public class MemosUtils {
     }
     
     public static VoiceMemo getMemoByID(Context context,String id){
-        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id,data,created,modified"}, "_id", new String[]{id}, null);
+        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id","data","created","modified"}, "_id", new String[]{id}, null);
         VoiceMemo memo = new VoiceMemo();
-        if(cs1.getCount()>0&&cs1.moveToNext()){
-            
+        if(cs1.getCount()==1){
+            cs1.move(0);
             String _id = cs1.getString(cs1.getColumnIndexOrThrow("_id"));
             String path = cs1.getString(cs1.getColumnIndexOrThrow("data"));
             String created = cs1.getString(cs1.getColumnIndexOrThrow("created"));
@@ -118,10 +118,10 @@ public class MemosUtils {
     }
     
     public static VoiceMemo getMemoByPath(Context context,String path){
-        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id,data,created,modified"}, "data", new String[]{path}, null);
+        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id","data","created","modified"}, "data", new String[]{path}, null);
         VoiceMemo memo = new VoiceMemo();
-        if(cs1.getCount()>0&&cs1.moveToNext()){
-            
+        if(cs1.getCount()==1){
+            cs1.move(0);
             String _id = cs1.getString(cs1.getColumnIndexOrThrow("_id"));
             String memopath = cs1.getString(cs1.getColumnIndexOrThrow("data"));
             String created = cs1.getString(cs1.getColumnIndexOrThrow("created"));
