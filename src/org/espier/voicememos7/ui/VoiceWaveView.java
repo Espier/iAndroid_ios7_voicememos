@@ -50,6 +50,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     Paint grayLinePaint;
     Paint darkGrayLinePaint;
     Paint voicedbPaint;
+    Paint voicedbGrayPaint;
     Paint maskPaint;
     Paint maskTimePaint;
     Recorder recorder;
@@ -401,6 +402,11 @@ public class VoiceWaveView extends View implements OnGestureListener {
         voicedbPaint.setColor(darkGrayColor);
         voicedbPaint.setTextAlign(Align.RIGHT);
         voicedbPaint.setTextSize(ScalePx.scalePx(context, 14));
+        
+        voicedbGrayPaint = new Paint();
+        voicedbGrayPaint.setColor(deepDarkGrayColor);
+        voicedbGrayPaint.setTextAlign(Align.RIGHT);
+        voicedbGrayPaint.setTextSize(ScalePx.scalePx(context, 14));
 
         handler = new Handler()
         {
@@ -895,9 +901,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
         {
             canvas.drawText(voice_db_list[i], w - num_margin_right,
                     y_mid_line + h_db2midline + i * (h_db2db + voicedbPaint.getTextSize())
-                            + voicedbPaint.getTextSize(), voicedbPaint);
+                            + voicedbPaint.getTextSize(), isCliclEditBar?voicedbGrayPaint:voicedbPaint);
             canvas.drawText(voice_db_list[i], w - num_margin_right, y_mid_line
-                    - h_db2midline - i * (h_db2db + voicedbPaint.getTextSize()), voicedbPaint);
+                    - h_db2midline - i * (h_db2db + voicedbPaint.getTextSize()), isCliclEditBar?voicedbGrayPaint:voicedbPaint);
         }
 
     }
