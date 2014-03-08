@@ -159,7 +159,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         final View view = super.newView(context, cursor, parent);
         ViewHolder holder = new ViewHolder();
         holder.playControl = (ImageView) view.findViewById(R.id.memos_item_play);
-        holder.txtRecordName = (EditText) view.findViewById(R.id.memos_item_title);
+        holder.txtRecordName = (TextView) view.findViewById(R.id.memos_item_title);
+        holder.txtRecordNameEditable = (EditText) view.findViewById(R.id.memos_item_title_editable);
         holder.createDate = (TextView) view.findViewById(R.id.memos_item_create_date);
         holder.duration = (TextView) view.findViewById(R.id.memos_item_duration);
         holder.id = (TextView) view.findViewById(R.id.memos_item__id);
@@ -180,6 +181,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 13), 0, 0);
         holder.txtRecordName.setLayoutParams(lpTitle);
 
+        holder.txtRecordNameEditable.setVisibility(View.GONE);
+        
         RelativeLayout.LayoutParams lpCreateDate = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -313,7 +316,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.bar.setMax(1000);
 
         view.setOnClickListener(new OnClickItem(cursor.getPosition()));
-        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
+//        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
         holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate,
                 memoid));
@@ -408,7 +411,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             if (hasFocus) {
                 String strInput = (String) holder.txtRecordName.getTag();
                 holder.txtRecordName.setText(strInput);
-                holder.txtRecordName.setSelection(strInput.length());
+                //holder.txtRecordName.setSelection(strInput.length());
             }
         }
     }
@@ -648,7 +651,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     final static class ViewHolder {
         ImageView playControl;
-        EditText txtRecordName;
+        TextView txtRecordName;
+        EditText txtRecordNameEditable;
         TextView createDate;
         TextView duration;
         TextView path;

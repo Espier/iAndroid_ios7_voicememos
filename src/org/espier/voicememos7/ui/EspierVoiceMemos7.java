@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.sax.TextElementListener;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +35,8 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -661,6 +664,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             }
         });
         slideCutListView.setRemoveListener(this);
+        slideCutListView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+                // TODO Auto-generated method stub
+                Log.d("adf","inonitemclick");
+            }
+            
+        });
         date = (TextView) findViewById(R.id.txtDate);
         String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
         date.setText(datetime);

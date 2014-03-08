@@ -8,8 +8,17 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-        <EditText
+        <TextView
             android:id="@+id/memos_item_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            />
+        
+        <EditText
+            android:id="@+id/memos_item_title_editable"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@null"
