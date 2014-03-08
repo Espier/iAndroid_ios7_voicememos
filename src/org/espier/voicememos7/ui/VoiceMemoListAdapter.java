@@ -515,15 +515,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             setOnPlayPositionChanged(0, 0);
             mediaStatus = MEDIA_STATE_EDIT;
             currentViewHolder = holder;
-            try {
-                mFile = new File(path);
-                mSoundFile = CheapSoundFile.create(path, null);
-                mSoundFile.ReadFile(mFile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            
 
             if (currentMemo != null && !String.valueOf(memoid).endsWith(currentMemo.getMemId()))
             {
@@ -543,7 +535,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             memo.setMemPath(path);
             memo.setMemDuration(secs);
             currentMemo = memo;
-            setOnVoiceEditClicked(mSoundFile, memo);
+            setOnVoiceEditClicked(null, memo);
         }
     }
 

@@ -1,44 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="evm7_app_name">语音备忘录 iOS7</string>
-    <string name="date_format">yy-MM-dd</string>
-    <string name="date_time_format">yy-MM-dd HH:mm</string>
-    <string name="detail_date_time_format">yyyy-MM-dd E kk:mm</string>
-    <string name="time_format">HH:mm</string>
-    <string name="trim_voice_memo">修剪语音备忘录</string>
-    <string name="cancel">取消</string>
-    <string name="trim_memo">修剪备忘录</string>
-    <string name="memo_short">修剪备忘录内容太短，修剪失败</string>
-    <string name="share_memo">共享</string>
-    <string name="recording">正在录音</string>
-    <string name="record_stop">录音已暂停</string>
-    <string name="finish">完成</string>
-    <string name="list_share">共享</string>
-    <string name="list_share_title">共享语音备忘录</string>
-    <string name="list_delete">删除语音备忘录</string>
-    <string name="delete">删除</string>
-    <string name="detail_title">简介</string>
-    <string name="detail_time_format">yyyy年MM月dd日 E kk:mm</string>
-    <string name="detail_date_format">yyy-MM-dd E</string>
-    <string name="record_time_prefix">录制于：</string>
-    <string name="back">返回</string>
-    <string name="main_title">录制</string>
-    <string name="record_name">新录音</string>
-    <string name="label_title">标签</string>
-    <string name="label_custom_title">自定</string>
-    <string name="storage_is_full" msgid="416039755956726221">"存储空间已满"</string>
-    <string name="max_length_reached" msgid="6398215743584093353">"已达到长度上限"</string>
-    <string name="insert_sd_card" msgid="4609407750669086933" product="nosdcard">"装载
+	<string name="evm7_app_name">语音备忘录 iOS7</string>
+	<string name="date_format">yy-MM-dd</string>
+	<string name="date_time_format">yy-MM-dd HH:mm</string>
+	<string name="detail_date_time_format">yyyy-MM-dd E kk:mm</string>
+	<string name="time_format">HH:mm</string>
+	<string name="trim_voice_memo">修剪语音备忘录</string>
+	<string name="cancel">取消</string>
+	<string name="trim_memo">修剪备忘录</string>
+	<string name="memo_short">修剪备忘录内容太短，修剪失败</string>
+	<string name="share_memo">共享</string>
+	<string name="recording">正在录音</string>
+	<string name="record_stop">录音已暂停</string>
+	<string name="finish">完成</string>
+	<string name="list_share">共享</string>
+	<string name="list_share_title">共享语音备忘录</string>
+	<string name="list_delete">删除语音备忘录</string>
+	<string name="delete">删除</string>
+	<string name="detail_title">简介</string>
+	<string name="detail_time_format">yyyy年MM月dd日 E kk:mm</string>
+	<string name="detail_date_format">yyy-MM-dd E</string>
+	<string name="record_time_prefix">录制于：</string>
+	<string name="back">返回</string>
+	<string name="main_title">录制</string>
+	<string name="record_name">新录音</string>
+	<string name="label_title">标签</string>
+	<string name="label_custom_title">自定</string>
+	<string name="storage_is_full" msgid="416039755956726221">"存储空间已满"</string>
+	<string name="max_length_reached" msgid="6398215743584093353">"已达到长度上限"</string>
+	<string name="insert_sd_card" msgid="4609407750669086933" product="nosdcard">"装载
         USB存储设备"</string>
-    <string name="insert_sd_card" msgid="1007630222084726808" product="default">"请插入 SD 卡"</string>
-    <string name="error_sdcard_access" msgid="86629081075681774" product="nosdcard">"无法访问USB
+	<string name="insert_sd_card" msgid="1007630222084726808" product="default">"请插入 SD 卡"</string>
+	<string name="error_sdcard_access" msgid="86629081075681774" product="nosdcard">"无法访问USB
         存储设备。"</string>
-    <string name="error_sdcard_access" msgid="5750308258096153274" product="default">"无法访问SD
+	<string name="error_sdcard_access" msgid="5750308258096153274" product="default">"无法访问SD
         卡。"</string>
-    <string name="error_app_internal" msgid="312884382388702022">"发生内部应用错误。"</string>
-    <string name="error_mediadb_new_record" msgid="261714902333432462">"无法保存录制的音频。"</string>
-	<string name ="new_memo">新语音备忘录</string>
+	<string name="error_app_internal" msgid="312884382388702022">"发生内部应用错误。"</string>
+	<string name="error_mediadb_new_record" msgid="261714902333432462">"无法保存录制的音频。"</string>
+	<string name="new_memo">新语音备忘录</string>
 	<string name="edit">编辑</string>
 	<string name="ok">好</string>
 	<string name="new_memo_name">请为此语音备忘录输入名称</string>
@@ -47,4 +46,5 @@
 	<string name="crop">修剪</string>
 	<string name="trim_origin_voice">修剪原始项</string>
 	<string name="trim_save_new">存储为新录音</string>
+	<string name="copy">副本</string>
 </resources>
