@@ -1408,6 +1408,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     {
         setClip_left_time(0);
         setClip_right_time(time_voice_all);
+        isCliclEditBar = false;
     }
 
 }
