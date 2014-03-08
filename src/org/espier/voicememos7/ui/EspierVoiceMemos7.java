@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager.OnActivityResultListener;
 import android.sax.TextElementListener;
 import android.text.format.DateFormat;
 import android.view.Gravity;
@@ -59,6 +60,8 @@ import org.espier.voicememos7.util.ScalePx;
 import org.espier.voicememos7.util.StorageUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimerTask;
@@ -76,6 +79,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public static int LABEL_TYPE_NONE = 0;
     private MediaPlayer mCurrentMediaPlayer;
     private static final int DEL_REQUEST = 2;
+    private static final int TRIM_REQUEST = 9000;
+    private static final int TRIM_DONE = 9001;
     TextView date;
     AudioManager audioManager;
     private Dialog dialog;
@@ -406,11 +411,16 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         	    if(waveView.isVoiceClipped())
                 {
                     Intent trimIntent = new Intent(EspierVoiceMemos7.this,MemoTrim.class);
-                    startActivity(trimIntent);
+                    trimIntent.putExtra("mempPath", currentEditMemo.getMemPath());
+                    trimIntent.putExtra("memoId", currentEditMemo.getMemId());
+                    trimIntent.putExtra("memoName", currentEditMemo.getMemName());
+                    trimIntent.putExtra("start", waveView.getClip_left_time());
+                    trimIntent.putExtra("end", waveView.getClip_right_time());
+                    startActivityForResult(trimIntent, TRIM_REQUEST);
                 }
                 else
                 {
-                    waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+                    waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
                     editStatus = EDIT_STATE_INIT;
                     updateUIByCropStatus();
                     waveView.invalidate();
@@ -461,7 +471,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 break;
         }
     }
-
+    
     @Override
     protected void onResume() {
         super.onResume();
@@ -792,10 +802,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         adapter.remove(adapter.getItem(position));
         switch (direction) {
             case RIGHT:
-                Toast.makeText(this, "向右删除  " + position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "�����冲�����  " + position, Toast.LENGTH_SHORT).show();
                 break;
             case LEFT:
-                Toast.makeText(this, "向左删除  " + position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "���宸�������  " + position, Toast.LENGTH_SHORT).show();
                 break;
 
             default:
@@ -969,6 +979,26 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == TRIM_REQUEST)
+        {
+            if(resultCode == TRIM_DONE)
+            {
+              //Get Extra parameters
+                
+                String mMemName = getIntent().getStringExtra("memoName");
+                String mMemoId = getIntent().getStringExtra("memoId");
+                String mMemPath = getIntent().getStringExtra("memoPath");
+                
+                currentEditMemo.setMemPath(mMemPath);
+                onVoiceEditClicked(null, currentEditMemo);
+                
+//                editStatus = EDIT_STATE_INIT;
+//                waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
+//                waveView.setTime_to_edit(0);
+//                updateUIByCropStatus();
+//                mVoiceMemoListAdapter.notifyDataSetChanged();
+            }
+        }
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == DEL_REQUEST) {
                 int id = data.getIntExtra("mCurrentMemoId",-1);
@@ -1020,10 +1050,29 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
     }
 
+    
+    public CheapSoundFile generateSoundFile(String memPath)
+    {
+        CheapSoundFile mSoundFile = null;
+        try {
+            File mFile1 = new File(memPath);
+            mSoundFile = CheapSoundFile.create(memPath, null);
+            mSoundFile.ReadFile(mFile1);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return mSoundFile;
+    }
+    
+    
     @Override
-
-    public void onVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memo) {
-
+    public void onVoiceEditClicked(CheapSoundFile mSoundFil1e,VoiceMemo memo) {
+        CheapSoundFile mSoundFile = generateSoundFile(memo.getMemPath());
+        if(mSoundFile == null)
+            return;
         mediaStatus = MEDIA_STATE_EDIT;
         ScrollToTop();
         RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);

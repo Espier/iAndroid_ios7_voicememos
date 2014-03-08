@@ -1,9 +1,13 @@
 
 package org.espier.voicememos7.ui;
 
-import android.R.integer;
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.graphics.ColorMatrixColorFilter;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,17 +18,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
+import org.espier.voicememos7.util.Recorder;
+import org.espier.voicememos7.util.AMRFileUtils;
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.VoiceMemo;
-import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.ScalePx;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MemoTrim extends Activity implements OnClickListener {
     private Button btnSaveAsNew, btnTrimOrigin, btnCancel;
     private ImageView imageViewGreyLine;
     long voice_trim_from;
     long voice_trim_right;
-    VoiceMemo voiceMemo;
     public final float[] BT_SELECTED = new float[] {
             1, 0, 0, 0, -100, 0,
             1, 0, 0, -100, 0, 0, 1, 0, -100, 0, 0, 0, 1, 0
@@ -33,6 +41,14 @@ public class MemoTrim extends Activity implements OnClickListener {
             1, 0, 0, 0, 0, 0,
             1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
     };
+    
+    private long mStartPosition;
+    private long mEndPosition;
+    
+    private int mMemoId;
+    private String mMemName;
+    private String mMemPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +92,13 @@ public class MemoTrim extends Activity implements OnClickListener {
         btnTrimOrigin.setOnTouchListener(onTouch);
         btnSaveAsNew.setOnTouchListener(onTouch);
         btnCancel.setOnTouchListener(onTouch);
+        
+        //Get Extra parameters
+        mMemName = getIntent().getStringExtra("memoName");
+        mMemoId = Integer.valueOf(getIntent().getStringExtra("memoId"));
+        mMemPath = getIntent().getStringExtra("memoPath");
+        mStartPosition = getIntent().getLongExtra("start", 0);
+        mEndPosition = getIntent().getLongExtra("end", 0);
     }
 
 
@@ -110,13 +133,23 @@ public class MemoTrim extends Activity implements OnClickListener {
         {
             case R.id.memo_trim_origin:
             {
-                
+                trim(false);
+                Intent intent = new Intent();
+                intent.putExtra("memoName", mMemName);
+                intent.putExtra("memoId",mMemoId);
+                intent.putExtra("memoPath", mMemPath);
+                setResult(9001, intent);
             }
             break;
             
             case R.id.trim_save_new:
             {
-                
+                trim(true);
+                Intent intent = new Intent();
+                intent.putExtra("memoName", mMemName);
+                intent.putExtra("memoId",mMemoId);
+                intent.putExtra("memoPath", mMemPath);
+                setResult(9001, intent);
             }
             break;
             
@@ -128,5 +161,70 @@ public class MemoTrim extends Activity implements OnClickListener {
         }
 
     }
+    
+    public void trim(Boolean isNewFile)
+    {
+        AMRFileUtils fileUtils = new AMRFileUtils();
+        int startFrame = fileUtils.secondsToFrames(mStartPosition * 0.001);
+        int endFrame = fileUtils.secondsToFrames(mEndPosition * 0.001);
+        if (startFrame == 0 && endFrame == 0) 
+        {
+            return;
+        }
+        else if (mEndPosition - mStartPosition < 1000) 
+        {
+            return;
+        }
+        
+        File inputFile = new File(mMemPath);
+        File outputFile = Recorder.createTempFile();
 
+        try {
+          fileUtils.ReadFile(inputFile);
+          fileUtils.WriteFile(outputFile, startFrame, endFrame - startFrame);
+
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        inputFile.delete();
+        updateVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition));
+        mMemPath = outputFile.getAbsolutePath();
+    }
+    
+    private void insertVoiceMemo(File outputFile,int duration,String memName)
+    {
+        if (duration < 1000) {
+            return;
+        }
+        ContentValues cv = new ContentValues();
+        long modDate = outputFile.lastModified();
+        long current = System.currentTimeMillis();
+        cv.put(VoiceMemo.Memos.DATA, outputFile.getAbsolutePath());
+        cv.put(VoiceMemo.Memos.LABEL, memName);
+        cv.put(VoiceMemo.Memos.LABEL_TYPE, 0);
+        cv.put(VoiceMemo.Memos.CREATE_DATE, current);
+        cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
+        cv.put(VoiceMemo.Memos.DURATION, duration);
+        getContentResolver().insert(VoiceMemo.Memos.CONTENT_URI, cv);
+    }
+
+    private void updateVoiceMemo(File outputFile, int duration) 
+    {
+        if (duration < 1000) {
+            return;
+          }
+
+          ContentValues cv = new ContentValues();
+          long modDate = outputFile.lastModified();
+          cv.put(VoiceMemo.Memos.DATA, outputFile.getAbsolutePath());
+          cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
+          cv.put(VoiceMemo.Memos.DURATION, duration);
+
+          if (mMemoId != -1) {
+            Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI, mMemoId);
+            getContentResolver().update(memoUri, cv, null, null);
+          }
+    }
 }
