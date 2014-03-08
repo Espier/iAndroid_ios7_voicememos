@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.espier.voicememos7"
-      android:versionCode="1"
-      android:versionName="1.0.0">
-      
-    <uses-sdk android:minSdkVersion="8" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> 
-    <application android:label="@string/evm7_app_name" android:icon="@drawable/icon">
-        
-        <provider android:name="org.espier.voicememos7.db.MemosProvider"
+	package="org.espier.voicememos7"
+	android:versionCode="1"
+	android:versionName="1.0.0" >
+	<uses-sdk android:minSdkVersion="8" />
+	<uses-permission android:name="android.permission.RECORD_AUDIO" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+	<application
+		android:icon="@drawable/icon"
+		android:label="@string/evm7_app_name" >
+		<provider
+			android:name="org.espier.voicememos7.db.MemosProvider"
 			android:authorities="org.espier.voicememos7.Memo" />
-        
-        <activity android:name="org.espier.voicememos7.ui.EspierVoiceMemos7"
-                  android:label="@string/evm7_app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="org.espier.voicememos7.ui.MemoDelete"
-            android:screenOrientation="portrait"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar" ></activity>
-         <activity android:name="org.espier.voicememos7.ui.MemoShare"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" ></activity>
-    </application>
+		<activity
+			android:name="org.espier.voicememos7.ui.EspierVoiceMemos7"
+			android:label="@string/evm7_app_name" >
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity
+			android:name="org.espier.voicememos7.ui.MemoDelete"
+			android:screenOrientation="portrait"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+		</activity>
+		<activity
+			android:name="org.espier.voicememos7.ui.MemoTrim"
+			android:screenOrientation="portrait"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+		</activity>
+		<activity
+			android:name="org.espier.voicememos7.ui.MemoShare"
+			android:screenOrientation="portrait"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+		</activity>
+	</application>
 </manifest>

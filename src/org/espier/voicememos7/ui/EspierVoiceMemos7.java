@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.res.Resources.Theme;
 import android.database.Cursor;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
@@ -22,6 +23,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager.OnActivityResultListener;
 import android.sax.TextElementListener;
 import android.text.format.DateFormat;
 import android.view.Gravity;
@@ -59,6 +61,8 @@ import org.espier.voicememos7.util.ScalePx;
 import org.espier.voicememos7.util.StorageUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimerTask;
@@ -76,6 +80,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public static int LABEL_TYPE_NONE = 0;
     private MediaPlayer mCurrentMediaPlayer;
     private static final int DEL_REQUEST = 2;
+    private static final int TRIM_REQUEST = 9000;
+    private static final int TRIM_DONE = 9001;
     TextView date;
     AudioManager audioManager;
     private Dialog dialog;
@@ -382,10 +388,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         	break;
         	case R.id.editimage://User click crop button in edit mode.
         	{
-        		waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
-        		editStatus = EDIT_STATE_CROP_REDY;
-        		updateUIByCropStatus();
-                waveView.invalidate();
+                    waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_EDIT);
+                    waveView.resetClipStatus();
+                    editStatus = EDIT_STATE_CROP_REDY;
+                    updateUIByCropStatus();
+                    waveView.invalidate();
         	}
         	break;
         	case R.id.editfinished://User click finish button in edit mode.
@@ -402,16 +409,23 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         		break;
         	case R.id.textViewCropEdit:
         	{
-        		if(editStatus == EDIT_STATE_CROP_CHANGE)
-        		{
-        			
-        		}
-        		else if(editStatus == EDIT_STATE_CROP_REDY)
-        		{
-        			editStatus = EDIT_STATE_INIT;
-        			waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
-        			updateUIByCropStatus();
-        		}
+        	    if(waveView.isVoiceClipped())
+                {
+                    Intent trimIntent = new Intent(EspierVoiceMemos7.this,MemoTrim.class);
+                    trimIntent.putExtra("memoPath", currentEditMemo.getMemPath());
+                    trimIntent.putExtra("memoId", currentEditMemo.getMemId());
+                    trimIntent.putExtra("memoName", currentEditMemo.getMemName());
+                    trimIntent.putExtra("start", waveView.getClip_left_time());
+                    trimIntent.putExtra("end", waveView.getClip_right_time());
+                    startActivityForResult(trimIntent, TRIM_REQUEST);
+                }
+                else
+                {
+                    waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
+                    editStatus = EDIT_STATE_INIT;
+                    updateUIByCropStatus();
+                    waveView.invalidate();
+                }
         	}
         	break;
             case R.id.finished:
@@ -458,7 +472,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 break;
         }
     }
-
+    
     @Override
     protected void onResume() {
         super.onResume();
@@ -648,7 +662,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     case MotionEvent.ACTION_DOWN:
                         finished.setTextColor(getResources().getColor(R.color.finish_text_color));
                         break;
-
+                    case MotionEvent.ACTION_UP:
+                        finished.setTextColor(getResources().getColor(R.color.white));
                     default:
                         break;
                 }
@@ -741,6 +756,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             lp6.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
             lp6.addRule(RelativeLayout.BELOW, R.id.imageView5);
             image6.setLayoutParams(lp6);
+            LinearLayout.LayoutParams llp = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.FILL_PARENT,android.widget.LinearLayout.LayoutParams.FILL_PARENT);
+            emptyView.setLayoutParams(llp);
 
             ((ViewGroup) slideCutListView.getParent()).addView(emptyView);
             slideCutListView.setEmptyView(emptyView);
@@ -789,10 +806,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         adapter.remove(adapter.getItem(position));
         switch (direction) {
             case RIGHT:
-                Toast.makeText(this, "向右删除  " + position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "�����冲�����  " + position, Toast.LENGTH_SHORT).show();
                 break;
             case LEFT:
-                Toast.makeText(this, "向左删除  " + position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "���宸�������  " + position, Toast.LENGTH_SHORT).show();
                 break;
 
             default:
@@ -903,7 +920,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 if (emptyView != null) {
                     emptyView.setVisibility(View.GONE);
                 }
-
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 dialogdismiss.sendEmptyMessage(1);
                 txtRecordName.setText("");
@@ -930,28 +946,31 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void insertVoiceMemo(String memoname) {
         // TODO Auto-generated method stub
-
+System.out.println("insert 1");
         Resources res = getResources();
         ContentValues cv = new ContentValues();
         long current = System.currentTimeMillis();
         File file = mRecorder.sampleFile();
-        long modDate = file.lastModified();
         Date date = new Date(current);
-        SimpleDateFormat formatter = new SimpleDateFormat(res.getString(R.string.time_format));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String title = formatter.format(date);
+        long modDate = file.lastModified();
+       
         // long sampleLengthMillis = mRecorder.sampleLength() * 1000L;
         String filepath = file.getAbsolutePath();
-        MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(filepath);
+        String path = filepath.substring(0,filepath.lastIndexOf("/")+1);
+        String newname = path+memoname+"-"+title+".amr";
+        AMRFileUtils.rename(filepath, newname);
+        MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(newname);
         if (mediaPlayer == null) {
             return;
         }
         int duration = mediaPlayer.getDuration();
         mRecorder.stopPlayback();
-        if (duration < 1000) {
+        if (duration < 10) {
             return;
         }
-
-        cv.put(VoiceMemo.Memos.DATA, filepath);
+        cv.put(VoiceMemo.Memos.DATA, newname);
         cv.put(VoiceMemo.Memos.LABEL, memoname);
         cv.put(VoiceMemo.Memos.LABEL_TYPE, LABEL_TYPE_NONE);
         cv.put(VoiceMemo.Memos.CREATE_DATE, current);
@@ -966,12 +985,33 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == TRIM_REQUEST)
+        {
+            if(resultCode == TRIM_DONE)
+            {
+              //Get Extra parameters
+                
+                String mMemName = data.getStringExtra("memoName");
+                String mMemoId = data.getStringExtra("memoId");
+                String mMemPath = data.getStringExtra("memoPath");
+                
+                currentEditMemo.setMemPath(mMemPath);
+                onVoiceEditClicked(null, currentEditMemo);
+                
+                editStatus = EDIT_STATE_INIT;
+                waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
+                waveView.setTime_to_edit(0);
+                updateUIByCropStatus();
+                mVoiceMemoListAdapter.notifyDataSetChanged();
+            }
+        }
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == DEL_REQUEST) {
                 int id = data.getIntExtra("mCurrentMemoId",-1);
                 String memopath = data.getStringExtra("memopath");
                 deleteMemo(id, memopath);
                 mVoiceMemoListAdapter.notifyDataSetChanged();
+                mVoiceMemoListAdapter.collapseAllItems();
                 mCurrentDuration = 0;
                 if(mVoiceMemoListAdapter.getCount() ==0){
                     if (emptyView != null) {
@@ -1014,13 +1054,31 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void onAChanged(Intent intent, int state) {
         startActivityForResult(intent, state);
-        
     }
 
+    
+    public CheapSoundFile generateSoundFile(String memPath)
+    {
+        CheapSoundFile mSoundFile = null;
+        try {
+            File mFile1 = new File(memPath);
+            mSoundFile = CheapSoundFile.create(memPath, null);
+            mSoundFile.ReadFile(mFile1);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return mSoundFile;
+    }
+    
+    
     @Override
-
-    public void onVoiceEditClicked(CheapSoundFile mSoundFile,VoiceMemo memo) {
-
+    public void onVoiceEditClicked(CheapSoundFile mSoundFil1e,VoiceMemo memo) {
+        CheapSoundFile mSoundFile = generateSoundFile(memo.getMemPath());
+        if(mSoundFile == null)
+            return;
         mediaStatus = MEDIA_STATE_EDIT;
         ScrollToTop();
         RelativeLayout editLayout = (RelativeLayout)findViewById(R.id.editlayout);

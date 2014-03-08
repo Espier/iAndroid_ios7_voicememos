@@ -58,7 +58,7 @@
 
         <TextView
             android:id="@+id/cancel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dip"
             android:layout_marginTop="10dip"
@@ -71,13 +71,12 @@
             android:id="@+id/h_line"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
             android:contentDescription="@string/detail_title"
             android:src="@drawable/line_v" />
 
         <TextView
             android:id="@+id/ok"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_marginBottom="10dip"
             android:layout_marginTop="10dip"
