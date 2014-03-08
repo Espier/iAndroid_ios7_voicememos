@@ -1,7 +1,6 @@
 
 package org.espier.voicememos7.ui;
 
-import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,7 +11,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -50,7 +48,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     private int mLabelTypeIdx;
     private int mDurationIdx;
     private int mCreateDateIdx;
-    private int mCurrentBgColor;
     public String mCurrentPath;
     public Integer mCurrentMemoId = -1;
     private CheapSoundFile mSoundFile;
@@ -63,7 +60,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     private File mFile;
     public OnSeekBarChangeListener mSeekListener;
     public org.espier.voicememos7.util.Recorder mRecorder;
-    Cursor c;
+    private Cursor cursor;
     private int expandedPosition = -1;
     protected boolean isCollapsed = true;
     ViewHolder currentViewHolder;
@@ -112,7 +109,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     private void setOnVoiceEditClicked(CheapSoundFile mSoundFile, VoiceMemo memos) {
 
-        Log.d("asdf", "in C event");
         if (mOnListViewChangedListener != null)
             mOnListViewChangedListener.onVoiceEditClicked(mSoundFile, memos);
     }
@@ -134,24 +130,19 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context, layout, c, from, to);
         mContext = context;
-        mCurrentBgColor = Color.WHITE;
-        this.c = c;
+        this.cursor = c;
         setupColumnIndices(c);
     }
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
-        return c.getCount();
+
+        return cursor.getCount();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if (convertView==null)
-//            Log.d("getView","exist view:"+String.valueOf(convertView.toString())+","+String.valueOf(position));
-//        else
-            Log.d("getView","new view is null"+","+String.valueOf(position));
         return super.getView(position, null, parent);
 
     }
@@ -159,7 +150,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         final View view = super.newView(context, cursor, parent);
-        //Log.d("newView","view:"+String.valueOf(view.toString()));
         ViewHolder holder = new ViewHolder();
         holder.playControl = (ImageView) view.findViewById(R.id.memos_item_play);
         holder.txtRecordName = (EditText) view.findViewById(R.id.memos_item_title);
@@ -175,7 +165,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.edit = (TextView) view.findViewById(R.id.edit);
         holder.del = (ImageView) view.findViewById(R.id.del);
         holder.position = cursor.getPosition();
-        view.setTag(holder);
+        
         RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.FILL_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -262,8 +252,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 0);
         lpDelete.weight = 0;
         holder.del.setLayoutParams(lpDelete);
+
+        view.setTag(holder);
         list.add(view);
-        
         return view;
     }
 
@@ -271,7 +262,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public void bindView(View view, final Context context, final Cursor cursor) {
 
         final int position = cursor.getPosition();
-        //Log.d("bindView", "view:" + view.toString());
         final ViewHolder holder = (ViewHolder) view.getTag();
 
         final String itemname = cursor.getString(mLabelIdx);
@@ -280,7 +270,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         final int labelType = cursor.getInt(mLabelTypeIdx);
         final String path = cursor.getString(mPathIdx);
         final int memoid = cursor.getInt(mMemoIdx);
-        if(!AMRFileUtils.isExist(path)){
+        if (!AMRFileUtils.isExist(path)) {
             return;
         }
         holder.path.setTag(path);
@@ -297,7 +287,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         if (displayString.equals(itemname)) {
 
         }
-        
 
         if (secs == 0) {
             holder.duration.setText("");
@@ -315,86 +304,15 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         final String dd = format.format(d);
         holder.createDate.setText(dd);
 
-        
         if (holder.bar instanceof SeekBar) {
             SeekBar seeker = (SeekBar) holder.bar;
             seeker.setOnSeekBarChangeListener(mSeekListener);
         }
         holder.bar.setMax(1000);
 
-        view.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (position != holder.position)
-                    return;
-                // close view
-                if (expandedPosition >=0 && isCollapsed == false) {
-                    expandedPosition = -1;
-                    DisplayEditButton(true);
-                    holder.txtRecordName.setTextColor(mContext.getResources().getColor(
-                            R.color.black));
-                    holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
-                    holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
-
-                    setItemVisible(v, false);
-
-                    isCollapsed = true;
-                    holder.bar.setProgress(0);
-                    holder.txtRecordName.clearFocus();
-                    InputMethodManager imm = (InputMethodManager) mContext
-                            .getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(holder.txtRecordName.getWindowToken(), 0);
-                    for (int j = 0; j < list.size(); j++) {
-                        View view = (View) list.get(j);
-
-                        EditText etTitle = (EditText) view.findViewById(R.id.memos_item_title);
-                        TextView tvCreateDate = (TextView) view
-                                .findViewById(R.id.memos_item_create_date);
-                        TextView tvDuration = (TextView) view
-                                .findViewById(R.id.memos_item_duration);
-                        etTitle.setTextColor(mContext.getResources().getColor(R.color.black));
-                        tvCreateDate.setTextColor(mContext.getResources().getColor(R.color.black));
-                        tvDuration.setTextColor(mContext.getResources().getColor(R.color.black));
-                        view.setBackgroundColor(Color.WHITE);
-                    }
-                    return;
-                }
-                // expand the view
-                DisplayEditButton(false);
-                setItemVisible(v, true);
-
-                holder.mCurrentRemain.setText("-" + holder.duration.getText());
-                isCollapsed = false;
-                for (int j = 0; j < list.size(); j++) {
-                    View view = (View) list.get(j);
-                    if (v == view) {
-
-                        continue;
-                    }
-
-                    view.setBackgroundColor(mContext.getResources()
-                            .getColor(R.color.light_gray));
-                    EditText et = (EditText) view.findViewById(R.id.memos_item_title);
-                    et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-                    TextView tvCreateDate = (TextView) view
-                            .findViewById(R.id.memos_item_create_date);
-                    TextView tvDuration = (TextView) view
-                            .findViewById(R.id.memos_item_duration);
-                    tvCreateDate.setTextColor(mContext.getResources().getColor(
-                            R.color.heavygray));
-                    tvDuration
-                            .setTextColor(mContext.getResources().getColor(R.color.heavygray));
-                }
-
-                expandedPosition = holder.position;
-
-            }
-        });
+        view.setOnClickListener(new OnClickItem(position, holder));
 
         if (!isCollapsed && expandedPosition != holder.position) {
-//            Log.d("in not collapsed", "view id =" + view.toString());
-//            Log.d("in not collapsed", "openedListViewItem id =" + openedListViewItem.toString());
             view.setBackgroundColor(mContext.getResources()
                     .getColor(R.color.light_gray));
             holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.heavygray));
@@ -415,81 +333,12 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         });
 
         // view.setBackgroundColor(mCurrentBgColor);
-        holder.share.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                // MemosUtils.shareMemo(mContext,
-                // mCurrentPath);
-                Intent intent = new Intent(mContext, MemoShare.class);
-                intent.putExtra("path", path);
-                context.startActivity(intent);
-            }
-        });
-        holder.edit.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-            	setOnPlayPositionChanged(0, 0);
-                mediaStatus = MEDIA_STATE_EDIT;
-                currentViewHolder = holder;
-                try {
-                    mFile = new File(path);
-                    mSoundFile = CheapSoundFile.create(path, null);
-                    mSoundFile.ReadFile(mFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                
-                if(currentMemo!=null&&!String.valueOf(memoid).endsWith(currentMemo.getMemId()))
-                {
-                	mRecorder.stopPlayback();
-                }
-                // int[] framGains = mSoundFile.getFrameGains();
-                // int sampleRate = mSoundFile.getSampleRate();
-                // int numFrames = mSoundFile.getNumFrames();
-                // // double []gainHeights = computeGainHeights();
-                //
-                // double time = (mSoundFile.getSamplesPerFrame() *
-                // numFrames)/sampleRate;
-                VoiceMemo memo = new VoiceMemo();
-                memo.setMemId(String.valueOf(memoid));
-                memo.setMemCreatedDate(dd);
-                memo.setMemName(itemname);
-                memo.setMemPath(path);
-                memo.setMemDuration(secs);
-                currentMemo = memo;
-                setOnVoiceEditClicked(mSoundFile, memo);
-            }
-        });
+        holder.share.setOnClickListener(new OnClickShare(context, path));
+        holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, dd, memoid));
 
         holder.del.setEnabled(true);
-        holder.del.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                if (mRecorder.getState() != Recorder.IDLE_STATE) {
-                    mRecorder.stopPlayback();
-                }
-                Intent delIntent = new Intent(mContext, MemoDelete.class);
-                delIntent.putExtra("mCurrentMemoId", memoid);
-                delIntent.putExtra("memoname", itemname);
-                delIntent.putExtra("memopath", path);
-                setAChanged(delIntent, DEL_REQUEST);
-                // startActivityForResult(delIntent, DEL_REQUEST);
-            }
-        });
-        holder.playControl.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                currentViewHolder = holder;
-                playVoiceInViewHolder(path, 0, 0);
-            }
-        });
+        holder.del.setOnClickListener(new OnClickDelete(path, itemname, memoid));
+        holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
         // }
     }
 
@@ -509,6 +358,199 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
             layout.setVisibility(View.GONE);
             sharelayout.setVisibility(View.GONE);
+        }
+    }
+
+    private final class OnClickItem implements View.OnClickListener {
+        private final int position;
+        private final ViewHolder holder;
+
+        private OnClickItem(int position, ViewHolder holder) {
+            this.position = position;
+            this.holder = holder;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (position != holder.position)
+                return;
+            // close view
+            if (expandedPosition >= 0 && isCollapsed == false) {
+                expandedPosition = -1;
+                DisplayEditButton(true);
+                holder.txtRecordName.setTextColor(mContext.getResources().getColor(
+                        R.color.black));
+                holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
+                holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
+
+                setItemVisible(v, false);
+
+                isCollapsed = true;
+                holder.bar.setProgress(0);
+                holder.txtRecordName.clearFocus();
+                InputMethodManager imm = (InputMethodManager) mContext
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(holder.txtRecordName.getWindowToken(), 0);
+                for (int j = 0; j < list.size(); j++) {
+                    View view = (View) list.get(j);
+
+                    EditText etTitle = (EditText) view.findViewById(R.id.memos_item_title);
+                    TextView tvCreateDate = (TextView) view
+                            .findViewById(R.id.memos_item_create_date);
+                    TextView tvDuration = (TextView) view
+                            .findViewById(R.id.memos_item_duration);
+                    etTitle.setTextColor(mContext.getResources().getColor(R.color.black));
+                    tvCreateDate.setTextColor(mContext.getResources().getColor(R.color.black));
+                    tvDuration.setTextColor(mContext.getResources().getColor(R.color.black));
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                return;
+            }
+            // expand the view
+            DisplayEditButton(false);
+            setItemVisible(v, true);
+
+            holder.mCurrentRemain.setText("-" + holder.duration.getText());
+            isCollapsed = false;
+            for (int j = 0; j < list.size(); j++) {
+                View view = (View) list.get(j);
+                if (v == view) {
+
+                    continue;
+                }
+
+                view.setBackgroundColor(mContext.getResources()
+                        .getColor(R.color.light_gray));
+                EditText et = (EditText) view.findViewById(R.id.memos_item_title);
+                et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
+                TextView tvCreateDate = (TextView) view
+                        .findViewById(R.id.memos_item_create_date);
+                TextView tvDuration = (TextView) view
+                        .findViewById(R.id.memos_item_duration);
+                tvCreateDate.setTextColor(mContext.getResources().getColor(
+                        R.color.heavygray));
+                tvDuration
+                        .setTextColor(mContext.getResources().getColor(R.color.heavygray));
+            }
+
+            expandedPosition = holder.position;
+
+        }
+    }
+
+    private final class OnClickPlay implements View.OnClickListener {
+        private final ViewHolder holder;
+        private final String path;
+
+        private OnClickPlay(ViewHolder holder, String path) {
+            this.holder = holder;
+            this.path = path;
+        }
+
+        @Override
+        public void onClick(View arg0) {
+            currentViewHolder = holder;
+            playVoiceInViewHolder(path, 0, 0);
+        }
+    }
+
+    private final class OnClickDelete implements View.OnClickListener {
+        private final String path;
+        private final String itemname;
+        private final int memoid;
+
+        private OnClickDelete(String path, String itemname, int memoid) {
+            this.path = path;
+            this.itemname = itemname;
+            this.memoid = memoid;
+        }
+
+        @Override
+        public void onClick(View arg0) {
+            if (mRecorder.getState() != Recorder.IDLE_STATE) {
+                mRecorder.stopPlayback();
+            }
+            Intent delIntent = new Intent(mContext, MemoDelete.class);
+            delIntent.putExtra("mCurrentMemoId", memoid);
+            delIntent.putExtra("memoname", itemname);
+            delIntent.putExtra("memopath", path);
+            setAChanged(delIntent, DEL_REQUEST);
+            // startActivityForResult(delIntent, DEL_REQUEST);
+        }
+    }
+
+    private final class OnClickEdit implements View.OnClickListener {
+        private final String path;
+        private final int secs;
+        private final ViewHolder holder;
+        private final String itemname;
+        private final String dd;
+        private final int memoid;
+
+        private OnClickEdit(String path, int secs, ViewHolder holder, String itemname, String dd,
+                int memoid) {
+            this.path = path;
+            this.secs = secs;
+            this.holder = holder;
+            this.itemname = itemname;
+            this.dd = dd;
+            this.memoid = memoid;
+        }
+
+        @Override
+        public void onClick(View v) {
+            setOnPlayPositionChanged(0, 0);
+            mediaStatus = MEDIA_STATE_EDIT;
+            currentViewHolder = holder;
+            try {
+                mFile = new File(path);
+                mSoundFile = CheapSoundFile.create(path, null);
+                mSoundFile.ReadFile(mFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (currentMemo != null && !String.valueOf(memoid).endsWith(currentMemo.getMemId()))
+            {
+                mRecorder.stopPlayback();
+            }
+            // int[] framGains = mSoundFile.getFrameGains();
+            // int sampleRate = mSoundFile.getSampleRate();
+            // int numFrames = mSoundFile.getNumFrames();
+            // // double []gainHeights = computeGainHeights();
+            //
+            // double time = (mSoundFile.getSamplesPerFrame() *
+            // numFrames)/sampleRate;
+            VoiceMemo memo = new VoiceMemo();
+            memo.setMemId(String.valueOf(memoid));
+            memo.setMemCreatedDate(dd);
+            memo.setMemName(itemname);
+            memo.setMemPath(path);
+            memo.setMemDuration(secs);
+            currentMemo = memo;
+            setOnVoiceEditClicked(mSoundFile, memo);
+        }
+    }
+
+    private final class OnClickShare implements View.OnClickListener {
+        private final Context context;
+        private final String path;
+
+        private OnClickShare(Context context, String path) {
+            this.context = context;
+            this.path = path;
+        }
+
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            // MemosUtils.shareMemo(mContext,
+            // mCurrentPath);
+            Intent intent = new Intent(mContext, MemoShare.class);
+            intent.putExtra("path", path);
+            context.startActivity(intent);
         }
     }
 

@@ -311,7 +311,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         // TODO Auto-generated method stub
         SharedPreferences sp = this.getSharedPreferences("espier", this.MODE_PRIVATE);
         String exitindexs = sp.getString("indexs", "");
-        if (exitindexs.equals("")||mVoiceMemoListAdapter.c.getCount()==0) {
+        if (exitindexs.equals("")||mVoiceMemoListAdapter.getCount()==0) {
             memo_name = this.getResources().getString(R.string.record_name).toString();
         } else {
             for(int i=2;i<10000;i++){
@@ -973,7 +973,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 deleteMemo(id, memopath);
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 mCurrentDuration = 0;
-                if(mVoiceMemoListAdapter.c.getCount() ==0){
+                if(mVoiceMemoListAdapter.getCount() ==0){
                     if (emptyView != null) {
                         emptyView.setVisibility(View.VISIBLE);
                     }
