@@ -32,8 +32,18 @@ public final class VoiceMemo {
   private String memName;
   private int memDuration;
   private String memCreatedDate;
+  private String modifiedDate;
+  
 
-  public String getMemId() {
+  public String getModifiedDate() {
+    return modifiedDate;
+}
+
+public void setModifiedDate(String modifiedDate) {
+    this.modifiedDate = modifiedDate;
+}
+
+public String getMemId() {
 	return memId;
   }
 

@@ -21,9 +21,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.Uri;
 
 import org.espier.voicememos7.R;
+import org.espier.voicememos7.model.VoiceMemo;
 import org.espier.voicememos7.ui.EspierVoiceMemos7;
 
 import java.text.SimpleDateFormat;
@@ -97,4 +99,39 @@ public class MemosUtils {
         Date d = new Date(timestamp);
         return format.format(d);
     }
+    
+    public static VoiceMemo getMemoByID(Context context,String id){
+        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id,data,created,modified"}, "_id", new String[]{id}, null);
+        VoiceMemo memo = new VoiceMemo();
+        if(cs1.getCount()>0&&cs1.moveToNext()){
+            
+            String _id = cs1.getString(cs1.getColumnIndexOrThrow("_id"));
+            String path = cs1.getString(cs1.getColumnIndexOrThrow("data"));
+            String created = cs1.getString(cs1.getColumnIndexOrThrow("created"));
+            String modified = cs1.getString(cs1.getColumnIndexOrThrow("modified"));
+            memo.setMemId(_id);
+            memo.setMemPath(path);
+            memo.setMemCreatedDate(created);
+            memo.setModifiedDate(modified);
+        }
+        return memo;
+    }
+    
+    public static VoiceMemo getMemoByPath(Context context,String path){
+        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id,data,created,modified"}, "data", new String[]{path}, null);
+        VoiceMemo memo = new VoiceMemo();
+        if(cs1.getCount()>0&&cs1.moveToNext()){
+            
+            String _id = cs1.getString(cs1.getColumnIndexOrThrow("_id"));
+            String memopath = cs1.getString(cs1.getColumnIndexOrThrow("data"));
+            String created = cs1.getString(cs1.getColumnIndexOrThrow("created"));
+            String modified = cs1.getString(cs1.getColumnIndexOrThrow("modified"));
+            memo.setMemId(_id);
+            memo.setMemPath(memopath);
+            memo.setMemCreatedDate(created);
+            memo.setModifiedDate(modified);
+        }
+        return memo;
+    }
+    
 }
