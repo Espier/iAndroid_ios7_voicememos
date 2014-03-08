@@ -693,16 +693,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                                 * factor,
                         voiceLinePaint);
             }
-//            // clip data
-//            for (int i = 0; i < clip_num; i++) {
-//                canvas.drawLine(start_pos + i * delt_x * zoom, y_mid_line
-//                        - (float) frameGains[pos_l + i] * factor,
-//                        start_pos + i * delt_x * zoom, y_mid_line + (float) frameGains[pos_l + i]
-//                                * factor,
-//                        voiceLinePaint);
-//            }
-            // right data
-            float clip_width = clip_num * delt_x;
+
             for (int i = 0; i < numFrames - pos_r; i++) {
                 canvas.drawLine(right_edit_bar_pos + i * delt_x * zoom, y_mid_line
                         - (float) frameGains[pos_r + i] * factor,
@@ -1098,6 +1089,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         if (viewStatus == VIEW_STATUS_EDIT) {
             if (Math.abs(e.getX() - left_edit_bar_pos) < 20) {
                 isZoomLeft = true;
+               
 
                 invalidate();
             }
@@ -1142,7 +1134,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         
         
         if (viewStatus == VIEW_STATUS_TO_EDIT) {
-            int t = (int) (distanceX * time_per_pixel);
+            //int t = (int) (distanceX * time_per_pixel);
+            long t = (int)(distanceX*time_per_pixel+0.5);
             time_to_edit += t;
             if (time_to_edit < 0) {
                 time_to_edit = 0;
@@ -1156,19 +1149,24 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
         if (viewStatus == VIEW_STATUS_EDIT)
         {
+            float t_per_pixel = time_voice_all / (zoomLevel * voice_distance);
             if (isZoomLeft) {
                 // long temp = clip_left_time;
                 left_edit_bar_pos -= distanceX;
                 // if (right_edit_bar_pos -left_edit_bar_pos<20) {
                 // left_edit_bar_pos = right_edit_bar_pos-20;
                 // }
-                clip_left_time -= distanceX * time_voice_all / (zoomLevel * voice_distance);
+                clip_left_time -= distanceX * t_per_pixel;
                 if (clip_right_time - clip_left_time <= 1000) {
                     clip_left_time = clip_right_time - 1000;
                    
                 }
                 if (clip_left_time<0) {
                     clip_left_time = 0;
+                }
+                if (left_edit_bar_pos>w-edit_margin_right) {
+                    left_edit_bar_pos = w-edit_margin_right;
+                    
                 }
                 
             }
@@ -1179,13 +1177,16 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 // if (right_edit_bar_pos -left_edit_bar_pos<20) {
                 // left_edit_bar_pos = right_edit_bar_pos-20;
                 // }
-                clip_right_time -= distanceX * time_voice_all / (zoomLevel * voice_distance);
+                clip_right_time -= distanceX * t_per_pixel;
                 if (clip_right_time - clip_left_time <= 1000) {
                     clip_right_time = clip_right_time + 1000;
                     
                 }
                 if (clip_right_time>time_voice_all) {
                     clip_right_time = time_voice_all;
+                }
+                if (right_edit_bar_pos<edit_margin_left) {
+                    right_edit_bar_pos = edit_margin_left;
                 }
             }
             
