@@ -148,7 +148,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
      * @return the fromPlayTime
      */
     public long getFromPlayTime() {
-        if (time_to_edit>clip_left_time) {
+        if (time_to_edit>clip_left_time && time_to_edit<clip_right_time) {
             fromPlayTime = this.time_to_edit;
         }
         else {
