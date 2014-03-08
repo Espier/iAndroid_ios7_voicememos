@@ -368,16 +368,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             
             view.setBackgroundColor(mContext.getResources()
                     .getColor(R.color.light_gray));
-//            EditText et = (EditText) view.findViewById(R.id.memos_item_title);
-//            et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-//            TextView tvCreateDate = (TextView) view
-//                    .findViewById(R.id.memos_item_create_date);
-//            TextView tvDuration = (TextView) view
-//                    .findViewById(R.id.memos_item_duration);
-//            tvCreateDate.setTextColor(mContext.getResources().getColor(
-//                    R.color.heavygray));
-//            tvDuration
-//                    .setTextColor(mContext.getResources().getColor(R.color.heavygray));
         }
     }
 
@@ -444,30 +434,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             setItemVisible(v, true);
             holder.mCurrentRemain.setText("-" + holder.duration.getText());
             isCollapsed = false;
-            
             expandItem(v);
-//            for (int j = 0; j < list.size(); j++) {
-//                View view = (View) list.get(j);
-//                if (v == view) {
-//                    continue;
-//                }
-//
-//                view.setBackgroundColor(mContext.getResources()
-//                        .getColor(R.color.light_gray));
-//                EditText et = (EditText) view.findViewById(R.id.memos_item_title);
-//                et.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-//                TextView tvCreateDate = (TextView) view
-//                        .findViewById(R.id.memos_item_create_date);
-//                TextView tvDuration = (TextView) view
-//                        .findViewById(R.id.memos_item_duration);
-//                tvCreateDate.setTextColor(mContext.getResources().getColor(
-//                        R.color.heavygray));
-//                tvDuration
-//                        .setTextColor(mContext.getResources().getColor(R.color.heavygray));
-//            }
-
             expandedPosition = holder.position;
-
         }
     }
 
