@@ -991,11 +991,9 @@ System.out.println("insert 1");
             {
               //Get Extra parameters
                 
-                String mMemName = data.getStringExtra("memoName");
-                String mMemoId = data.getStringExtra("memoId");
                 String mMemPath = data.getStringExtra("memoPath");
+                currentEditMemo = MemosUtils.getMemoByPath(EspierVoiceMemos7.this, mMemPath);
                 
-                currentEditMemo.setMemPath(mMemPath);
                 onVoiceEditClicked(null, currentEditMemo);
                 
                 editStatus = EDIT_STATE_INIT;

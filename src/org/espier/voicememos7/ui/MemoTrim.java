@@ -135,8 +135,6 @@ public class MemoTrim extends Activity implements OnClickListener {
             {
                 trim(false);
                 Intent intent = new Intent();
-                intent.putExtra("memoName", mMemName);
-                intent.putExtra("memoId",mMemoId);
                 intent.putExtra("memoPath", mMemPath);
                 setResult(9001, intent);
                 finish();
@@ -147,8 +145,6 @@ public class MemoTrim extends Activity implements OnClickListener {
             {
                 trim(true);
                 Intent intent = new Intent();
-                intent.putExtra("memoName", mMemName);
-                intent.putExtra("memoId",mMemoId);
                 intent.putExtra("memoPath", mMemPath);
                 setResult(9001, intent);
                 finish();
@@ -190,9 +186,16 @@ public class MemoTrim extends Activity implements OnClickListener {
         } catch (IOException e) {
           e.printStackTrace();
         }
-        inputFile.delete();
-        updateVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition));
         mMemPath = outputFile.getAbsolutePath();
+        if(isNewFile)
+        {
+            String newFileNameString = "\""+mMemName+"\""+getString(R.string.copy);
+            insertVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition),newFileNameString);
+        }
+        else {
+            inputFile.delete();
+            updateVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition));
+        }
     }
     
     private void insertVoiceMemo(File outputFile,int duration,String memName)
