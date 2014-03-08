@@ -125,8 +125,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
     int currentFramPos;
     float timePerFrame;
 
-    float edit_margin_left = 25;
-    float edit_margin_right = 35;
+    float edit_margin_left = 30;
+    float edit_margin_right = 40;
 
     float left_edit_bar_pos;
     float right_edit_bar_pos;
@@ -141,20 +141,20 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     boolean isPlayMode;
     boolean isVoiceClipped;
-    
+
     long fromPlayTime;
 
     /**
      * @return the fromPlayTime
      */
     public long getFromPlayTime() {
-        if (time_to_edit>clip_left_time && time_to_edit<clip_right_time) {
+        if (time_to_edit > clip_left_time && time_to_edit < clip_right_time) {
             fromPlayTime = this.time_to_edit;
         }
         else {
             fromPlayTime = clip_left_time;
         }
-       
+
         return fromPlayTime;
     }
 
@@ -165,7 +165,6 @@ public class VoiceWaveView extends View implements OnGestureListener {
         this.fromPlayTime = fromPlayTime;
     }
 
-    
     /**
      * @return the isVoiceClipped
      */
@@ -257,7 +256,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             clip_left_time = 0;
             clip_right_time = (int) time_voice_all;
             clip_time = clip_right_time - clip_left_time;
-            
+
             time_to_edit = 0;
 
         }
@@ -461,17 +460,17 @@ public class VoiceWaveView extends View implements OnGestureListener {
         start_pos = (s - voice_distance) / 2 + edit_margin_left;
         end_pos = start_pos + voice_distance;
         // left_edit_bar_pos = start_pos;
-        if (isZoomLeft ) {
+        if (isZoomLeft) {
             end_pos = start_pos + voice_distance * zoomLevel;
             right_edit_bar_pos = end_pos;
-        } 
+        }
         else if (isZoomRight) {
             int pos_l = getFramePositionByTime(clip_left_time);
             int pos_r = getFramePositionByTime(clip_right_time);
             int clip_num = pos_r - pos_l;
             float delt_x = s / clip_num;
-            
-            left_edit_bar_pos = right_edit_bar_pos - clip_num*zoomLevel*delt_x;
+
+            left_edit_bar_pos = right_edit_bar_pos - clip_num * zoomLevel * delt_x;
         }
         else {
             left_edit_bar_pos = start_pos;
@@ -482,10 +481,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
         float start_move_time_textview = 80;
         float q = (w / 2 - start_move_time_textview);
         try {
-            
+
             drawEditBar(canvas);
             drawVoiceEdit(canvas, start_pos, voice_distance);
-            
+
             drawTimeTextViewEdit(canvas, q);
             drawXAxisEdit(canvas, margin_lef_init);
             drawYAxis(canvas);
@@ -544,13 +543,13 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawSlideLine(Canvas canvas, float offset)
     {
         float x = offset;
-        
-            canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
-            // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
-            canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
-            canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
-                    slideLinePaint);
-       
+
+        canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
+        // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
+        canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
+        canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
+                slideLinePaint);
+
         canvas.drawLine(0, y_top_line, getWidth(), y_top_line, grayLinePaint);
         canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
                 , grayLinePaint);
@@ -558,21 +557,21 @@ public class VoiceWaveView extends View implements OnGestureListener {
         canvas.drawLine(0, y_mid_line, getWidth(), y_mid_line, darkGrayLinePaint);
 
     }
-    
+
     private void drawSlideLineEdit(Canvas canvas, float offset)
     {
         float x = offset;
-        if (getFromPlayTime()>clip_left_time && time_to_edit<clip_right_time) {
+        if (getFromPlayTime() > clip_left_time && time_to_edit < clip_right_time) {
             long t = (time_to_edit - clip_left_time);
-            float v = (right_edit_bar_pos-left_edit_bar_pos)/(clip_right_time-clip_left_time);
-            x=+left_edit_bar_pos+t*v;
+            float v = (right_edit_bar_pos - left_edit_bar_pos) / (clip_right_time - clip_left_time);
+            x = +left_edit_bar_pos + t * v;
             canvas.drawLine(x, y_top_line, x, y_bottom_line, slideLinePaint);
             // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
             canvas.drawCircle(x, y_top_line - cicle_radius, cicle_radius, slideLinePaint);
             canvas.drawCircle(x, y_bottom_line + cicle_radius, cicle_radius,
                     slideLinePaint);
         }
-        
+
         canvas.drawLine(0, y_top_line, getWidth(), y_top_line, grayLinePaint);
         canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
                 , grayLinePaint);
@@ -652,7 +651,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     {
         if (cheapSoundFile != null) {
             // 计算当前时间帧位置
-            currentFramPos = (int) (time_to_edit / timePerFrame+0.5);
+            currentFramPos = (int) (time_to_edit / timePerFrame + 0.5);
             float x_ = 0;
 
             for (int i = currentFramPos, j = display_num / 2; i > 0 && j > 0; i--, j--)
@@ -661,7 +660,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 canvas.drawLine(x_, y_mid_line - (float) frameGains[i] * factor,
                         x_, y_mid_line + (float) frameGains[i] * factor, voiceLinePaint);
             }
-            for (int i = currentFramPos, j = 0; i < numFrames && j < display_num / 2+20; i++, j++)
+            for (int i = currentFramPos, j = 0; i < numFrames && j < display_num / 2 + 20; i++, j++)
             {
                 x_ = w / 2 + (i - currentFramPos) * step_width;
                 canvas.drawLine(x_, y_mid_line - (float) frameGains[i] * factor,
@@ -684,11 +683,12 @@ public class VoiceWaveView extends View implements OnGestureListener {
         float zoom = (isZoomLeft || isZoomRight) ? zoomLevel : 1;
 
         if (isZoomRight) {
-         // left data
+            // left data
             for (int i = pos_r; i > 0; i--) {
                 canvas.drawLine(right_edit_bar_pos - (pos_r - i) * delt_x * zoom, y_mid_line
                         - (float) frameGains[i] * factor,
-                        right_edit_bar_pos - (pos_r - i) * delt_x * zoom, y_mid_line + (float) frameGains[i]
+                        right_edit_bar_pos - (pos_r - i) * delt_x * zoom, y_mid_line
+                                + (float) frameGains[i]
                                 * factor,
                         voiceLinePaint);
             }
@@ -702,7 +702,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             }
         }
         else {
-         // left data
+            // left data
             for (int i = pos_l; i > 0; i--) {
                 canvas.drawLine(start_pos - (pos_l - i) * delt_x * zoom, y_mid_line
                         - (float) frameGains[i] * factor,
@@ -729,7 +729,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             }
 
         }
-        
+
     }
 
     private void drawXAxis(Canvas canvas, float offset)
@@ -1085,13 +1085,12 @@ public class VoiceWaveView extends View implements OnGestureListener {
     @Override
     public boolean onDown(MotionEvent e) {
         if (viewStatus == VIEW_STATUS_EDIT) {
-            if (Math.abs(e.getX() - left_edit_bar_pos) < 20) {
+            if (Math.abs(e.getX() - left_edit_bar_pos) < 30) {
                 isZoomLeft = true;
-               
 
                 invalidate();
             }
-            if (Math.abs(e.getX() - right_edit_bar_pos) < 20) {
+            if (Math.abs(e.getX() - right_edit_bar_pos) < 30) {
                 isZoomRight = true;
 
                 invalidate();
@@ -1129,11 +1128,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        
-        
+
         if (viewStatus == VIEW_STATUS_TO_EDIT) {
-            //int t = (int) (distanceX * time_per_pixel);
-            long t = (int)(distanceX*time_per_pixel+0.5);
+            // int t = (int) (distanceX * time_per_pixel);
+            long t = (int) (distanceX * time_per_pixel + 0.5);
             time_to_edit += t;
             if (time_to_edit < 0) {
                 time_to_edit = 0;
@@ -1148,55 +1146,154 @@ public class VoiceWaveView extends View implements OnGestureListener {
         if (viewStatus == VIEW_STATUS_EDIT)
         {
             float t_per_pixel = time_voice_all / (zoomLevel * voice_distance);
+            final float zone = 20;
             if (isZoomLeft) {
                 // long temp = clip_left_time;
                 left_edit_bar_pos -= distanceX;
+                if (left_edit_bar_pos < edit_margin_left+zone) {
+                    Thread scrollThread = new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            // TODO Auto-generated method stub
+                            while (isZoomLeft && clip_left_time >0
+                                    && left_edit_bar_pos <= (edit_margin_left+zone)) {
+                                clip_left_time -= 10;
+                                try {
+                                    Thread.sleep(invalidate_rate);
+                                } catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                                Message msg = new Message();
+                                msg.what = 1;
+                                handler.sendMessage(msg);
+                            }
+
+                        }
+                    });
+                    scrollThread.start();
+                    left_edit_bar_pos = edit_margin_left;
+                }
+                
+                if (left_edit_bar_pos > edit_margin_right) {
+                    Thread scrollThread = new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            while (isZoomLeft && clip_right_time - clip_left_time > 1000
+                                    && left_edit_bar_pos >= w-edit_margin_right - zone) {
+                                clip_left_time += 10;
+                                try {
+                                    Thread.sleep(invalidate_rate);
+                                } catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                                Message msg = new Message();
+                                msg.what = 1;
+                                handler.sendMessage(msg);
+                            }
+                        }
+                    });
+                    scrollThread.start();
+                }
                 // if (right_edit_bar_pos -left_edit_bar_pos<20) {
                 // left_edit_bar_pos = right_edit_bar_pos-20;
                 // }
                 clip_left_time -= distanceX * t_per_pixel;
                 if (clip_right_time - clip_left_time <= 1000) {
                     clip_left_time = clip_right_time - 1000;
-                   
+
                 }
-                if (clip_left_time<0) {
+                if (clip_left_time < 0) {
                     clip_left_time = 0;
                 }
-                if (left_edit_bar_pos>w-edit_margin_right) {
-                    left_edit_bar_pos = w-edit_margin_right;
-                    
+                if (left_edit_bar_pos > w - edit_margin_right) {
+                    left_edit_bar_pos = w - edit_margin_right;
+
                 }
-                
+
             }
+
+            // Right Clip Bar Scroll
 
             if (isZoomRight) {
                 // long temp = clip_left_time;
                 right_edit_bar_pos -= distanceX;
-                // if (right_edit_bar_pos -left_edit_bar_pos<20) {
-                // left_edit_bar_pos = right_edit_bar_pos-20;
-                // }
+                if (right_edit_bar_pos > w - edit_margin_right) {
+
+                    Thread scrollThread = new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            // TODO Auto-generated method stub
+                            while (isZoomRight && clip_right_time < time_voice_all
+                                    && right_edit_bar_pos >= w - edit_margin_right - zone) {
+                                clip_right_time += 10;
+                                try {
+                                    Thread.sleep(invalidate_rate);
+                                } catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                                Message msg = new Message();
+                                msg.what = 1;
+                                handler.sendMessage(msg);
+                            }
+
+                        }
+                    });
+                    scrollThread.start();
+                    right_edit_bar_pos = w - edit_margin_right;
+                }
+
+                if (right_edit_bar_pos < edit_margin_left) {
+                    Thread scrollThread = new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            while (isZoomRight && clip_right_time - clip_left_time > 1000
+                                    && right_edit_bar_pos <= edit_margin_left + zone) {
+                                clip_right_time -= 10;
+                                try {
+                                    Thread.sleep(invalidate_rate);
+                                } catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                                Message msg = new Message();
+                                msg.what = 1;
+                                handler.sendMessage(msg);
+                            }
+                        }
+                    });
+                    scrollThread.start();
+                }
+
                 clip_right_time -= distanceX * t_per_pixel;
                 if (clip_right_time - clip_left_time <= 1000) {
                     clip_right_time = clip_right_time + 1000;
-                    
+
                 }
-                if (clip_right_time>time_voice_all) {
+                if (clip_right_time > time_voice_all) {
                     clip_right_time = time_voice_all;
                 }
-                if (right_edit_bar_pos<edit_margin_left) {
+                if (right_edit_bar_pos < edit_margin_left) {
                     right_edit_bar_pos = edit_margin_left;
                 }
+                //
+
             }
-            
-            
-            if (time_voice_all -(clip_right_time-clip_left_time)>=1000) {
+
+            if (time_voice_all - (clip_right_time - clip_left_time) >= 1000) {
                 setVoiceClipped(true);
             }
             else {
                 setVoiceClipped(false);
             }
-            
-            
 
             invalidate();
         }
