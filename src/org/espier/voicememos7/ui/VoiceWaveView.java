@@ -1347,7 +1347,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
                 clip_right_time -= distanceX * t_per_pixel;
                 if (clip_right_time - clip_left_time <= 1000) {
-                    clip_right_time = clip_right_time + 1000;
+                    clip_right_time = clip_left_time + 1000;
 
                 }
                 if (clip_right_time > time_voice_all) {
