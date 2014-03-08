@@ -24,8 +24,11 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 
 import org.espier.voicememos7.R;
+import org.espier.voicememos7.ui.EspierVoiceMemos7;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -83,5 +86,15 @@ public class MemosUtils {
         } else {
             return str;
         }
+    }
+    
+    public static String makeDateString(Context context, int type, long timestamp) {
+        String dateFormat = context.getString(R.string.date_time_format);
+        if (type == EspierVoiceMemos7.LABEL_TYPE_NONE) {
+            dateFormat = context.getString(R.string.date_format);
+        }
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+        Date d = new Date(timestamp);
+        return format.format(d);
     }
 }

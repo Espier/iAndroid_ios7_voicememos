@@ -26,6 +26,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
+import org.espier.voicememos7.ui.VoiceMemoListAdapter.ViewHolder;
 import org.espier.voicememos7.util.AMRFileUtils;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
@@ -66,6 +67,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     ViewHolder currentViewHolder;
     VoiceMemo currentMemo;
 
+    
     public interface OnListViewChangedListener {
         public void onAChanged(Intent intent, int state);
 
@@ -295,14 +297,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             holder.duration.setTag(secs);
         }
 
-        String dateFormat = mContext.getString(R.string.date_time_format);
-        if (labelType == EspierVoiceMemos7.LABEL_TYPE_NONE) {
-            dateFormat = mContext.getString(R.string.date_format);
-        }
-        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
-        Date d = new Date(date);
-        final String dd = format.format(d);
-        holder.createDate.setText(dd);
+
+        final String strDate = MemosUtils.makeDateString(context, labelType, date);
+        holder.createDate.setText(strDate);
 
         if (holder.bar instanceof SeekBar) {
             SeekBar seeker = (SeekBar) holder.bar;
@@ -311,7 +308,14 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.bar.setMax(1000);
 
         view.setOnClickListener(new OnClickItem(position, holder));
-
+        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
+        holder.share.setOnClickListener(new OnClickShare(context, path));
+        holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate, memoid));
+        holder.del.setEnabled(true);
+        holder.del.setOnClickListener(new OnClickDelete(path, itemname, memoid));
+        holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
+        
+        
         if (!isCollapsed && expandedPosition != holder.position) {
             view.setBackgroundColor(mContext.getResources()
                     .getColor(R.color.light_gray));
@@ -319,26 +323,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             holder.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
             holder.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
         }
-        holder.txtRecordName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        
+        
 
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                // TODO Auto-generated method stub
-                if (hasFocus) {
-                    String strInput = (String) holder.txtRecordName.getTag();
-                    holder.txtRecordName.setText(strInput);
-                    holder.txtRecordName.setSelection(strInput.length());
-                }
-            }
-        });
-
-        // view.setBackgroundColor(mCurrentBgColor);
-        holder.share.setOnClickListener(new OnClickShare(context, path));
-        holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, dd, memoid));
-
-        holder.del.setEnabled(true);
-        holder.del.setOnClickListener(new OnClickDelete(path, itemname, memoid));
-        holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
         // }
     }
 
@@ -358,6 +345,23 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
             layout.setVisibility(View.GONE);
             sharelayout.setVisibility(View.GONE);
+        }
+    }
+
+    private final class OnClickRecordName implements View.OnFocusChangeListener {
+        private final ViewHolder holder;
+
+        private OnClickRecordName(ViewHolder holder) {
+            this.holder = holder;
+        }
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) {
+                String strInput = (String) holder.txtRecordName.getTag();
+                holder.txtRecordName.setText(strInput);
+                holder.txtRecordName.setSelection(strInput.length());
+            }
         }
     }
 
