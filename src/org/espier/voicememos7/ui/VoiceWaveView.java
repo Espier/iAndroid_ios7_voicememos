@@ -1331,5 +1331,11 @@ public class VoiceWaveView extends View implements OnGestureListener {
         int pos = (int) (t / timePerFrame);
         return pos;
     }
+    
+    public void resetClipStatus()
+    {
+        setClip_left_time(0);
+        setClip_right_time(time_voice_all);
+    }
 
 }
