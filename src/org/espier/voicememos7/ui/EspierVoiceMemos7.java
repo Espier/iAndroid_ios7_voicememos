@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.res.Resources.Theme;
 import android.database.Cursor;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
@@ -661,7 +662,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     case MotionEvent.ACTION_DOWN:
                         finished.setTextColor(getResources().getColor(R.color.finish_text_color));
                         break;
-
+                    case MotionEvent.ACTION_UP:
+                        finished.setTextColor(getResources().getColor(R.color.white));
                     default:
                         break;
                 }
@@ -754,6 +756,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             lp6.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
             lp6.addRule(RelativeLayout.BELOW, R.id.imageView5);
             image6.setLayoutParams(lp6);
+            LinearLayout.LayoutParams llp = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.FILL_PARENT,android.widget.LinearLayout.LayoutParams.FILL_PARENT);
+            emptyView.setLayoutParams(llp);
 
             ((ViewGroup) slideCutListView.getParent()).addView(emptyView);
             slideCutListView.setEmptyView(emptyView);
@@ -916,7 +920,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 if (emptyView != null) {
                     emptyView.setVisibility(View.GONE);
                 }
-
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 dialogdismiss.sendEmptyMessage(1);
                 txtRecordName.setText("");
@@ -943,28 +946,31 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void insertVoiceMemo(String memoname) {
         // TODO Auto-generated method stub
-
+System.out.println("insert 1");
         Resources res = getResources();
         ContentValues cv = new ContentValues();
         long current = System.currentTimeMillis();
         File file = mRecorder.sampleFile();
-        long modDate = file.lastModified();
         Date date = new Date(current);
-        SimpleDateFormat formatter = new SimpleDateFormat(res.getString(R.string.time_format));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String title = formatter.format(date);
+        long modDate = file.lastModified();
+       
         // long sampleLengthMillis = mRecorder.sampleLength() * 1000L;
         String filepath = file.getAbsolutePath();
-        MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(filepath);
+        String path = filepath.substring(0,filepath.lastIndexOf("/")+1);
+        String newname = path+memoname+"-"+title+".amr";
+        AMRFileUtils.rename(filepath, newname);
+        MediaPlayer mediaPlayer = mRecorder.createMediaPlayer(newname);
         if (mediaPlayer == null) {
             return;
         }
         int duration = mediaPlayer.getDuration();
         mRecorder.stopPlayback();
-        if (duration < 1000) {
+        if (duration < 10) {
             return;
         }
-
-        cv.put(VoiceMemo.Memos.DATA, filepath);
+        cv.put(VoiceMemo.Memos.DATA, newname);
         cv.put(VoiceMemo.Memos.LABEL, memoname);
         cv.put(VoiceMemo.Memos.LABEL_TYPE, LABEL_TYPE_NONE);
         cv.put(VoiceMemo.Memos.CREATE_DATE, current);
@@ -1005,6 +1011,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 String memopath = data.getStringExtra("memopath");
                 deleteMemo(id, memopath);
                 mVoiceMemoListAdapter.notifyDataSetChanged();
+                mVoiceMemoListAdapter.collapseAllItems();
                 mCurrentDuration = 0;
                 if(mVoiceMemoListAdapter.getCount() ==0){
                     if (emptyView != null) {
@@ -1047,7 +1054,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void onAChanged(Intent intent, int state) {
         startActivityForResult(intent, state);
-        
     }
 
     
