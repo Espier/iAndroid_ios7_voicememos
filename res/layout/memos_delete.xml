@@ -22,6 +22,7 @@
             android:layout_weight="1"
             android:background="@drawable/radius"
             android:gravity="center"
+            android:singleLine="true"
             android:text="@string/list_delete"
             android:textColor="@color/font_color_red"
             android:textSize="20sp"

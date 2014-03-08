@@ -290,7 +290,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.txtRecordName.setFocusable(false);
         holder.txtRecordName.setTag(itemname);
         String displayString = MemosUtils.Ellipsize(itemname);
-        holder.txtRecordName.setText(view.toString().substring(27, view.toString().length())+"@"+displayString);
+//        String viewAddr = view.toString().substring(27, view.toString().length())+"@";
+        holder.txtRecordName.setText(displayString);
         if (displayString.equals(itemname)) {
 
         }
@@ -352,7 +353,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         for (int j = 0; j < list.size(); j++) {
             
             View view = (View) list.get(j);
-            Log.d("collapse","view="+String.valueOf(view.toString())+",j="+String.valueOf(j));
             setItemVisible(view, false);
             ViewHolder itemHolder = (ViewHolder) view.getTag();
             itemHolder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
