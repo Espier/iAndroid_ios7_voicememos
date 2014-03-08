@@ -68,7 +68,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     int left_distance_time = 0;
 
     Context context;
-    private int grid_width;
+    private float grid_width;
     private float time_x;
     private float time_per_pixel;
     // private float width_per_second = grid_width*4;;
