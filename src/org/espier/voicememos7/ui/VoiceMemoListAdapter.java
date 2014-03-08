@@ -64,7 +64,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public OnSeekBarChangeListener mSeekListener;
     public org.espier.voicememos7.util.Recorder mRecorder;
     Cursor c;
-    protected View openedListViewItem = null;
+    private int expandedPosition = -1;
     protected boolean isCollapsed = true;
     ViewHolder currentViewHolder;
     VoiceMemo currentMemo;
@@ -293,7 +293,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.txtRecordName.setFocusable(false);
         holder.txtRecordName.setTag(itemname);
         String displayString = MemosUtils.Ellipsize(itemname);
-        // TODO: do not remember to change view.toString to displayString
         holder.txtRecordName.setText(displayString);
         if (displayString.equals(itemname)) {
 
@@ -330,15 +329,15 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 if (position != holder.position)
                     return;
                 // close view
-                if (openedListViewItem != null && isCollapsed == false) {
-                    openedListViewItem = null;
+                if (expandedPosition >=0 && isCollapsed == false) {
+                    expandedPosition = -1;
                     DisplayEditButton(true);
                     holder.txtRecordName.setTextColor(mContext.getResources().getColor(
                             R.color.black));
                     holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
                     holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
 
-                    setItemVisible(openedListViewItem, false);
+                    setItemVisible(v, false);
 
                     isCollapsed = true;
                     holder.bar.setProgress(0);
@@ -388,12 +387,12 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                             .setTextColor(mContext.getResources().getColor(R.color.heavygray));
                 }
 
-                openedListViewItem = v;
+                expandedPosition = holder.position;
 
             }
         });
 
-        if (!isCollapsed && view != openedListViewItem) {
+        if (!isCollapsed && expandedPosition != holder.position) {
 //            Log.d("in not collapsed", "view id =" + view.toString());
 //            Log.d("in not collapsed", "openedListViewItem id =" + openedListViewItem.toString());
             view.setBackgroundColor(mContext.getResources()
