@@ -148,7 +148,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
      * @return the fromPlayTime
      */
     public long getFromPlayTime() {
-        if (time_to_edit>clip_left_time) {
+        if (time_to_edit>clip_left_time && time_to_edit<clip_right_time) {
             fromPlayTime = this.time_to_edit;
         }
         else {
@@ -501,12 +501,11 @@ public class VoiceWaveView extends View implements OnGestureListener {
         float start_move_time_textview = 80;
         float q = (w / 2 - start_move_time_textview);
         try {
-            drawSlideLine(canvas, x);
-
             drawTimeTextViewToEdit(canvas, q);
             drawXAxisToEdit(canvas, margin_lef_init);
             drawYAxis(canvas);
             drawVoiceToEdit(canvas, x, margin_lef_init);
+            drawSlideLine(canvas, x);
         } catch (Exception e) {
             Log.e("drawToEdit err", e.toString());
         }
@@ -653,7 +652,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     {
         if (cheapSoundFile != null) {
             // 计算当前时间帧位置
-            currentFramPos = (int) (time_to_edit / timePerFrame);
+            currentFramPos = (int) (time_to_edit / timePerFrame+0.5);
             float x_ = 0;
 
             for (int i = currentFramPos, j = display_num / 2; i > 0 && j > 0; i--, j--)
@@ -662,7 +661,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 canvas.drawLine(x_, y_mid_line - (float) frameGains[i] * factor,
                         x_, y_mid_line + (float) frameGains[i] * factor, voiceLinePaint);
             }
-            for (int i = currentFramPos, j = 0; i < numFrames && j < display_num / 2; i++, j++)
+            for (int i = currentFramPos, j = 0; i < numFrames && j < display_num / 2+20; i++, j++)
             {
                 x_ = w / 2 + (i - currentFramPos) * step_width;
                 canvas.drawLine(x_, y_mid_line - (float) frameGains[i] * factor,
@@ -765,7 +764,6 @@ public class VoiceWaveView extends View implements OnGestureListener {
     {
 
         int time_ms = (int) (time_to_edit % 1000);
-        Log.e("ms", time_ms + "");
 
         float text_offset = ScalePx.scalePx(context, 8);
         // 当前时间整数点

@@ -368,12 +368,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         	{
         		if(editStatus == EDIT_STATE_INIT)
         		{
-        			long fromMSeconds = waveView.getTime_to_edit();
+        			long fromMSeconds = waveView.getFromPlayTime();
         			mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath(),fromMSeconds,0);
         			updateEditModeButtonStatus();
         		}
         		else {
-        			long fromMSeconds = waveView.getClip_left_time();
+        			long fromMSeconds = waveView.getFromPlayTime();
         			toMSeconds = waveView.getClip_right_time();
         			mVoiceMemoListAdapter.playVoiceInViewHolder(currentEditMemo.getMemPath(),fromMSeconds,0);
         			updateEditModeButtonStatus();
