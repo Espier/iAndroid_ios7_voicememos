@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.res.Resources.Theme;
 import android.database.Cursor;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
@@ -909,7 +910,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 if (emptyView != null) {
                     emptyView.setVisibility(View.GONE);
                 }
-
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 dialogdismiss.sendEmptyMessage(1);
                 txtRecordName.setText("");
@@ -936,7 +936,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void insertVoiceMemo(String memoname) {
         // TODO Auto-generated method stub
-
+System.out.println("insert 1");
         Resources res = getResources();
         ContentValues cv = new ContentValues();
         long current = System.currentTimeMillis();
@@ -944,10 +944,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Date date = new Date(current);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String title = formatter.format(date);
-        
         long modDate = file.lastModified();
        
-        
         // long sampleLengthMillis = mRecorder.sampleLength() * 1000L;
         String filepath = file.getAbsolutePath();
         String path = filepath.substring(0,filepath.lastIndexOf("/")+1);
@@ -959,10 +957,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
         int duration = mediaPlayer.getDuration();
         mRecorder.stopPlayback();
-        if (duration < 1000) {
+        if (duration < 10) {
             return;
         }
-
         cv.put(VoiceMemo.Memos.DATA, newname);
         cv.put(VoiceMemo.Memos.LABEL, memoname);
         cv.put(VoiceMemo.Memos.LABEL_TYPE, LABEL_TYPE_NONE);
