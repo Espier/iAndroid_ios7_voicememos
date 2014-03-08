@@ -745,6 +745,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             lp6.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 99), 0, 0);
             lp6.addRule(RelativeLayout.BELOW, R.id.imageView5);
             image6.setLayoutParams(lp6);
+            LinearLayout.LayoutParams llp = new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.FILL_PARENT,android.widget.LinearLayout.LayoutParams.FILL_PARENT);
+            emptyView.setLayoutParams(llp);
 
             ((ViewGroup) slideCutListView.getParent()).addView(emptyView);
             slideCutListView.setEmptyView(emptyView);
