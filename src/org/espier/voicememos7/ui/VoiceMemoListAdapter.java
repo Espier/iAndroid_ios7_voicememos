@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     VoiceMemo currentMemo;
 
     public interface OnListViewChangedListener {
+        
         public void onAChanged(Intent intent, int state);
 
         public void onVoiceEditClicked(CheapSoundFile mSoundFile, VoiceMemo memos);
@@ -129,6 +131,15 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         this.cursor = c;
         setupColumnIndices(c);
     }
+    
+    
+
+    @Override
+    public void changeCursor(Cursor c) {
+        // TODO Auto-generated method stub
+        super.changeCursor(c);
+        list.clear();
+    }
 
     @Override
     public int getCount() {
@@ -139,7 +150,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        return super.getView(position, null, parent);
+        return super.getView(position, convertView, parent);
 
     }
 
@@ -250,6 +261,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.del.setLayoutParams(lpDelete);
 
         view.setTag(holder);
+        Log.d("add view to list","view:"+String.valueOf(view.toString()));
         list.add(view);
         return view;
     }
@@ -278,7 +290,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.txtRecordName.setFocusable(false);
         holder.txtRecordName.setTag(itemname);
         String displayString = MemosUtils.Ellipsize(itemname);
-        holder.txtRecordName.setText(displayString);
+        holder.txtRecordName.setText(view.toString().substring(27, view.toString().length())+"@"+displayString);
         if (displayString.equals(itemname)) {
 
         }
@@ -299,7 +311,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         }
         holder.bar.setMax(1000);
 
-        view.setOnClickListener(new OnClickItem());
+        view.setOnClickListener(new OnClickItem(cursor.getPosition()));
         holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
         holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate,
@@ -307,7 +319,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.del.setEnabled(true);
         holder.del.setOnClickListener(new OnClickDelete(path, itemname, memoid));
         holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
-
+        
         if (isCollapsed) {
             view.setBackgroundColor(mContext.getResources()
                     .getColor(R.color.white));
@@ -315,7 +327,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
             holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
         } else {
-            if (holder.position == expandedPosition) {
+            if (cursor.getPosition() == expandedPosition) {
 
                 view.setBackgroundColor(mContext.getResources()
                         .getColor(R.color.white));
@@ -336,9 +348,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     }
 
-    private void collapseAllItems() {
+    public void collapseAllItems() {
         for (int j = 0; j < list.size(); j++) {
+            
             View view = (View) list.get(j);
+            Log.d("collapse","view="+String.valueOf(view.toString())+",j="+String.valueOf(j));
             setItemVisible(view, false);
             ViewHolder itemHolder = (ViewHolder) view.getTag();
             itemHolder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
@@ -346,6 +360,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             itemHolder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
             view.setBackgroundColor(Color.WHITE);
         }
+        expandedPosition = -1;
+        isCollapsed = true;
     }
 
     private void expandItem(View v) {
@@ -398,12 +414,17 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     }
 
     private final class OnClickItem implements View.OnClickListener {
+        
+        private int position;
+        public OnClickItem(int position) {
+            this.position = position;
+        }
 
         @Override
         public void onClick(View v) {
             // if click the expanded item, ignore the click operation
             ViewHolder holder = (ViewHolder) v.getTag();
-            if (expandedPosition == holder.position)
+            if (expandedPosition == position)
                 return;
 
             // if status is not collapsed(expanded), and the item clicked is not
@@ -423,7 +444,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             holder.mCurrentRemain.setText("-" + holder.duration.getText());
             isCollapsed = false;
             expandItem(v);
-            expandedPosition = holder.position;
+            expandedPosition =  position;
         }
     }
 
@@ -464,7 +485,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             delIntent.putExtra("memoname", itemname);
             delIntent.putExtra("memopath", path);
             setAChanged(delIntent, DEL_REQUEST);
-            // startActivityForResult(delIntent, DEL_REQUEST);
+//            startActivityForResult(delIntent, DEL_REQUEST);
         }
     }
 

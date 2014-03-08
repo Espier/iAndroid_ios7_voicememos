@@ -972,6 +972,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 String memopath = data.getStringExtra("memopath");
                 deleteMemo(id, memopath);
                 mVoiceMemoListAdapter.notifyDataSetChanged();
+                mVoiceMemoListAdapter.collapseAllItems();
                 mCurrentDuration = 0;
                 if(mVoiceMemoListAdapter.getCount() ==0){
                     if (emptyView != null) {
@@ -1014,7 +1015,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void onAChanged(Intent intent, int state) {
         startActivityForResult(intent, state);
-        
     }
 
     @Override
