@@ -17,17 +17,22 @@
 
 package org.espier.voicememos7.util;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextPaint;
 
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.VoiceMemo;
 import org.espier.voicememos7.ui.EspierVoiceMemos7;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,9 +85,12 @@ public class MemosUtils {
         return mApps;
     }
 
-    public static String Ellipsize(String str) {
-
-        final int LENGTH = 12;
+    public static String Ellipsize(String str,Context activity) {
+        TextPaint paint = new TextPaint();
+      int  width = ((Activity)activity).getWindowManager().getDefaultDisplay().getWidth();
+        float size = paint.measureText(str);
+        float charsize = size/str.length();
+        final int LENGTH = (int) (width/charsize);
         if (str.length() > LENGTH) {
             return str.substring(0, LENGTH) + "...";
         } else {
@@ -100,35 +108,54 @@ public class MemosUtils {
         return format.format(d);
     }
     
+    
+    public static void updateVoiceName(Context context,String voiceName, int mMemoId) 
+    {
+          ContentValues cv = new ContentValues();
+          cv.put(VoiceMemo.Memos.LABEL, voiceName);
+
+          if (mMemoId != -1) {
+            Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI, mMemoId);
+            context.getContentResolver().update(memoUri, cv, null, null);
+          }
+    }
+    
+    
     public static VoiceMemo getMemoByID(Context context,String id){
-        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id","data","created","modified"}, "_id=?", new String[]{id}, null);
+        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id","label","data","created","modified"}, "_id=?", new String[]{id}, null);
         VoiceMemo memo = new VoiceMemo();
         if(cs1.getCount()==1){
             cs1.moveToNext();
             String _id = cs1.getString(cs1.getColumnIndexOrThrow("_id"));
             String path = cs1.getString(cs1.getColumnIndexOrThrow("data"));
-            String created = cs1.getString(cs1.getColumnIndexOrThrow("created"));
+            long created = cs1.getLong(cs1.getColumnIndexOrThrow("created"));
             String modified = cs1.getString(cs1.getColumnIndexOrThrow("modified"));
+            String memoname = cs1.getString(cs1.getColumnIndexOrThrow("label"));
+            memo.setMemName(memoname);
             memo.setMemId(_id);
+            SimpleDateFormat f = new SimpleDateFormat("yy-MM-dd");
             memo.setMemPath(path);
-            memo.setMemCreatedDate(created);
+            memo.setMemCreatedDate(f.format(new Date(created)));
             memo.setModifiedDate(modified);
         }
         return memo;
     }
     
     public static VoiceMemo getMemoByPath(Context context,String path){
-        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id","data","created","modified"}, "data=?", new String[]{path}, null);
+        Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id","label","data","created","modified"}, "data=?", new String[]{path}, null);
         VoiceMemo memo = new VoiceMemo();
         if(cs1.getCount()==1){
             cs1.moveToNext();
             String _id = cs1.getString(cs1.getColumnIndexOrThrow("_id"));
             String memopath = cs1.getString(cs1.getColumnIndexOrThrow("data"));
-            String created = cs1.getString(cs1.getColumnIndexOrThrow("created"));
+            long created = cs1.getLong(cs1.getColumnIndexOrThrow("created"));
             String modified = cs1.getString(cs1.getColumnIndexOrThrow("modified"));
+            String memoname = cs1.getString(cs1.getColumnIndexOrThrow("label"));
+            memo.setMemName(memoname);
             memo.setMemId(_id);
+            SimpleDateFormat f = new SimpleDateFormat("yy-MM-dd");
             memo.setMemPath(memopath);
-            memo.setMemCreatedDate(created);
+            memo.setMemCreatedDate(f.format(new Date(created)));
             memo.setModifiedDate(modified);
         }
         return memo;
