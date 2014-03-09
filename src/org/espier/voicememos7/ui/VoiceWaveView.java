@@ -98,7 +98,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private String darkGrayColorString = "#8c8c8c";
     private int darkGrayColor;
-    
+
     private String deepDarkGrayColorString = "#222222";
     private int deepDarkGrayColor;
 
@@ -149,9 +149,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
     boolean isVoiceClipped;
 
     long fromPlayTime;
-    
+
     boolean isCliclEditBar;
-    
+
     float v_scroll;
 
     /**
@@ -368,7 +368,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         timeTopPaint.setTextSize(ScalePx.scalePx(context, 24));
         timeTopPaint.setColor(Color.WHITE);
         timeTopPaint.setStrokeWidth(0.5f);
-        
+
         timeTopGrayPaint = new Paint();
         timeTopGrayPaint.setTextSize(ScalePx.scalePx(context, 24));
         deepDarkGrayColor = Color.parseColor(deepDarkGrayColorString);
@@ -389,7 +389,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         maskPaint.setColor(Color.BLUE);
         maskPaint.setStrokeWidth(0);
         maskPaint.setAlpha(60);
-        
+
         maskTimePaint = new Paint();
         maskTimePaint.setColor(Color.BLACK);
         maskTimePaint.setStrokeWidth(0);
@@ -405,7 +405,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         voicedbPaint.setColor(darkGrayColor);
         voicedbPaint.setTextAlign(Align.RIGHT);
         voicedbPaint.setTextSize(ScalePx.scalePx(context, 14));
-        
+
         voicedbGrayPaint = new Paint();
         voicedbGrayPaint.setColor(deepDarkGrayColor);
         voicedbGrayPaint.setTextAlign(Align.RIGHT);
@@ -522,13 +522,13 @@ public class VoiceWaveView extends View implements OnGestureListener {
         float start_move_time_textview = 80;
         float q = (w / 2 - start_move_time_textview);
         try {
-            drawXAxisEdit(canvas, margin_lef_init,fac);
+            drawXAxisEdit(canvas, margin_lef_init, fac);
             drawVoiceEdit(canvas, start_pos, voice_distance);
 
             drawTimeTextViewEdit(canvas, q);
-            
+
             drawYAxis(canvas);
-            
+
             drawEditBar(canvas);
             drawSlideLineEdit(canvas, x);
         } catch (Exception e) {
@@ -541,6 +541,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
         x = w / 2;
         float start_move_time_textview = 80;
         float q = (w / 2 - start_move_time_textview);
+        time_to_edit = time_to_edit>time_voice_all?time_voice_all:time_to_edit;
+        time_to_edit = time_to_edit<0?0:time_to_edit;
+        
         try {
             drawTimeTextViewToEdit(canvas, q);
             drawVoiceToEdit(canvas, x, margin_lef_init);
@@ -572,7 +575,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
         float q = (x < start_move_time_textview) ? 0 : (x - start_move_time_textview);
         try {
-            
+
             drawVoice(canvas, x, margin_lef_init);
             drawTimeTextView(canvas, q);
             drawXAxis(canvas, margin_lef_init);
@@ -632,11 +635,12 @@ public class VoiceWaveView extends View implements OnGestureListener {
         // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
         canvas.drawCircle(left_edit_bar_pos, y_top_line - cicle_radius, cicle_radius, editBarPaint);
 
-        if (isCliclEditBar ) {
-            canvas.drawText(timeFormat(clip_left_time), left_edit_bar_pos<(w-time_width)?left_edit_bar_pos:(left_edit_bar_pos-time_width), y_xaxis
-                    + timeTopPaint.getTextSize(), timeTopPaint);
+        if (isCliclEditBar) {
+            canvas.drawText(timeFormat(clip_left_time),
+                    left_edit_bar_pos < (w - time_width) ? left_edit_bar_pos
+                            : (left_edit_bar_pos - time_width), y_xaxis
+                            + timeTopPaint.getTextSize(), timeTopPaint);
         }
-        
 
         // right
         canvas.drawLine(right_edit_bar_pos, y_top_line, right_edit_bar_pos, y_bottom_line,
@@ -645,11 +649,12 @@ public class VoiceWaveView extends View implements OnGestureListener {
         canvas.drawCircle(right_edit_bar_pos, y_bottom_line + cicle_radius, cicle_radius,
                 editBarPaint);
         if (isCliclEditBar) {
-            
-            canvas.drawText(timeFormat(clip_right_time), (right_edit_bar_pos>time_width)?(right_edit_bar_pos-time_width):right_edit_bar_pos, y_xaxis
-                    + timeTopPaint.getTextSize(), timeTopPaint);
+
+            canvas.drawText(timeFormat(clip_right_time),
+                    (right_edit_bar_pos > time_width) ? (right_edit_bar_pos - time_width)
+                            : right_edit_bar_pos, y_xaxis
+                            + timeTopPaint.getTextSize(), timeTopPaint);
         }
-        
 
         // mask
         canvas.drawRect(left_edit_bar_pos, y_top_line, right_edit_bar_pos, y_bottom_line, maskPaint);
@@ -703,7 +708,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         if (cheapSoundFile != null) {
             // 计算当前时间帧位置
             currentFramPos = (int) (time_to_edit / timePerFrame + 0.5);
-            currentFramPos = (currentFramPos>numFrames)?numFrames:currentFramPos;
+            currentFramPos = (currentFramPos > numFrames) ? numFrames : currentFramPos;
             float x_ = 0;
 
             for (int i = currentFramPos, j = display_num / 2; i > 0 && j > 0; i--, j--)
@@ -730,17 +735,17 @@ public class VoiceWaveView extends View implements OnGestureListener {
     {
         int pos_l = getFramePositionByTime(clip_left_time);
         int pos_r = getFramePositionByTime(clip_right_time);
-        pos_l = (pos_l<0)?0:pos_l;
-        pos_r = (pos_r<0)?0:pos_r;
-        pos_l = (pos_l>=numFrames-1)?(numFrames-1):pos_l;
-        pos_r = (pos_r>=numFrames-1)?(numFrames-1):pos_r;
+        pos_l = (pos_l < 0) ? 0 : pos_l;
+        pos_r = (pos_r < 0) ? 0 : pos_r;
+        pos_l = (pos_l >= numFrames - 1) ? (numFrames - 1) : pos_l;
+        pos_r = (pos_r >= numFrames - 1) ? (numFrames - 1) : pos_r;
         int clip_num = pos_r - pos_l;
         float delt_x = s / clip_num;
         float zoom = (isZoomLeft || isZoomRight) ? zoomLevel : 1;
 
         if (isZoomRight) {
             // left data
-            for (int i = pos_r; i > 0 && i<numFrames; i--) {
+            for (int i = pos_r; i > 0 && i < numFrames; i--) {
                 canvas.drawLine(right_edit_bar_pos - (pos_r - i) * delt_x * zoom, y_mid_line
                         - (float) frameGains[i] * factor,
                         right_edit_bar_pos - (pos_r - i) * delt_x * zoom, y_mid_line
@@ -749,7 +754,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         voiceLinePaint);
             }
 
-            for (int i = 0; i < numFrames - pos_r && pos_r + i<numFrames; i++) {
+            for (int i = 0; i < numFrames - pos_r && pos_r + i < numFrames; i++) {
                 canvas.drawLine(right_edit_bar_pos + i * delt_x * zoom, y_mid_line
                         - (float) frameGains[pos_r + i] * factor,
                         right_edit_bar_pos + i * delt_x * zoom, y_mid_line
@@ -759,7 +764,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         }
         else {
             // left data
-            for (int i = pos_l; i > 0 && i<numFrames; i--) {
+            for (int i = pos_l; i > 0 && i < numFrames; i--) {
                 canvas.drawLine(start_pos - (pos_l - i) * delt_x * zoom, y_mid_line
                         - (float) frameGains[i] * factor,
                         start_pos - (pos_l - i) * delt_x * zoom, y_mid_line + (float) frameGains[i]
@@ -767,7 +772,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         voiceLinePaint);
             }
             // clip data
-            for (int i = 0; i < clip_num && pos_l + i<numFrames; i++) {
+            for (int i = 0; i < clip_num && pos_l + i < numFrames; i++) {
                 canvas.drawLine(start_pos + i * delt_x * zoom, y_mid_line
                         - (float) frameGains[pos_l + i] * factor,
                         start_pos + i * delt_x * zoom, y_mid_line + (float) frameGains[pos_l + i]
@@ -776,7 +781,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             }
             // right data
             float clip_width = clip_num * delt_x;
-            for (int i = 0; i < numFrames - pos_r && pos_r + i<numFrames; i++) {
+            for (int i = 0; i < numFrames - pos_r && pos_r + i < numFrames; i++) {
                 canvas.drawLine(start_pos + clip_width + i * delt_x * zoom, y_mid_line
                         - (float) frameGains[pos_r + i] * factor,
                         start_pos + clip_width + i * delt_x * zoom, y_mid_line
@@ -854,20 +859,21 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     }
 
-    private void drawXAxisEdit(Canvas canvas, float offset,float fac)
+    private void drawXAxisEdit(Canvas canvas, float offset, float fac)
     {
-        float t_p_p = (fac>1)?time_voice_all/(w-edit_margin_left-edit_margin_right):time_per_pixel;
-        int t_Grid = (int)(t_p_p*grid_width*4/1000+0.5);
-        int n = (int)(time_x+0.5);
-        int m_fact = (int)(time_voice_all/1000/t_Grid+0.5);
-        int j = n-m_fact-1;
-        
-        int left_time = (int)(edit_margin_left*t_p_p/1000);
+        float t_p_p = (fac > 1) ? time_voice_all / (w - edit_margin_left - edit_margin_right)
+                : time_per_pixel;
+        int t_Grid = (int) (t_p_p * grid_width * 4 / 1000 + 0.5);
+        int n = (int) (time_x + 0.5);
+        int m_fact = (int) (time_voice_all / 1000 / t_Grid + 0.5);
+        int j = n - m_fact - 1;
+
+        int left_time = (int) (edit_margin_left * t_p_p / 1000);
         int second_time = t_Grid - left_time;
-        
+
         float text_offset = ScalePx.scalePx(context, 8);
 
-        if(!isCliclEditBar)
+        if (!isCliclEditBar)
         {
             for (int i = 0; i < time_x * 4 + 1; i++) {
                 float h;
@@ -878,26 +884,26 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
             }
         }
-        
-        
-      //draw time
-        if (fac>=1) {
-            for (int i = 0; i <n; i++) {
-                canvas.drawText(timeAxisFormat(second_time+i*t_Grid), (i+1)*grid_width*4 + text_offset, y_xaxis
-                        + timeTopPaint.getTextSize(), isCliclEditBar?timeTopGrayPaint:timeTopPaint);
+
+        // draw time
+        if (fac >= 1) {
+            for (int i = 0; i < n; i++) {
+                canvas.drawText(timeAxisFormat(second_time + i * t_Grid), (i + 1) * grid_width * 4
+                        + text_offset, y_xaxis
+                        + timeTopPaint.getTextSize(), isCliclEditBar ? timeTopGrayPaint
+                        : timeTopPaint);
             }
         }
         else {
-            for (int i = 0; i <m_fact+1; i++) {
-                canvas.drawText(timeAxisFormat(i), (j+i)*grid_width*4 + text_offset, y_xaxis
-                        + timeTopPaint.getTextSize(), isCliclEditBar?timeTopGrayPaint:timeTopPaint);
+            for (int i = 0; i < m_fact + 1; i++) {
+                canvas.drawText(timeAxisFormat(i), (j + i) * grid_width * 4 + text_offset, y_xaxis
+                        + timeTopPaint.getTextSize(), isCliclEditBar ? timeTopGrayPaint
+                        : timeTopPaint);
             }
         }
-//        if (isCliclEditBar) {
-//            canvas.drawRect(0, y_xaxis, w, y_top_line, maskTimePaint);
-//        }
-        
-        
+        // if (isCliclEditBar) {
+        // canvas.drawRect(0, y_xaxis, w, y_top_line, maskTimePaint);
+        // }
 
     }
 
@@ -909,9 +915,11 @@ public class VoiceWaveView extends View implements OnGestureListener {
         {
             canvas.drawText(voice_db_list[i], w - num_margin_right,
                     y_mid_line + h_db2midline + i * (h_db2db + voicedbPaint.getTextSize())
-                            + voicedbPaint.getTextSize(), isCliclEditBar?voicedbGrayPaint:voicedbPaint);
+                            + voicedbPaint.getTextSize(), isCliclEditBar ? voicedbGrayPaint
+                            : voicedbPaint);
             canvas.drawText(voice_db_list[i], w - num_margin_right, y_mid_line
-                    - h_db2midline - i * (h_db2db + voicedbPaint.getTextSize()), isCliclEditBar?voicedbGrayPaint:voicedbPaint);
+                    - h_db2midline - i * (h_db2db + voicedbPaint.getTextSize()),
+                    isCliclEditBar ? voicedbGrayPaint : voicedbPaint);
         }
 
     }
@@ -924,7 +932,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawTimeTextViewToEdit(Canvas canvas, float offset)
     {
-        //time_to_edit = (time_to_edit>time_voice_all)?time_voice_all:time_to_edit;
+        // time_to_edit =
+        // (time_to_edit>time_voice_all)?time_voice_all:time_to_edit;
         canvas.drawText(timeFormat(time_to_edit), offset + margin_lef_init, y_time_text
                 + timeTextPaint.getTextSize(), timeTextPaint);
     }
@@ -1155,7 +1164,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 isZoomRight = false;
                 invalidate();
             }
-            
+
             return gestureDetector.onTouchEvent(event);
 
         }
@@ -1173,56 +1182,90 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 isZoomRight = true;
                 isCliclEditBar = true;
             }
-            
+
             invalidate();
         }
         return true;
     }
 
     @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2,  float velocityX, float velocityY) {
-//        if (viewStatus == VIEW_STATUS_TO_EDIT) {
-//            v_scroll = velocityX;
-//            final float a = 1;
-//            Thread thread = new Thread(new Runnable() {
-//                
-//                @Override
-//                public void run() {
-//                    while (v_scroll>0) {
-//                        try {
-//                            float s = v_scroll -a*invalidate_rate*invalidate_rate/2;
-//                            long t = (int) (s * time_per_pixel + 0.5);
-//                            time_to_edit +=t;
-//                            if (time_to_edit>time_voice_all+3000) {
-//                                break;
-//                            }
-//                            v_scroll = v_scroll -a*invalidate_rate;
-//                            Log.e("v", v_scroll+"");
-//                            
-//                            Thread.sleep(invalidate_rate);
-//                        } catch (InterruptedException e) {
-//                            // TODO Auto-generated catch block
-//                            e.printStackTrace();
-//                        }
-//                        Message msg = new Message();
-//                        msg.what = 1;
-//                        handler.sendMessage(msg);
-//                    }
-//                    
-//                }
-//            });
-//            thread.start();
-//            long t = (int) (velocityX * time_per_pixel + 0.5);
-//            time_to_edit += t;
-//            if (time_to_edit < 0) {
-//                time_to_edit = 0;
-//            }
-//            if (time_to_edit > time_voice_all) {
-//                time_to_edit = time_voice_all;
-//            }
-//
-//            invalidate();
-//        }
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        // if (viewStatus == VIEW_STATUS_TO_EDIT) {
+        // v_scroll = velocityX/1000;
+        // final float a = 0.03f;
+        // Thread thread = new Thread(new Runnable() {
+        //
+        // @Override
+        // public void run() {
+        // while (v_scroll>0) {
+        // try {
+        // float s = v_scroll -a*invalidate_rate*invalidate_rate/2;
+        // long t = (int) (s * time_per_pixel + 0.5);
+        // time_to_edit +=t;
+        // if (time_to_edit>time_voice_all+3000) {
+        // break;
+        // }
+        // v_scroll = v_scroll -a*invalidate_rate;
+        // Log.e("v", v_scroll+"");
+        //
+        // Thread.sleep(invalidate_rate);
+        // } catch (InterruptedException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
+        // Message msg = new Message();
+        // msg.what = 1;
+        // handler.sendMessage(msg);
+        // }
+        //
+        // }
+        // });
+        // thread.start();
+        // long t = (int) (velocityX * time_per_pixel + 0.5);
+        // time_to_edit += t;
+        // if (time_to_edit < 0) {
+        // time_to_edit = 0;
+        // }
+        // if (time_to_edit > time_voice_all) {
+        // time_to_edit = time_voice_all;
+        // }
+        //
+        // invalidate();
+        // }
+        if (viewStatus == VIEW_STATUS_TO_EDIT) {
+            v_scroll = velocityX;
+
+            Log.e("fling", "fling");
+
+            Thread thread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    int i = 10;
+                    while (i > 0) {
+                        Log.e("i", i+","+time_to_edit+"");
+                        time_to_edit -= i * v_scroll / 15;
+                        
+                        Message msg = new Message();
+                        msg.what = 1;
+                        handler.sendMessage(msg);
+                        try {
+                            Thread.sleep(invalidate_rate);
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                        }
+                        if (time_to_edit>time_voice_all || time_to_edit<0) {
+                            break;
+                        }
+                        i--;
+                    }
+
+                }
+            });
+            thread.start();
+
+        }
+
         return true;
 
     }
@@ -1231,7 +1274,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     public void onLongPress(MotionEvent e) {
         // not enable;
     }
-    
+
     @Override
     public void onShowPress(MotionEvent e) {
 
@@ -1239,19 +1282,19 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (viewStatus == VIEW_STATUS_TO_EDIT) {
-            // int t = (int) (distanceX * time_per_pixel);
-            long t = (int) (distanceX * time_per_pixel + 0.5);
-            time_to_edit += t;
-            if (time_to_edit < 0) {
-                time_to_edit = 0;
-            }
-            if (time_to_edit > time_voice_all) {
-                time_to_edit = time_voice_all;
-            }
-
-            invalidate();
-        }
+         if (viewStatus == VIEW_STATUS_TO_EDIT) {
+         // int t = (int) (distanceX * time_per_pixel);
+         long t = (int) (distanceX * time_per_pixel + 0.5);
+         time_to_edit += t;
+         if (time_to_edit < 0) {
+         time_to_edit = 0;
+         }
+         if (time_to_edit > time_voice_all) {
+         time_to_edit = time_voice_all;
+         }
+        
+         invalidate();
+         }
 
         if (viewStatus == VIEW_STATUS_EDIT)
         {
@@ -1260,14 +1303,14 @@ public class VoiceWaveView extends View implements OnGestureListener {
             if (isZoomLeft) {
                 // long temp = clip_left_time;
                 left_edit_bar_pos -= distanceX;
-                if (left_edit_bar_pos < edit_margin_left+zone) {
+                if (left_edit_bar_pos < edit_margin_left + zone) {
                     Thread scrollThread = new Thread(new Runnable() {
 
                         @Override
                         public void run() {
                             // TODO Auto-generated method stub
-                            while (isZoomLeft && clip_left_time >0
-                                    && left_edit_bar_pos <= (edit_margin_left+zone)) {
+                            while (isZoomLeft && clip_left_time > 0
+                                    && left_edit_bar_pos <= (edit_margin_left + zone)) {
                                 clip_left_time -= 10;
                                 try {
                                     Thread.sleep(invalidate_rate);
@@ -1285,7 +1328,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                     scrollThread.start();
                     left_edit_bar_pos = edit_margin_left;
                 }
-                
+
                 if (left_edit_bar_pos > edit_margin_right) {
                     Thread scrollThread = new Thread(new Runnable() {
 
@@ -1293,7 +1336,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         public void run() {
 
                             while (isZoomLeft && clip_right_time - clip_left_time > 1000
-                                    && left_edit_bar_pos >= w-edit_margin_right - zone) {
+                                    && left_edit_bar_pos >= w - edit_margin_right - zone) {
                                 clip_left_time += 10;
                                 try {
                                     Thread.sleep(invalidate_rate);
@@ -1411,8 +1454,6 @@ public class VoiceWaveView extends View implements OnGestureListener {
         return true;
     }
 
-    
-
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
         return true;
@@ -1436,14 +1477,14 @@ public class VoiceWaveView extends View implements OnGestureListener {
         int pos = (int) (t / timePerFrame);
         return pos;
     }
-    
+
     public void resetClipStatus()
     {
         setClip_left_time(0);
         setClip_right_time(time_voice_all);
         isCliclEditBar = false;
     }
-    
+
     public void setTime_to_end() {
         this.time_to_edit = time_voice_all;
     }
