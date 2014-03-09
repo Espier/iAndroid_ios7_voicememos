@@ -17,6 +17,8 @@
 
 package org.espier.voicememos7.util;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,6 +30,7 @@ import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.VoiceMemo;
 import org.espier.voicememos7.ui.EspierVoiceMemos7;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -99,6 +102,19 @@ public class MemosUtils {
         Date d = new Date(timestamp);
         return format.format(d);
     }
+    
+    
+    public static void updateVoiceName(Context context,String voiceName, int mMemoId) 
+    {
+          ContentValues cv = new ContentValues();
+          cv.put(VoiceMemo.Memos.LABEL, voiceName);
+
+          if (mMemoId != -1) {
+            Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI, mMemoId);
+            context.getContentResolver().update(memoUri, cv, null, null);
+          }
+    }
+    
     
     public static VoiceMemo getMemoByID(Context context,String id){
         Cursor cs1 =  context.getContentResolver().query(VoiceMemo.Memos.CONTENT_URI, new String[]{"_id","label","data","created","modified"}, "_id=?", new String[]{id}, null);

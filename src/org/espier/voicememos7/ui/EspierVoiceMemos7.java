@@ -172,23 +172,39 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     };
 
-    private OnTouchListener startTouchListener = new View.OnTouchListener() {
+    private OnTouchListener onTouchListener = new View.OnTouchListener() {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    start.getBackground().setColorFilter(
+                    if(v instanceof TextView )
+                    {
+                        TextView tvTextView = (TextView)v;
+                        v.setTag(tvTextView.getCurrentTextColor());
+                        tvTextView.setTextColor(getResources().getColor(R.color.gray));
+                    }
+                    else
+                    {
+                        v.getBackground().setColorFilter(
                             new ColorMatrixColorFilter(BT_SELECTED));
-                    start.setBackgroundDrawable(start.getBackground());
-
+                        v.setBackgroundDrawable(v.getBackground());
+                    }
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    start.getBackground().setColorFilter(
+                    if(v instanceof TextView )
+                    {
+                        TextView tvTextView = (TextView)v;
+                        tvTextView.setTextColor(Integer.valueOf(v.getTag().toString())); 
+                    }
+                    else
+                    {
+                        v.getBackground().setColorFilter(
                             new ColorMatrixColorFilter(BT_NOT_SELECTED));
-                    start.setBackgroundDrawable(start.getBackground());
+                        v.setBackgroundDrawable(v.getBackground());
+                    }
                     break;
                 default:
                     break;
@@ -243,6 +259,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         waveView.setLayoutParams(rlpWaveView);
 
         txtRecordName = (TextView) findViewById(R.id.txtRecordName);
+        txtRecordName.setOnClickListener(this);
+        txtRecordName.setOnTouchListener(onTouchListener);
         RelativeLayout.LayoutParams rlpRecordName = new RelativeLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         rlpRecordName.setMargins(ScalePx.scalePx(this, 31),
@@ -287,7 +305,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         hiddenView = (Button) findViewById(R.id.hiddenView);
         start = (ImageView) findViewById(R.id.redButton);
         start.setOnClickListener(this);
-        start.setOnTouchListener(startTouchListener);
+        start.setOnTouchListener(onTouchListener);
 
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
        
@@ -314,6 +332,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         textViewCrop.setOnClickListener(this);
         textViewCropCancel.setOnClickListener(this);
+        textVoiceNameInEditMode.setOnClickListener(this);
+        
+        textViewCrop.setOnTouchListener(onTouchListener);
+        textViewCropCancel.setOnTouchListener(onTouchListener);
+        textVoiceNameInEditMode.setOnTouchListener(onTouchListener);
     }
     
     private CharSequence getRecordName() {
@@ -403,6 +426,16 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         		ScollToBottom();
         	}
         	break;
+        	case R.id.edittxtRecordName:
+        	{
+        	    changeVoiceMemName();
+        	}
+        	break;
+        	case R.id.txtRecordName:
+            {
+                changeVoiceMemName();
+            }
+            break;
         	case R.id.textViewCropCancel:
         	{
         		editStatus = EDIT_STATE_INIT;
@@ -846,6 +879,111 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         public void onStopTrackingTouch(SeekBar bar) {
         }
     };
+    
+    private void changeVoiceMemName()
+    {
+        String voiceMemName = "";
+        if(mediaStatus == MEDIA_STATE_EDIT)
+        {
+            voiceMemName = currentEditMemo.getMemName();
+        }
+        else if(mediaStatus == MEDIA_STATE_RECORDING)
+        {
+            voiceMemName = txtRecordName.getText().toString();
+        }
+        
+        final View view = this.getLayoutInflater().inflate(R.layout.items, null);
+        view.setPadding(0, 0, 0, 0);
+//        view.setBackgroundColor(getResources().getColor(R.color.blue));
+        view.setBackgroundDrawable(getResources().getDrawable(R.drawable.radius));
+        RelativeLayout.LayoutParams rellay = new RelativeLayout.LayoutParams(
+                LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        rellay.setMargins(0, ScalePx.scalePx(this, 30), 0, 0);
+        TextView title = (TextView) view.findViewById(R.id.textView1);
+        title.setPadding(0, 0, 0, 0);
+        title.setWidth(ScalePx.scalePx(this, 540));
+        title.setLayoutParams(rellay);
+        
+        RelativeLayout.LayoutParams rellay2 = new RelativeLayout.LayoutParams(
+                LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        rellay2.setMargins(0, ScalePx.scalePx(this, 12), 0, 0);
+        rellay2.addRule(RelativeLayout.BELOW, title.getId());
+        TextView text2 = (TextView) view.findViewById(R.id.textView2);
+        text2.setLayoutParams(rellay2);
+        text2.setPadding(0, 0, 0, 0);
+        
+        final EditText text = (EditText) view.findViewById(R.id.memoname);
+        memoName = voiceMemName;
+        text.setText(voiceMemName);
+        text.setHeight(ScalePx.scalePx(this, 58));
+        text.setWidth(ScalePx.scalePx(this, 478));
+        RelativeLayout.LayoutParams textlay = new RelativeLayout.LayoutParams(
+                LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        textlay.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 30),
+                ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 24));
+        textlay.addRule(RelativeLayout.BELOW, R.id.textView2);
+        text.setLayoutParams(textlay);
+        text.setTextSize(ScalePx.scalePx(this, 18));
+        text.setPadding(ScalePx.scalePx(this, 16), 
+                ScalePx.scalePx(this, 16), 
+                ScalePx.scalePx(this, 16), ScalePx.scalePx(this, 16));
+        text.setSingleLine(true);
+        text.setSelection(voiceMemName.length());
+        text.setBackgroundDrawable(getResources().getDrawable(R.drawable.memoseditteststyle));
+        ImageView imag = (ImageView) view.findViewById(R.id.h_line);
+        imag.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, ScalePx.scalePx(this, 88)));
+
+        TextView cancel = (TextView) view.findViewById(R.id.cancel);
+        TextView ok = (TextView) view.findViewById(R.id.ok);
+        cancel.setOnTouchListener(onTouchListener);
+        ok.setOnTouchListener(onTouchListener);
+        cancel.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View arg0) {
+                dialogdismiss.sendEmptyMessage(1);
+            }
+        });
+        
+        ok.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                if(text.getText().toString().equals(""))
+                {
+                    return;
+                }
+               if(mediaStatus == MEDIA_STATE_EDIT)
+               {
+                   textVoiceNameInEditMode.setText(text.getText().toString());
+                   MemosUtils.updateVoiceName(getApplicationContext(), text.getText().toString(), Integer.valueOf(currentEditMemo.getMemId()));
+                   currentEditMemo = MemosUtils.getMemoByID(getApplicationContext(), currentEditMemo.getMemId());
+               }
+               
+               if(mediaStatus == MEDIA_STATE_RECORDING)
+               {
+                   txtRecordName.setText(text.getText().toString());
+               }
+               dialogdismiss.sendEmptyMessage(1);
+            }
+        });
+        
+      dialog = new Dialog(EspierVoiceMemos7.this,R.style.dialog);
+//      dialog = builder.create();
+      dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+      RelativeLayout.LayoutParams viewrl = new RelativeLayout.LayoutParams(
+              LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+      viewrl.setMargins(0, 0, 0, 0);
+      dialog.setContentView(view,viewrl);
+//      dialog.setView(view, 0, 0, 0, 0);
+      Window dialogWindow = dialog.getWindow();
+      WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+      lp.width = ScalePx.scalePx(this, 540);
+      lp.height = ScalePx.scalePx(this, 344);
+      dialogWindow.setAttributes(lp);
+      dialog.show();
+    }
 
     private void stop() {
         int state = mRecorder.getState();
