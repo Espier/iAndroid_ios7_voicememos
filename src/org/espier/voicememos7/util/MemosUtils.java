@@ -19,12 +19,14 @@ package org.espier.voicememos7.util;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextPaint;
 
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.VoiceMemo;
@@ -83,9 +85,12 @@ public class MemosUtils {
         return mApps;
     }
 
-    public static String Ellipsize(String str) {
-
-        final int LENGTH = 12;
+    public static String Ellipsize(String str,Context activity) {
+        TextPaint paint = new TextPaint();
+      int  width = ((Activity)activity).getWindowManager().getDefaultDisplay().getWidth();
+        float size = paint.measureText(str);
+        float charsize = size/str.length();
+        final int LENGTH = (int) (width/charsize);
         if (str.length() > LENGTH) {
             return str.substring(0, LENGTH) + "...";
         } else {

@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager.OnActivityResultListener;
 import android.sax.TextElementListener;
+import android.text.TextPaint;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
@@ -828,17 +829,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         relP2.addRule(RelativeLayout.BELOW,R.id.waveView);
         playLayout.setLayoutParams(relP2);
         LayoutParams lp1 = aboveLayout.getLayoutParams();
-        lp1.height = (int) (height * 0.9);
+        lp1.height = (int) (height * 8/9);
         lp1.width = width;
         aboveLayout.setLayoutParams(lp1);
-
+        
         LayoutParams lp2 = belowLayout.getLayoutParams();
-        lp2.height = (int) (height * 0.9);
+        lp2.height = (int) (height*7/10.3-10);
         lp2.width = width;
         belowLayout.setLayoutParams(lp2);
         
         RelativeLayout.LayoutParams lp_list =new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,android.widget.RelativeLayout.LayoutParams.FILL_PARENT);
-        lp_list.height = height-playLayout.getHeight()-10;
+        lp_list.height = (int) (height*7/10.3-10);
         System.out.println("height-playLayout.getHeight() "+(height-playLayout.getHeight()));
 ////        lp_list.addRule(RelativeLayout.BELOW,R.id.hiddenView);
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
