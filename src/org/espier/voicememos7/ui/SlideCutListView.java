@@ -10,8 +10,11 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Scroller;
+
+import org.espier.voicememos7.R;
 
 /**
  * @blog http://blog.csdn.net/xiaanming
@@ -124,9 +127,9 @@ public class SlideCutListView extends ListView {
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                Log.d("listview","action move");
+                Log.d("listview","action move"+String.valueOf(itemView.getScrollX()));
                 if (Math.abs(getScrollVelocity()) > SNAP_VELOCITY
-                        || (Math.abs(event.getX() - downX) > mTouchSlop && Math
+                        || (event.getX() - downX > mTouchSlop && itemView.getScrollX()>0 )||(downX - event.getX()> mTouchSlop && Math
                                 .abs(event.getY() - downY) < mTouchSlop)) {
                     isSlide = true;
 
@@ -163,6 +166,9 @@ public class SlideCutListView extends ListView {
         // 调用startScroll方法来设置一些滚动的参数，我们在computeScroll()方法中调用scrollTo来滚动item
         scroller.startScroll(itemView.getScrollX(), 0, delta, 0,
                 Math.abs(delta));
+        View btnDelete = (View)itemView.findViewById(R.id.memos_item_delete_button);
+        btnDelete.setVisibility(View.VISIBLE);
+        
         postInvalidate(); // 刷新itemView
     }
 
@@ -204,15 +210,13 @@ public class SlideCutListView extends ListView {
 
                     int deltaX = downX - x;
                     downX = x;
-
                     // 手指拖动itemView滚动, deltaX大于0向左滚动，小于0向右滚
                     itemView.scrollBy(deltaX, 0);
-
                     return true; // 拖动的时候ListView不滚动
                 case MotionEvent.ACTION_UP:
                     int velocityX = getScrollVelocity();
                     if (velocityX > SNAP_VELOCITY) {
-                        // scrollRight();
+                        //scrollRight();
                     } else if (velocityX < -SNAP_VELOCITY) {
                         scrollLeft();
                     } else {

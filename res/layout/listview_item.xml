@@ -49,6 +49,7 @@
         android:visibility="gone" >
 
         <ImageView
+            android:contentDescription="@string/finish"
             android:id="@+id/memos_item_play"
             android:layout_width="30dip"
             android:layout_height="wrap_content"
