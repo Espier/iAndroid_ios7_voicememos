@@ -1,7 +1,6 @@
 
 package org.espier.voicememos7.ui;
 
-import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -24,7 +23,6 @@ import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -488,7 +486,6 @@ public class VoiceWaveView extends View implements OnGestureListener {
         float start_pos;
         float end_pos;
         num_dis = numFrames / _factor;
-        float s_dis = num_dis * step_width;
 
         if (fac > 1) {
             s_v = s;
@@ -999,16 +996,16 @@ public class VoiceWaveView extends View implements OnGestureListener {
         return ret.toString();
     }
 
-    private int calculateDB(int amp)
-    {
-        if (amp == 0) {
-            return 0;
-        }
-        int amp_ref = 32768;
-        int db = (int) (20 * Math.log10(amp / amp_ref));
-        Log.e("db", db + "");
-        return db;
-    }
+//    private int calculateDB(int amp)
+//    {
+//        if (amp == 0) {
+//            return 0;
+//        }
+//        int amp_ref = 32768;
+//        int db = (int) (20 * Math.log10(amp / amp_ref));
+//        Log.e("db", db + "");
+//        return db;
+//    }
 
     public void start()
     {
