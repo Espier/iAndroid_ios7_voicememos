@@ -166,8 +166,8 @@ public class SlideCutListView extends ListView {
         // 调用startScroll方法来设置一些滚动的参数，我们在computeScroll()方法中调用scrollTo来滚动item
         scroller.startScroll(itemView.getScrollX(), 0, delta, 0,
                 Math.abs(delta));
-        View btnDelete = (View)itemView.findViewById(R.id.memos_item_delete_button);
-        btnDelete.setVisibility(View.VISIBLE);
+//        View btnDelete = (View)itemView.findViewById(R.id.memos_item_delete_button);
+//        btnDelete.setVisibility(View.VISIBLE);
         
         postInvalidate(); // 刷新itemView
     }
