@@ -71,6 +71,8 @@ public class SlideCutListView extends ListView {
     public enum RemoveDirection {
         RIGHT, LEFT;
     }
+    
+    private Button hiddenButton;
 
     public SlideCutListView(Context context) {
         this(context, null);
@@ -123,7 +125,9 @@ public class SlideCutListView extends ListView {
                 }
 
                 // 获取我们点击的item view
-                itemView = getChildAt(slidePosition - getFirstVisiblePosition());
+                View itemWholeView = getChildAt(slidePosition - getFirstVisiblePosition());
+                hiddenButton = (Button)itemWholeView.findViewById(R.id.hiddenDeleteButon);
+                itemView = itemWholeView.findViewById(R.id.memos_item_visible);
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
@@ -166,6 +170,8 @@ public class SlideCutListView extends ListView {
         // 调用startScroll方法来设置一些滚动的参数，我们在computeScroll()方法中调用scrollTo来滚动item
         scroller.startScroll(itemView.getScrollX(), 0, delta, 0,
                 Math.abs(delta));
+        hiddenButton.setEnabled(true);
+        //hiddenButton.setVisibility(View.VISIBLE);
 //        View btnDelete = (View)itemView.findViewById(R.id.memos_item_delete_button);
 //        btnDelete.setVisibility(View.VISIBLE);
         
@@ -181,11 +187,18 @@ public class SlideCutListView extends ListView {
             // 滚动到显示删除按钮的地方
             itemView.scrollTo(screenWidth / 5, 0);
             // scrollLeft();
+            hiddenButton.setEnabled(true);
         } else {
             // 滚回到原始位置,为了偷下懒这里是直接调用scrollTo滚动
             itemView.scrollTo(0, 0);
+            hiddenButton.setEnabled(false);
         }
 
+    }
+    
+    public void restoreItem() {
+        if (itemView!=null)
+            itemView.scrollTo(0,0);
     }
 
     /**

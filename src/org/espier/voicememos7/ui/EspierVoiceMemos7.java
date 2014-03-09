@@ -1161,6 +1161,7 @@ System.out.println("insert 1");
                 deleteMemo(id, memopath);
                 mVoiceMemoListAdapter.notifyDataSetChanged();
                 mVoiceMemoListAdapter.collapseAllItems();
+                slideCutListView.restoreItem();
                 mCurrentDuration = 0;
                 if(mVoiceMemoListAdapter.getCount() ==0){
                     if (emptyView != null) {

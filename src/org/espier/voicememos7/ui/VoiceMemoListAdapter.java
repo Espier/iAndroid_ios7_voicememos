@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -175,6 +176,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.edit = (TextView) view.findViewById(R.id.edit);
         holder.del = (ImageView) view.findViewById(R.id.del);
         holder.position = cursor.getPosition();
+        holder.btnHiddenDelete = (Button)view.findViewById(R.id.hiddenDeleteButon);
 
         RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.FILL_PARENT,
@@ -323,6 +325,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate,
                 memoid));
         holder.del.setEnabled(true);
+        holder.btnHiddenDelete.setOnClickListener(new OnClickDelete(path, itemname, memoid));
         holder.del.setOnClickListener(new OnClickDelete(path, itemname, memoid));
         holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
         
@@ -673,6 +676,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         ImageView share;
         ImageView del;
         TextView edit;
+        Button btnHiddenDelete;
         int position;
     }
 

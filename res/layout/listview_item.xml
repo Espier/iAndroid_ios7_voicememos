@@ -2,66 +2,73 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" 
-    >
-    <RelativeLayout 
-         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" 
-        >
-        <RelativeLayout 
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            >
-            <Button 
-                android:layout_alignParentRight="true"
-                android:layout_height="fill_parent"
-                android:layout_width="wrap_content"
-                
-                android:text="@string/delete"/>
-            
-        </RelativeLayout>
-         <RelativeLayout
+    android:orientation="vertical" >
+
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" 
-        >
+        android:layout_height="fill_parent" >
 
-        <TextView
-            android:id="@+id/memos_item_title"
+        <RelativeLayout
+            android:id="@+id/memos_item_delete_hidden"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:singleLine="true"
-            android:textColor="@color/black"
-            />
-        
-        <EditText
-            android:id="@+id/memos_item_title_editable"
+            android:layout_height="fill_parent" >
+
+            <Button
+                android:id="@+id/hiddenDeleteButon"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:background="@color/red"
+                android:text="@string/delete"
+                android:enabled="false"
+             >
+            </Button>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/memos_item_visible"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:inputType="text"
-            android:singleLine="true"
-            android:textColor="@color/black" />
+            android:layout_height="fill_parent" >
 
-        <TextView
-            android:id="@+id/memos_item_create_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/memos_item_title"
-            android:textColor="@color/black" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/white" >
 
-        <TextView
-            android:id="@+id/memos_item_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/memos_item_title"
-            android:layout_toRightOf="@id/memos_item_create_date"
-            android:textColor="@color/black" />
+                <TextView
+                    android:id="@+id/memos_item_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/memos_item_title_editable"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/memos_item_create_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/memos_item_title"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/memos_item_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/memos_item_title"
+                    android:layout_toRightOf="@id/memos_item_create_date"
+                    android:textColor="@color/black" />
+            </RelativeLayout>
+        </RelativeLayout>
     </RelativeLayout>
-        
-        
-    </RelativeLayout>
-   
 
     <LinearLayout
         android:id="@+id/playlayout"
@@ -70,12 +77,12 @@
         android:visibility="gone" >
 
         <ImageView
-            android:contentDescription="@string/finish"
             android:id="@+id/memos_item_play"
             android:layout_width="30dip"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="10dip"
+            android:contentDescription="@string/finish"
             android:src="@drawable/play" />
 
         <LinearLayout
@@ -146,7 +153,7 @@
                 android:contentDescription="@string/share_memo"
                 android:src="@drawable/action" />
 
-             <TextView
+            <TextView
                 android:id="@+id/edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -154,7 +161,7 @@
                 android:text="@string/edit"
                 android:textColor="#007aff"
                 android:textSize="17sp" />
-             
+
             <ImageView
                 android:id="@+id/del"
                 android:layout_width="25dip"
@@ -163,10 +170,6 @@
                 android:layout_marginTop="10dip"
                 android:contentDescription="@string/delete"
                 android:src="@drawable/trash" />
-            
-            
-
-           
         </LinearLayout>
     </LinearLayout>
 
