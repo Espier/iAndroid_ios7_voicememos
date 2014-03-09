@@ -795,7 +795,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         relP2.addRule(RelativeLayout.BELOW,R.id.waveView);
         playLayout.setLayoutParams(relP2);
         LayoutParams lp1 = aboveLayout.getLayoutParams();
-        lp1.height = (int) (height * 0.9);
+        lp1.height = (int) (height * 8/9);
         lp1.width = width;
         aboveLayout.setLayoutParams(lp1);
 
