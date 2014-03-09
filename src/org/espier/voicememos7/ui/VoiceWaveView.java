@@ -519,13 +519,15 @@ public class VoiceWaveView extends View implements OnGestureListener {
         float start_move_time_textview = 80;
         float q = (w / 2 - start_move_time_textview);
         try {
+            drawXAxisEdit(canvas, margin_lef_init,fac);
             drawVoiceEdit(canvas, start_pos, voice_distance);
 
             drawTimeTextViewEdit(canvas, q);
-            drawXAxisEdit(canvas, margin_lef_init,fac);
+            
             drawYAxis(canvas);
-            drawSlideLineEdit(canvas, x);
+            
             drawEditBar(canvas);
+            drawSlideLineEdit(canvas, x);
         } catch (Exception e) {
             Log.e("draw err", e.toString());
         }
@@ -848,7 +850,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawXAxisEdit(Canvas canvas, float offset,float fac)
     {
-        float t_p_p = time_voice_all/(w-edit_margin_left-edit_margin_right);
+        float t_p_p = (fac>1)?time_voice_all/(w-edit_margin_left-edit_margin_right):time_per_pixel;
         int t_Grid = (int)(t_p_p*grid_width*4/1000+0.5);
         int n = (int)(time_x+0.5);
         int m_fact = (int)(time_voice_all/1000/t_Grid+0.5);
