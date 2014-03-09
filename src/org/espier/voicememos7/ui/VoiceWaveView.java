@@ -347,6 +347,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     {
         // startPlay();
         gestureDetector = new GestureDetector(this);
+        gestureDetector.setIsLongpressEnabled(false);
         viewStatus = VIEW_STATUS_RECORD;
         voiceLinePaint = new Paint();
         voiceLinePaint.setStrokeWidth(2.0f);
@@ -1144,27 +1145,16 @@ public class VoiceWaveView extends View implements OnGestureListener {
         }
 
         if (getViewStatus() == VIEW_STATUS_TO_EDIT || getViewStatus() == VIEW_STATUS_EDIT) {
-            if (event.getAction() == MotionEvent.ACTION_UP)
+            if (event.getAction() == MotionEvent.ACTION_UP && isCliclEditBar)
             {
                 isZoomLeft = false;
                 isZoomRight = false;
                 invalidate();
             }
+            
             return gestureDetector.onTouchEvent(event);
 
         }
-
-        if (getViewStatus() == VIEW_STATUS_EDIT)
-        {
-            if (event.getAction() == MotionEvent.ACTION_UP)
-            {
-                isZoomLeft = false;
-                isZoomRight = false;
-                invalidate();
-                Log.e("up", "up");
-            }
-        }
-
         return true;
     }
 
@@ -1173,11 +1163,13 @@ public class VoiceWaveView extends View implements OnGestureListener {
         if (viewStatus == VIEW_STATUS_EDIT) {
             if (Math.abs(e.getX() - left_edit_bar_pos) < 30) {
                 isZoomLeft = true;
+                isCliclEditBar = true;
             }
             if (Math.abs(e.getX() - right_edit_bar_pos) < 30) {
                 isZoomRight = true;
+                isCliclEditBar = true;
             }
-            isCliclEditBar = true;
+            
             invalidate();
         }
         return true;
@@ -1185,34 +1177,23 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        /*
-         * final int FLING_MIN_DISTANCE = 100, FLING_MIN_VELOCITY = 200; if
-         * (Math.abs(e1.getX() - e2.getX()) > FLING_MIN_DISTANCE &&
-         * Math.abs(velocityX) > FLING_MIN_VELOCITY) { // Fling left //
-         * Log.i("MyGesture", "Fling left"); float v =(velocityX)/1000 ; float a
-         * = 0.05f; float t = Math.abs(v/a); Log.e("t", t+""); float intval =
-         * 10; while (t>0) { float s = v*intval-a*intval*intval/2; v =
-         * v-a*intval; try { Thread.sleep(10); } catch (InterruptedException e)
-         * { // TODO Auto-generated catch block e.printStackTrace(); }
-         * t-=intval; time_to_edit += (int)(s*time_per_pixel); if
-         * (time_to_edit<0) { time_to_edit = 0; } Log.e("time",
-         * time_to_edit+""); invalidate(); } } else if (e2.getX() - e1.getX() >
-         * FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY) { //
-         * Fling right //Log.i("MyGesture", "Fling right"); }
-         */
+        
         return true;
 
     }
 
     @Override
     public void onLongPress(MotionEvent e) {
-        // TODO Auto-generated method stub
+        // not enable;
+    }
+    
+    @Override
+    public void onShowPress(MotionEvent e) {
 
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-
         if (viewStatus == VIEW_STATUS_TO_EDIT) {
             // int t = (int) (distanceX * time_per_pixel);
             long t = (int) (distanceX * time_per_pixel + 0.5);
@@ -1385,15 +1366,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
         return true;
     }
 
-    @Override
-    public void onShowPress(MotionEvent e) {
-        // TODO Auto-generated method stub
-
-    }
+    
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        // TODO Auto-generated method stub
         return true;
     }
 
