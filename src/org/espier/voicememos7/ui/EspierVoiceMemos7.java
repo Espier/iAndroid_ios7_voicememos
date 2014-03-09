@@ -1239,10 +1239,8 @@ System.out.println("insert 1");
 //        int sampleRate = mSoundFile.getSampleRate();
 //        int numFrames = mSoundFile.getNumFrames();
 //        int totalTime = numFrames * mSoundFile.getSamplesPerFrame()/sampleRate;
-        
         currentEditMemo = memo;
         textVoiceTimeInEditMode.setVisibility(View.VISIBLE);
-//        textVoiceTimeInEditMode.setText(MemosUtils.makeTimeString(this, totalTime));
         textVoiceTimeInEditMode.setText(memo.getMemCreatedDate());
         textVoiceNameInEditMode.setText(memo.getMemName());
         
@@ -1283,7 +1281,7 @@ System.out.println("insert 1");
     	editStatus = EDIT_STATE_INIT;
     	updateEditModeButtonStatus();
     	waveView.setPlayMode(false);
-//    	waveView.setTime_to_edit(0);
+    	waveView.setTime_to_end();
     	waveView.invalidate();
     }
 }
