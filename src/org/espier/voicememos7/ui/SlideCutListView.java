@@ -127,6 +127,8 @@ public class SlideCutListView extends ListView {
                 // 获取我们点击的item view
                 View itemWholeView = getChildAt(slidePosition - getFirstVisiblePosition());
                 hiddenButton = (Button)itemWholeView.findViewById(R.id.hiddenDeleteButon);
+                if (itemView != itemWholeView.findViewById(R.id.memos_item_visible))
+                    restoreItem();
                 itemView = itemWholeView.findViewById(R.id.memos_item_visible);
                 break;
             }
