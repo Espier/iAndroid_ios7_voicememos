@@ -800,7 +800,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         aboveLayout.setLayoutParams(lp1);
 
         LayoutParams lp2 = belowLayout.getLayoutParams();
-        lp2.height = (int) (height * 0.9);
+        lp2.height = (int) (height*7/10.3-10);
         lp2.width = width;
         belowLayout.setLayoutParams(lp2);
         
