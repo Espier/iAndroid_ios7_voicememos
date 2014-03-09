@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager.OnActivityResultListener;
 import android.sax.TextElementListener;
+import android.text.TextPaint;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
@@ -798,7 +799,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         lp1.height = (int) (height * 8/9);
         lp1.width = width;
         aboveLayout.setLayoutParams(lp1);
-
+        
         LayoutParams lp2 = belowLayout.getLayoutParams();
         lp2.height = (int) (height*7/10.3-10);
         lp2.width = width;

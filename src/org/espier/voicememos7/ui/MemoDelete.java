@@ -46,7 +46,7 @@ public class MemoDelete extends Activity implements OnClickListener {
 //          String strDot = "...";
 //          String str = itemname.substring(0, 16- strDot.length());
           
-        String shortName = MemosUtils.Ellipsize(memoname);
+        String shortName = MemosUtils.Ellipsize(memoname,this);
         del.setText(getResources().getString(R.string.delete) + "\"" + shortName + "\"");
         cancel = (Button) findViewById(R.id.memo_del_cancel);
         LinearLayout.LayoutParams lay2 = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,

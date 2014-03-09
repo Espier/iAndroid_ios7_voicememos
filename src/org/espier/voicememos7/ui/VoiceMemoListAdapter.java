@@ -292,7 +292,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.txtRecordName.setClickable(false);
         holder.txtRecordName.setFocusable(false);
         holder.txtRecordName.setTag(itemname);
-        String displayString = MemosUtils.Ellipsize(itemname);
+        String displayString = MemosUtils.Ellipsize(itemname,context);
 //        String viewAddr = view.toString().substring(27, view.toString().length())+"@";
         holder.txtRecordName.setText(displayString);
         if (displayString.equals(itemname)) {
