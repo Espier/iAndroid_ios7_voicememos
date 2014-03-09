@@ -1,6 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
+import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -62,6 +63,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     protected boolean isCollapsed = true;
     ViewHolder currentViewHolder;
     VoiceMemo currentMemo;
+    private long currentPos = 0;
 
     public interface OnListViewChangedListener {
         
@@ -512,6 +514,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
         @Override
         public void onClick(View v) {
+            currentPos = 0;
             setOnPlayPositionChanged(0, 0);
             mediaStatus = MEDIA_STATE_EDIT;
             currentViewHolder = holder;
@@ -563,6 +566,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         int state = mRecorder.getState();
         if (state == Recorder.IDLE_STATE) {
             mCurrentMediaPlayer = mRecorder.createMediaPlayer(path);
+            currentPos = 0;
             if (from > 0)
             {
                 mRecorder.seekTo((int) from);
@@ -612,8 +616,21 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         }
 
         // try {
+        int durationAllTime = mCurrentMediaPlayer.getDuration();
         long pos = mCurrentMediaPlayer.getCurrentPosition();
-        setOnPlayPositionChanged(0, pos);
+        if(currentPos >= durationAllTime)
+        {
+            currentPos = durationAllTime;
+        }
+        else if(currentPos <= durationAllTime && (durationAllTime - pos) <=200)
+        {
+            currentPos += 40;
+        }
+        else
+        {
+            currentPos = pos;
+        }
+        setOnPlayPositionChanged(0, currentPos);
         if ((pos >= 0) && (mCurrentDuration > 0)) {
             view.mCurrentTime.setText(MemosUtils.makeTimeString(mContext,
                     pos / 1000));
