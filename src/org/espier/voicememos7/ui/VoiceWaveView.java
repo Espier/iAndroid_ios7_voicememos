@@ -622,6 +622,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawEditBar(Canvas canvas)
     {
+        float time_width = 70;
         // left
         canvas.drawLine(left_edit_bar_pos, y_top_line, left_edit_bar_pos, y_bottom_line,
                 editBarPaint);
@@ -629,7 +630,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         canvas.drawCircle(left_edit_bar_pos, y_top_line - cicle_radius, cicle_radius, editBarPaint);
 
         if (isCliclEditBar ) {
-            canvas.drawText(timeFormat(clip_left_time), left_edit_bar_pos, y_xaxis
+            canvas.drawText(timeFormat(clip_left_time), left_edit_bar_pos<(w-time_width)?left_edit_bar_pos:(left_edit_bar_pos-time_width), y_xaxis
                     + timeTopPaint.getTextSize(), timeTopPaint);
         }
         
@@ -641,7 +642,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         canvas.drawCircle(right_edit_bar_pos, y_bottom_line + cicle_radius, cicle_radius,
                 editBarPaint);
         if (isCliclEditBar) {
-            canvas.drawText(timeFormat(clip_right_time), right_edit_bar_pos - 70, y_xaxis
+            
+            canvas.drawText(timeFormat(clip_right_time), (right_edit_bar_pos>time_width)?(right_edit_bar_pos-time_width):right_edit_bar_pos, y_xaxis
                     + timeTopPaint.getTextSize(), timeTopPaint);
         }
         
