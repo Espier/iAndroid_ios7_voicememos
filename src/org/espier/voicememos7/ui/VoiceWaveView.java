@@ -866,6 +866,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         int t_Grid = (int) (t_p_p * grid_width * 4 / 1000 + 0.5);
         int n = (int) (time_x + 0.5);
         int m_fact = (int) (time_voice_all / 1000 / t_Grid + 0.5);
+        
+        m_fact = m_fact<3?3:m_fact;
         int j = n - m_fact - 1;
 
         int left_time = (int) (edit_margin_left * t_p_p / 1000);
@@ -895,6 +897,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             }
         }
         else {
+            
             for (int i = 0; i < m_fact + 1; i++) {
                 canvas.drawText(timeAxisFormat(i), (j + i) * grid_width * 4 + text_offset, y_xaxis
                         + timeTopPaint.getTextSize(), isCliclEditBar ? timeTopGrayPaint
@@ -1190,52 +1193,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        // if (viewStatus == VIEW_STATUS_TO_EDIT) {
-        // v_scroll = velocityX/1000;
-        // final float a = 0.03f;
-        // Thread thread = new Thread(new Runnable() {
-        //
-        // @Override
-        // public void run() {
-        // while (v_scroll>0) {
-        // try {
-        // float s = v_scroll -a*invalidate_rate*invalidate_rate/2;
-        // long t = (int) (s * time_per_pixel + 0.5);
-        // time_to_edit +=t;
-        // if (time_to_edit>time_voice_all+3000) {
-        // break;
-        // }
-        // v_scroll = v_scroll -a*invalidate_rate;
-        // Log.e("v", v_scroll+"");
-        //
-        // Thread.sleep(invalidate_rate);
-        // } catch (InterruptedException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        // Message msg = new Message();
-        // msg.what = 1;
-        // handler.sendMessage(msg);
-        // }
-        //
-        // }
-        // });
-        // thread.start();
-        // long t = (int) (velocityX * time_per_pixel + 0.5);
-        // time_to_edit += t;
-        // if (time_to_edit < 0) {
-        // time_to_edit = 0;
-        // }
-        // if (time_to_edit > time_voice_all) {
-        // time_to_edit = time_voice_all;
-        // }
-        //
-        // invalidate();
-        // }
+
         if (viewStatus == VIEW_STATUS_TO_EDIT) {
             v_scroll = velocityX;
 
-            Log.e("fling", "fling");
 
             Thread thread = new Thread(new Runnable() {
 
@@ -1243,7 +1204,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 public void run() {
                     int i = 10;
                     while (i > 0) {
-                        Log.e("i", i+","+time_to_edit+"");
+                        
                         time_to_edit -= i * v_scroll / 15;
                         
                         Message msg = new Message();
