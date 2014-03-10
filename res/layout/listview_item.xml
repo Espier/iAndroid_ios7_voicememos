@@ -110,8 +110,8 @@
                 android:layout_weight="1"
                 android:drawablePadding="5dip"
                 android:gravity="center_vertical"
-                android:maxHeight="8dip"
-                android:minHeight="8dip"
+                android:maxHeight="2dip"
+                android:minHeight="2dip"
                 android:progressDrawable="@drawable/seekbar"
                 android:thumb="@drawable/thumb"
                 android:thumbOffset="0.0dp" />
