@@ -132,23 +132,27 @@ public class SlideCutListView extends ListView {
                 if (itemView != itemWholeView.findViewById(R.id.memos_item_visible))
                     restoreItem();
                 itemView = itemWholeView.findViewById(R.id.memos_item_visible);
+                
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                Log.d("listview","action move"+String.valueOf(itemView.getScrollX()));
+                Log.d("listview","action move:getScrollX"+String.valueOf(itemView.getScrollX()));
+                Log.d("listview","action move:downX"+String.valueOf(downX));
+                Log.d("listview","action move:event.getX()"+String.valueOf(event.getX()));
                 if (Math.abs(getScrollVelocity()) > SNAP_VELOCITY
                         || (event.getX() - downX > mTouchSlop && itemView.getScrollX()>0 )||(downX - event.getX()> mTouchSlop && Math
                                 .abs(event.getY() - downY) < mTouchSlop)) {
                     isSlide = true;
 
                 }
+                Log.d("listview","action move:isSlide="+String.valueOf(isSlide));
                 break;
             }
             case MotionEvent.ACTION_UP:
                 recycleVelocityTracker();
                 break;
         }
-
+        
         return super.dispatchTouchEvent(event);
     }
 
@@ -209,15 +213,19 @@ public class SlideCutListView extends ListView {
      */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        Log.d("adf","in onTouchEvent:");
         if (isSlide && slidePosition != AdapterView.INVALID_POSITION) {
+            Log.d("adf","in if ");
             requestDisallowInterceptTouchEvent(true);
             addVelocityTracker(ev);
             final int action = ev.getAction();
             int x = (int) ev.getX();
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
+                    Log.d("adf","in action down ");
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    Log.d("adf","onTouchEvent: action move");
 
                     MotionEvent cancelEvent = MotionEvent.obtain(ev);
                     cancelEvent.setAction(MotionEvent.ACTION_CANCEL |
@@ -230,6 +238,7 @@ public class SlideCutListView extends ListView {
                     itemView.scrollBy(deltaX, 0);
                     return true; // 拖动的时候ListView不滚动
                 case MotionEvent.ACTION_UP:
+                    Log.d("adf","in action up ");
                     int velocityX = getScrollVelocity();
                     if (velocityX > SNAP_VELOCITY) {
                         //scrollRight();
@@ -244,8 +253,9 @@ public class SlideCutListView extends ListView {
                     isSlide = false;
                     break;
             }
+            
         }
-
+        
         // 否则直接交给ListView来处理onTouchEvent事件
         return super.onTouchEvent(ev);
     }
