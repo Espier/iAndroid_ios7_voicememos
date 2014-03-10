@@ -19,6 +19,9 @@
                 android:layout_height="fill_parent"
                 android:layout_alignParentRight="true"
                 android:background="@color/red"
+                android:gravity="center"
+                android:textSize="17sp"
+                android:textColor="@color/white"
                 android:text="@string/delete"
                 android:enabled="false"
              >

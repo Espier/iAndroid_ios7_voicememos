@@ -177,7 +177,13 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.del = (ImageView) view.findViewById(R.id.del);
         holder.position = cursor.getPosition();
         holder.btnHiddenDelete = (Button)view.findViewById(R.id.hiddenDeleteButon);
-
+        
+        RelativeLayout.LayoutParams lpButton = new RelativeLayout.LayoutParams(
+                ScalePx.scalePx(mContext, 130),
+                ScalePx.scalePx(mContext, 90));
+        lpButton.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
+        holder.btnHiddenDelete.setLayoutParams(lpButton);
+        
         RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.FILL_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
