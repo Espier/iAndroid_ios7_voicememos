@@ -27,6 +27,8 @@ import org.espier.voicememos7.util.ScalePx;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MemoTrim extends Activity implements OnClickListener {
     private Button btnSaveAsNew, btnTrimOrigin, btnCancel;
@@ -188,7 +190,7 @@ public class MemoTrim extends Activity implements OnClickListener {
         mMemPath = outputFile.getAbsolutePath();
         if(isNewFile)
         {
-            String newFileNameString = "\""+mMemName+"\""+getString(R.string.copy);
+            String newFileNameString = mMemName+getString(R.string.copy);
             insertVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition),newFileNameString);
         }
         else {
@@ -205,7 +207,15 @@ public class MemoTrim extends Activity implements OnClickListener {
         ContentValues cv = new ContentValues();
         long modDate = outputFile.lastModified();
         long current = System.currentTimeMillis();
-        cv.put(VoiceMemo.Memos.DATA, outputFile.getAbsolutePath());
+        Date date = new Date(current);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String filepath = outputFile.getAbsolutePath();
+        String path = filepath.substring(0,filepath.lastIndexOf("/")+1);
+        String title = formatter.format(date);
+        String newname = path+memName+"-"+title+".amr";
+       File file = AMRFileUtils.rename(filepath, newname);
+       mMemPath = file.getAbsolutePath();
+        cv.put(VoiceMemo.Memos.DATA, file.getAbsolutePath());
         cv.put(VoiceMemo.Memos.LABEL, memName);
         cv.put(VoiceMemo.Memos.LABEL_TYPE, 0);
         cv.put(VoiceMemo.Memos.CREATE_DATE, current);

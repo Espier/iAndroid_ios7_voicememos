@@ -671,10 +671,10 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         long smoothrefreshtime = mCurrentDuration / width;
 
         if (smoothrefreshtime > remaining)
-            return remaining;
+            return 40;
         if (smoothrefreshtime < 20)
             return 20;
-        return smoothrefreshtime;
+        return 50;
     }
 
     final static class ViewHolder {
