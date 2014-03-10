@@ -46,7 +46,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
     Paint timeTopGrayPaint;
     Paint timeTextPaint;
     Paint grayLinePaint;
-    Paint darkGrayLinePaint;
+    Paint darkGrayLineMiddlePaint;
+    Paint deepDarkGrayLineMiddlePaint;
+    Paint deepDarkGrayLinePaint;
     Paint voicedbPaint;
     Paint voicedbGrayPaint;
     Paint maskPaint;
@@ -385,6 +387,13 @@ public class VoiceWaveView extends View implements OnGestureListener {
         grayColor = Color.parseColor(grayColorString);
         grayLinePaint.setColor(grayColor);
         grayLinePaint.setStrokeWidth(2f);
+        
+        
+        deepDarkGrayLinePaint = new Paint();
+        deepDarkGrayLinePaint.setColor(deepDarkGrayColor);
+        deepDarkGrayLinePaint.setStrokeWidth(2f);
+        
+        
 
         maskPaint = new Paint();
         maskColor = Color.parseColor(maskColorString);
@@ -397,10 +406,14 @@ public class VoiceWaveView extends View implements OnGestureListener {
         maskTimePaint.setStrokeWidth(0);
         maskTimePaint.setAlpha(0);
 
-        darkGrayLinePaint = new Paint();
-        darkGrayLinePaint.setColor(grayColor);
-        ;
-        darkGrayLinePaint.setStrokeWidth(1f);
+        darkGrayLineMiddlePaint = new Paint();
+        darkGrayLineMiddlePaint.setColor(grayColor);
+        darkGrayLineMiddlePaint.setStrokeWidth(1f);
+        
+        
+        deepDarkGrayLineMiddlePaint = new Paint();
+        deepDarkGrayLineMiddlePaint.setColor(deepDarkGrayColor);
+        deepDarkGrayLineMiddlePaint.setStrokeWidth(1f);
 
         voicedbPaint = new Paint();
         darkGrayColor = Color.parseColor(darkGrayColorString);
@@ -601,7 +614,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
                 , grayLinePaint);
 
-        canvas.drawLine(0, y_mid_line, getWidth(), y_mid_line, darkGrayLinePaint);
+        canvas.drawLine(0, y_mid_line, getWidth(), y_mid_line, darkGrayLineMiddlePaint);
 
     }
 
@@ -619,11 +632,11 @@ public class VoiceWaveView extends View implements OnGestureListener {
                     slideLinePaint);
         }
 
-        canvas.drawLine(0, y_top_line, getWidth(), y_top_line, grayLinePaint);
+        canvas.drawLine(0, y_top_line, getWidth(), y_top_line, isCliclEditBar?deepDarkGrayLinePaint:grayLinePaint);
         canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
-                , grayLinePaint);
+                , isCliclEditBar?deepDarkGrayLinePaint:grayLinePaint);
 
-        canvas.drawLine(0, y_mid_line, getWidth(), y_mid_line, darkGrayLinePaint);
+        canvas.drawLine(0, y_mid_line, getWidth(), y_mid_line, isCliclEditBar?deepDarkGrayLineMiddlePaint:darkGrayLineMiddlePaint);
 
     }
 
@@ -812,7 +825,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             {
                 h = (j == 0) ? h_high_line : h_low_line;
                 canvas.drawLine(x + j * grid_width, y_xaxis + h_high_line, x + j * grid_width,
-                        y_xaxis + h_high_line - h, darkGrayLinePaint);
+                        y_xaxis + h_high_line - h, darkGrayLineMiddlePaint);
             }
             if (i != -1) {
                 canvas.drawText(timeAxisFormat(time_list.get(i)), x + text_offset, y_xaxis
@@ -839,9 +852,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
             float h;
             h = (i % 4 == 0) ? h_high_line : h_low_line;
             canvas.drawLine(x1, y_xaxis + h_high_line, x1, y_xaxis + h_high_line - h,
-                    darkGrayLinePaint);
+                    darkGrayLineMiddlePaint);
             canvas.drawLine(x2, y_xaxis + h_high_line, x2, y_xaxis + h_high_line - h,
-                    darkGrayLinePaint);
+                    darkGrayLineMiddlePaint);
 
             if (i % 4 == 0) {
 
@@ -883,7 +896,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 h = (i % 4 == 0) ? h_high_line : h_low_line;
                 canvas.drawLine(i * grid_width, y_xaxis + h_high_line, i * grid_width, y_xaxis
                         + h_high_line - h,
-                        darkGrayLinePaint);
+                        darkGrayLineMiddlePaint);
 
             }
         }
