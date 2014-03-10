@@ -98,6 +98,9 @@ public class SlideCutListView extends ListView {
     public void setRemoveListener(RemoveListener removeListener) {
         this.mRemoveListener = removeListener;
     }
+    
+
+
 
     /**
      * 分发事件，主要做的是判断点击的是那个item, 以及通过postDelayed来设置响应左右滑动事件
@@ -106,7 +109,6 @@ public class SlideCutListView extends ListView {
     public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                Log.d("listview","action down");
 
                 addVelocityTracker(event);
 
@@ -143,7 +145,6 @@ public class SlideCutListView extends ListView {
                 break;
             }
             case MotionEvent.ACTION_UP:
-                Log.d("listview","action up");
                 recycleVelocityTracker();
                 break;
         }

@@ -712,7 +712,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-                // TODO Auto-generated method stub
+                //TODO: deal with onItemClick
                 Log.d("adf","inonitemclick");
             }
             
