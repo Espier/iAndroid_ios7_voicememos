@@ -176,7 +176,6 @@ public class MemoTrim extends Activity implements OnClickListener {
         
         File inputFile = new File(mMemPath);
         File outputFile = Recorder.createTempFile();
-
         try {
           fileUtils.ReadFile(inputFile);
           fileUtils.WriteFile(outputFile, startFrame, endFrame - startFrame);

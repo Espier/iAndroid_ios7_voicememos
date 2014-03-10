@@ -686,15 +686,16 @@ public class AMRFileUtils {
       File file = new File(filePathName);  
       return (!file.isDirectory() && file.exists());  
   }  
-  public static void rename(String filePathName, String newPathName) {  
-      if(isNullString(filePathName)) return ;  
-      if(isNullString(newPathName)) return ;  
+  public static File rename(String filePathName, String newPathName) {  
+      if(isNullString(filePathName)) return null;  
+      if(isNullString(newPathName)) return null;  
         
       delete(newPathName); //新名称对应的文件可能已经存在，先删除  
         
       File file = new File(filePathName);  
       File newFile = new File(newPathName);  
       file.renameTo(newFile);  
+      return file;
   }  
 
 };
