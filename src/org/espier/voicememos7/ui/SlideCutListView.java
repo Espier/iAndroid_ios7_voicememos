@@ -2,6 +2,7 @@
 package org.espier.voicememos7.ui;
 
 import android.content.Context;
+import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -58,6 +59,8 @@ public class SlideCutListView extends ListView {
      * 认为是用户滑动的最小距离
      */
     private int mTouchSlop;
+    
+    private int lastY;
     /**
      * 移除item后的回调接口
      */
@@ -73,6 +76,8 @@ public class SlideCutListView extends ListView {
     }
     
     private Button hiddenButton;
+    
+    static boolean isDown = false;
 
     public SlideCutListView(Context context) {
         this(context, null);
@@ -129,12 +134,16 @@ public class SlideCutListView extends ListView {
                 // 获取我们点击的item view
                 View itemWholeView = getChildAt(slidePosition - getFirstVisiblePosition());
                 hiddenButton = (Button)itemWholeView.findViewById(R.id.hiddenDeleteButon);
-                if (itemView != itemWholeView.findViewById(R.id.memos_item_visible))
+                if (itemView != itemWholeView.findViewById(R.id.memos_item_visible)) {
                     restoreItem();
-                if (itemView != null)
-                    Log.d("adsf","getScrollX()="+String.valueOf(itemView.getScrollX()));
-                if (itemView != null &&itemView.getScrollX()>0)
+                    
+                }
+                
+                if (itemView != null &&itemView.getScrollX()>0) {
                     restoreItem();
+                    return false;
+                    
+                }
                 itemView = itemWholeView.findViewById(R.id.memos_item_visible);
 //                itemView = getChildAt(slidePosition - getFirstVisiblePosition());
                 
@@ -148,8 +157,9 @@ public class SlideCutListView extends ListView {
                         || (event.getX() - downX > mTouchSlop && itemView.getScrollX()>0 )||(downX - event.getX()> mTouchSlop && Math
                                 .abs(event.getY() - downY) < mTouchSlop)) {
                     isSlide = true;
-
                 }
+//                if (Math.abs(event.getY() - downY)>mTouchSlop)
+//                    return false;
                 Log.d("listview","action move:isSlide="+String.valueOf(isSlide));
                 
                 break;
@@ -219,16 +229,25 @@ public class SlideCutListView extends ListView {
      */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        
+        
+        if (ev.getAction() == MotionEvent.ACTION_DOWN)
+            lastY = (int)ev.getY();
+        
+         
         Log.d("adf","in onTouchEvent:");
         if (isSlide && slidePosition != AdapterView.INVALID_POSITION) {
+            isDown = true;
             Log.d("adf","in if ");
             requestDisallowInterceptTouchEvent(true);
             addVelocityTracker(ev);
             final int action = ev.getAction();
             int x = (int) ev.getX();
+            
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     Log.d("adf","in action down ");
+                    
                     break;
                 case MotionEvent.ACTION_MOVE:
                     Log.d("adf","onTouchEvent: action move");
@@ -257,11 +276,19 @@ public class SlideCutListView extends ListView {
                     recycleVelocityTracker();
                     // 手指离开的时候就不响应左右滚动
                     isSlide = false;
-                    break;
+//                    break;
+                    return super.onTouchEvent(ev);
             }
             
         }
-        
+        if (Math.abs(ev.getY() - lastY)>mTouchSlop)
+            return super.onTouchEvent(ev);
+        Log.d("adsf", "getScrollx=" + String.valueOf(itemView.getScrollX()));
+        Log.d("adsf", "getScrolly=" + String.valueOf(itemView.getScrollY()));
+        if (itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
+            View itemWholeView = getChildAt(slidePosition - getFirstVisiblePosition());
+            itemWholeView.performClick();
+        }
         // 否则直接交给ListView来处理onTouchEvent事件
         return super.onTouchEvent(ev);
     }

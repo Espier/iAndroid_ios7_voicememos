@@ -327,6 +327,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.bar.setMax(1000);
 
         view.setOnClickListener(new OnClickItem(cursor.getPosition()));
+        view.setClickable(false);
 //        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
         holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate,
@@ -441,8 +442,12 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
         @Override
         public void onClick(View v) {
+            
             // if click the expanded item, ignore the click operation
             ViewHolder holder = (ViewHolder) v.getTag();
+            if (holder.bgView.getScrollX()<0)
+                return;
+
             if (expandedPosition == position)
                 return;
 
