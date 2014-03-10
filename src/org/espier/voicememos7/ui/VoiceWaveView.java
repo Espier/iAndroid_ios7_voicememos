@@ -99,6 +99,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private String deepDarkGrayColorString = "#222222";
     private int deepDarkGrayColor;
+    
+    private String maskColorString = "#1e1d23";
+    private int maskColor;
 
     int time_text_font_size;
 
@@ -374,7 +377,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         timeTopGrayPaint.setStrokeWidth(0.5f);
 
         timeTextPaint = new Paint();
-        timeTextPaint.setTextSize(ScalePx.scalePx(context, 40));
+        timeTextPaint.setTextSize(ScalePx.scalePx(context, 60));
         timeTextPaint.setColor(Color.WHITE);
         timeTextPaint.setTypeface(Typeface.SANS_SERIF);
 
@@ -384,9 +387,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
         grayLinePaint.setStrokeWidth(2f);
 
         maskPaint = new Paint();
-        maskPaint.setColor(Color.BLUE);
+        maskColor = Color.parseColor(maskColorString);
+        maskPaint.setColor(maskColor);
         maskPaint.setStrokeWidth(0);
-        maskPaint.setAlpha(60);
+        maskPaint.setAlpha(180);
 
         maskTimePaint = new Paint();
         maskTimePaint.setColor(Color.BLACK);
