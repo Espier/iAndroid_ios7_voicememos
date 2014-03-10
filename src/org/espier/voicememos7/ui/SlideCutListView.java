@@ -131,7 +131,12 @@ public class SlideCutListView extends ListView {
                 hiddenButton = (Button)itemWholeView.findViewById(R.id.hiddenDeleteButon);
                 if (itemView != itemWholeView.findViewById(R.id.memos_item_visible))
                     restoreItem();
+                if (itemView != null)
+                    Log.d("adsf","getScrollX()="+String.valueOf(itemView.getScrollX()));
+                if (itemView != null &&itemView.getScrollX()>0)
+                    restoreItem();
                 itemView = itemWholeView.findViewById(R.id.memos_item_visible);
+//                itemView = getChildAt(slidePosition - getFirstVisiblePosition());
                 
                 break;
             }
@@ -146,6 +151,7 @@ public class SlideCutListView extends ListView {
 
                 }
                 Log.d("listview","action move:isSlide="+String.valueOf(isSlide));
+                
                 break;
             }
             case MotionEvent.ACTION_UP:

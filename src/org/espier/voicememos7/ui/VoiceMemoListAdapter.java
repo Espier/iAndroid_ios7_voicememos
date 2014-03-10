@@ -177,6 +177,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.del = (ImageView) view.findViewById(R.id.del);
         holder.position = cursor.getPosition();
         holder.btnHiddenDelete = (Button)view.findViewById(R.id.hiddenDeleteButon);
+        holder.bgView = view.findViewById(R.id.memos_item_bg);
         
         RelativeLayout.LayoutParams lpButton = new RelativeLayout.LayoutParams(
                 ScalePx.scalePx(mContext, 130),
@@ -325,7 +326,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         }
         holder.bar.setMax(1000);
 
-//        view.setOnClickListener(new OnClickItem(cursor.getPosition()));
+        view.setOnClickListener(new OnClickItem(cursor.getPosition()));
 //        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
         holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate,
@@ -336,8 +337,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
         
         if (isCollapsed) {
-            view.setBackgroundColor(mContext.getResources()
-                    .getColor(R.color.white));
+//            view.setBackgroundColor(mContext.getResources()
+//                    .getColor(R.color.white));
+            holder.bgView.setBackgroundResource(R.color.white);
             holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
             holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
             holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
@@ -346,11 +348,13 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
                 view.setBackgroundColor(mContext.getResources()
                         .getColor(R.color.white));
+                holder.bgView.setBackgroundResource(R.color.white);
                 holder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
                 holder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
                 holder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
                 setItemVisible(view, true);
             } else {
+                holder.bgView.setBackgroundColor(mContext.getResources().getColor(R.color.light_gray));
                 view.setBackgroundColor(mContext.getResources()
                         .getColor(R.color.light_gray));
                 holder.txtRecordName.setTextColor(mContext.getResources().getColor(
@@ -372,6 +376,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             itemHolder.txtRecordName.setTextColor(mContext.getResources().getColor(R.color.black));
             itemHolder.createDate.setTextColor(mContext.getResources().getColor(R.color.black));
             itemHolder.duration.setTextColor(mContext.getResources().getColor(R.color.black));
+            itemHolder.bgView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
             view.setBackgroundColor(Color.WHITE);
         }
         expandedPosition = -1;
@@ -389,9 +394,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                     R.color.heavygray));
             itemHolder.createDate.setTextColor(mContext.getResources().getColor(R.color.heavygray));
             itemHolder.duration.setTextColor(mContext.getResources().getColor(R.color.heavygray));
-
-            view.setBackgroundColor(mContext.getResources()
-                    .getColor(R.color.light_gray));
+            itemHolder.bgView.setBackgroundColor(mContext.getResources().getColor(R.color.light_gray));
+//            view.setBackgroundColor(mContext.getResources()
+//                    .getColor(R.color.light_gray));
         }
     }
 
@@ -684,6 +689,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         TextView edit;
         Button btnHiddenDelete;
         int position;
+        View bgView;
     }
 
     private void setupColumnIndices(Cursor cursor) {
