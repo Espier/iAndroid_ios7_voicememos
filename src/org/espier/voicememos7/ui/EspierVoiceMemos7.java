@@ -314,12 +314,46 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void initEditLayout()
     {
+        RelativeLayout.LayoutParams rlpRecordName = new RelativeLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        rlpRecordName.setMargins(ScalePx.scalePx(this, 31),
+                ScalePx.scalePx(this, 13), 0, 0);
+        RelativeLayout.LayoutParams rlpRecordName2 = new RelativeLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        rlpRecordName2.setMargins(ScalePx.scalePx(this, 31),
+                0, 0, 0);
+        RelativeLayout.LayoutParams rlpRecordName3 = new RelativeLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        rlpRecordName3.setMargins(0,
+                ScalePx.scalePx(this, 13), ScalePx.scalePx(this, 33), 0);
+        rlpRecordName3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
+        
     	textVoiceNameInEditMode = (TextView)findViewById(R.id.edittxtRecordName);
-        textVoiceTimeInEditMode = (TextView)findViewById(R.id.edittxtDate);
-        imageViewVoiceCropInEditMode = (ImageView)findViewById(R.id.editimage);
+    	textVoiceNameInEditMode.setLayoutParams(rlpRecordName);
+    	textVoiceTimeInEditMode = (TextView)findViewById(R.id.edittxtDate);
+    	rlpRecordName2.addRule(RelativeLayout.BELOW,R.id.edittxtRecordName);
+    	textVoiceTimeInEditMode.setLayoutParams(rlpRecordName2);
+    	imageViewVoiceCropInEditMode = (ImageView)findViewById(R.id.editimage);
+    	imageViewVoiceCropInEditMode.setLayoutParams(rlpRecordName3);
         imageViewVoicePlayInEditMode = (ImageView)findViewById(R.id.editredButton);
         textViewVoiceEditFinishInEditMode = (TextView)findViewById(R.id.editfinished);
-        
+        textViewVoiceEditFinishInEditMode.setOnTouchListener(new View.OnTouchListener() {
+            
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        textViewVoiceEditFinishInEditMode.setTextColor(getResources().getColor(R.color.finish_text_color));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        textViewVoiceEditFinishInEditMode.setTextColor(getResources().getColor(R.color.white));
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
         imageViewVoicePlayInEditMode.setOnTouchListener(editPlayTouchListener);
         imageViewVoicePlayInEditMode.setOnClickListener(this);
         imageViewVoiceCropInEditMode.setOnClickListener(this);
