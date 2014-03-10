@@ -325,7 +325,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         }
         holder.bar.setMax(1000);
 
-//        view.setOnClickListener(new OnClickItem(cursor.getPosition()));
+        view.setOnClickListener(new OnClickItem(cursor.getPosition()));
 //        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
         holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate,
