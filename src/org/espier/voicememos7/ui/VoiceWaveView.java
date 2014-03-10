@@ -1203,18 +1203,18 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
                 @Override
                 public void run() {
-                    int i = 10;
+                    int i = 20;
                     while (i > 0) {
                         
-                        time_to_edit -= i * v_scroll / 15;
+                        time_to_edit -= i * v_scroll / 40;
                         
                         Message msg = new Message();
                         msg.what = 1;
                         handler.sendMessage(msg);
                         try {
-                            Thread.sleep(invalidate_rate);
+                            Thread.sleep(invalidate_rate*5);
                         } catch (Exception e) {
-                            // TODO: handle exception
+                            
                         }
                         if (time_to_edit>time_voice_all || time_to_edit<0) {
                             break;
