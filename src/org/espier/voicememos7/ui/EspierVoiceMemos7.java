@@ -364,7 +364,20 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
         textViewCrop = (TextView)findViewById(R.id.textViewCropEdit);
         textViewCropCancel = (TextView)findViewById(R.id.textViewCropCancel);
-        
+        RelativeLayout.LayoutParams rltextViewCropCancel = new RelativeLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        rltextViewCropCancel.setMargins(ScalePx.scalePx(this, 31),
+                ScalePx.scalePx(this, 13), 0, 0);
+        rltextViewCropCancel.addRule(RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.TRUE);
+        textViewCropCancel.setLayoutParams(rltextViewCropCancel);
+       
+        RelativeLayout.LayoutParams rltextViewCrop = new RelativeLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        rltextViewCrop.setMargins(0,
+                ScalePx.scalePx(this, 13), ScalePx.scalePx(this, 31), 0);
+        rltextViewCrop.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
+       
+        textViewCrop.setLayoutParams(rltextViewCrop);
         textViewCrop.setOnClickListener(this);
         textViewCropCancel.setOnClickListener(this);
         textVoiceNameInEditMode.setOnClickListener(this);
