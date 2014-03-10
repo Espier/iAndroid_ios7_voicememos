@@ -1212,7 +1212,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         msg.what = 1;
                         handler.sendMessage(msg);
                         try {
-                            Thread.sleep(invalidate_rate*5);
+                            Thread.sleep(invalidate_rate*4);
                         } catch (Exception e) {
                             
                         }
