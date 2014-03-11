@@ -81,6 +81,8 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
             return 0;
         return mRecorder.getMaxAmplitude();
     }
+    
+    
 
     public void setOnStateChangedListener(OnStateChangedListener listener) {
         mOnStateChangedListener = listener;

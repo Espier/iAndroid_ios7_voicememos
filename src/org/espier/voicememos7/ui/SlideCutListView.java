@@ -75,6 +75,7 @@ public class SlideCutListView extends ListView {
         RIGHT, LEFT;
     }
     
+    private boolean isScrolling = false;
     private Button hiddenButton;
     
     static boolean isDown = false;
@@ -139,20 +140,20 @@ public class SlideCutListView extends ListView {
                     
                 }
                 
-                if (itemView != null &&itemView.getScrollX()>0) {
-                    restoreItem();
-                    return false;
-                    
-                }
+//                if (itemView != null &&getitemView.getScrollX()>0) {
+//                    restoreItem();
+//                    return false;
+//                    
+//                }
                 itemView = itemWholeView.findViewById(R.id.memos_item_visible);
 //                itemView = getChildAt(slidePosition - getFirstVisiblePosition());
                 
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                if(itemView==null){
-                    return super.dispatchTouchEvent(event);
-                }
+//                if(itemView==null){
+//                    return super.dispatchTouchEvent(event);
+//                }
                 Log.d("listview","action move:getScrollX"+String.valueOf(itemView.getScrollX()));
                 Log.d("listview","action move:downX"+String.valueOf(downX));
                 Log.d("listview","action move:event.getX()"+String.valueOf(event.getX()));
@@ -218,13 +219,18 @@ public class SlideCutListView extends ListView {
             // 滚回到原始位置,为了偷下懒这里是直接调用scrollTo滚动
             itemView.scrollTo(0, 0);
             hiddenButton.setEnabled(false);
+            isScrolling = true;
         }
 
     }
     
     public void restoreItem() {
-        if (itemView!=null)
+        isScrolling = true;
+        if (itemView!=null) {
             itemView.scrollTo(0,0);
+            hiddenButton.setEnabled(false);
+            
+        }
     }
 
     /**
@@ -234,8 +240,11 @@ public class SlideCutListView extends ListView {
     public boolean onTouchEvent(MotionEvent ev) {
         
         
-        if (ev.getAction() == MotionEvent.ACTION_DOWN)
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             lastY = (int)ev.getY();
+//            if (hiddenButton.isEnabled())
+//                isScrolling = true;
+        }
         
          
         Log.d("adf","in onTouchEvent:");
@@ -254,7 +263,7 @@ public class SlideCutListView extends ListView {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     Log.d("adf","onTouchEvent: action move");
-
+                    
                     MotionEvent cancelEvent = MotionEvent.obtain(ev);
                     cancelEvent.setAction(MotionEvent.ACTION_CANCEL |
                             (ev.getActionIndex() << MotionEvent.ACTION_POINTER_INDEX_SHIFT));
@@ -286,13 +295,30 @@ public class SlideCutListView extends ListView {
         }
         if (Math.abs(ev.getY() - lastY)>mTouchSlop)
             return super.onTouchEvent(ev);
-        if(itemView==null){
-            return super.onTouchEvent(ev);
-        }
+//        if(itemView==null){
+//            return super.onTouchEvent(ev);
+//        }
+        
+//        if (isDown == false) {
+//            restoreItem();
+//            return super.onTouchEvent(ev);
+//        }
+//        isDown = false;
+        Log.d("adf","isScrolling="+String.valueOf(isScrolling));
+        Log.d("adf","hiddenButton.isEnalbed="+String.valueOf(hiddenButton.isEnabled()));
+//        if (isScrolling) {
+//            
+//            restoreItem();
+//            
+//            return super.onTouchEvent(ev);
+//        }
         Log.d("adsf", "getScrollx=" + String.valueOf(itemView.getScrollX()));
         Log.d("adsf", "getScrolly=" + String.valueOf(itemView.getScrollY()));
         if (itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
             View itemWholeView = getChildAt(slidePosition - getFirstVisiblePosition());
+            if(itemWholeView==null){
+                return super.onTouchEvent(ev);
+            }
             itemWholeView.performClick();
         }
         // 否则直接交给ListView来处理onTouchEvent事件
