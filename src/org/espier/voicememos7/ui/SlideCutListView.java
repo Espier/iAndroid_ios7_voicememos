@@ -75,6 +75,7 @@ public class SlideCutListView extends ListView {
         RIGHT, LEFT;
     }
     
+    private boolean isScrolling = false;
     private Button hiddenButton;
     
     static boolean isDown = false;
@@ -218,14 +219,17 @@ public class SlideCutListView extends ListView {
             // 滚回到原始位置,为了偷下懒这里是直接调用scrollTo滚动
             itemView.scrollTo(0, 0);
             hiddenButton.setEnabled(false);
+            isScrolling = true;
         }
 
     }
     
     public void restoreItem() {
+        isScrolling = true;
         if (itemView!=null) {
             itemView.scrollTo(0,0);
             hiddenButton.setEnabled(false);
+            
         }
     }
 
@@ -236,8 +240,11 @@ public class SlideCutListView extends ListView {
     public boolean onTouchEvent(MotionEvent ev) {
         
         
-        if (ev.getAction() == MotionEvent.ACTION_DOWN)
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             lastY = (int)ev.getY();
+//            if (hiddenButton.isEnabled())
+//                isScrolling = true;
+        }
         
          
         Log.d("adf","in onTouchEvent:");
@@ -256,7 +263,7 @@ public class SlideCutListView extends ListView {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     Log.d("adf","onTouchEvent: action move");
-
+                    
                     MotionEvent cancelEvent = MotionEvent.obtain(ev);
                     cancelEvent.setAction(MotionEvent.ACTION_CANCEL |
                             (ev.getActionIndex() << MotionEvent.ACTION_POINTER_INDEX_SHIFT));
@@ -297,6 +304,14 @@ public class SlideCutListView extends ListView {
 //            return super.onTouchEvent(ev);
 //        }
 //        isDown = false;
+        Log.d("adf","isScrolling="+String.valueOf(isScrolling));
+        Log.d("adf","hiddenButton.isEnalbed="+String.valueOf(hiddenButton.isEnabled()));
+//        if (isScrolling) {
+//            
+//            restoreItem();
+//            
+//            return super.onTouchEvent(ev);
+//        }
         Log.d("adsf", "getScrollx=" + String.valueOf(itemView.getScrollX()));
         Log.d("adsf", "getScrolly=" + String.valueOf(itemView.getScrollY()));
         if (itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
