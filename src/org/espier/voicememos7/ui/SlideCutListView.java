@@ -150,9 +150,9 @@ public class SlideCutListView extends ListView {
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                if(itemView==null){
-                    return super.dispatchTouchEvent(event);
-                }
+//                if(itemView==null){
+//                    return super.dispatchTouchEvent(event);
+//                }
                 Log.d("listview","action move:getScrollX"+String.valueOf(itemView.getScrollX()));
                 Log.d("listview","action move:downX"+String.valueOf(downX));
                 Log.d("listview","action move:event.getX()"+String.valueOf(event.getX()));
@@ -223,8 +223,10 @@ public class SlideCutListView extends ListView {
     }
     
     public void restoreItem() {
-        if (itemView!=null)
+        if (itemView!=null) {
             itemView.scrollTo(0,0);
+//            hiddenButton.setEnabled(false);
+        }
     }
 
     /**
@@ -286,9 +288,9 @@ public class SlideCutListView extends ListView {
         }
         if (Math.abs(ev.getY() - lastY)>mTouchSlop)
             return super.onTouchEvent(ev);
-        if(itemView==null){
-            return super.onTouchEvent(ev);
-        }
+//        if(itemView==null){
+//            return super.onTouchEvent(ev);
+//        }
         Log.d("adsf", "getScrollx=" + String.valueOf(itemView.getScrollX()));
         Log.d("adsf", "getScrolly=" + String.valueOf(itemView.getScrollY()));
         if (itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
