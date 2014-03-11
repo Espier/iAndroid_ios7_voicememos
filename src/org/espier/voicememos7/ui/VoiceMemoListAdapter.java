@@ -628,6 +628,67 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             mHandler.sendMessageDelayed(msg, delay);
         }
     }
+    
+    public void  showOrHiddenDelete(boolean isShow) {
+        // TODO Auto-generated method stub textview changeto editView
+        if (isShow) {
+            // show delete image textview show finish
+            //textViewEdit.setText(getResources().getString(R.string.finish));
+            for (View item :list) {
+//            for (int i = 0; i < slideCutListView.getCount(); i++) {
+//                View item = slideCutListView.getChildAt(i);
+                ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
+                delete.setVisibility(View.VISIBLE);
+                RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.FILL_PARENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+                lpTitle.setMargins(ScalePx.scalePx(mContext, 31),
+                        0, 0, 0);
+                final TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
+                final EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
+                itemtitle.setLayoutParams(lpTitle);
+                final String title = itemname.getText().toString();
+                final TextView idtextview =  (TextView)item.findViewById(R.id.memos_item__id);
+                itemname.setVisibility(View.INVISIBLE);
+                itemtitle.setTextSize(itemname.getTextSize());
+                itemtitle.setText(title);
+                itemtitle.setVisibility(View.VISIBLE);
+                 itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                    
+                                    @Override
+                                    public void onFocusChange(View v, boolean hasFocus) {
+                                        // TODO Auto-generated method stub
+                                        if(!hasFocus){
+                                            String newname = itemtitle.getText().toString();
+                                            if(!title.equals(newname)){
+                                                //memeoname nodified  update momeinfo
+                                                System.out.println("(Integer)   "+(Integer)idtextview.getTag());
+                                                MemosUtils.updateVoiceName(mContext, newname,
+                                                        (Integer) idtextview.getTag());
+                                                itemname.setText(newname);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+        } else {
+            //
+//            textViewEdit.setText(getResources().getString(R.string.edit));
+            for (View item:list) {
+//                View item = slideCutListView.getChildAt(i);
+                ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
+                delete.setVisibility(View.GONE);
+
+                TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
+                EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
+                String title = itemtitle.getText().toString();
+                itemtitle.setVisibility(View.INVISIBLE);
+                itemname.setText(title);
+                itemname.setVisibility(View.VISIBLE);
+
+            }
+        }
+    }
 
     protected long refreshNow(ViewHolder view) {
         if (mCurrentMediaPlayer == null || mRecorder.getState() != Recorder.PLAYING_STATE) {
