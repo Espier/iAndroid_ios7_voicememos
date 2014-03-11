@@ -316,6 +316,9 @@ public class SlideCutListView extends ListView {
         Log.d("adsf", "getScrolly=" + String.valueOf(itemView.getScrollY()));
         if (itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
             View itemWholeView = getChildAt(slidePosition - getFirstVisiblePosition());
+            if(itemWholeView==null){
+                return super.onTouchEvent(ev);
+            }
             itemWholeView.performClick();
         }
         // 否则直接交给ListView来处理onTouchEvent事件

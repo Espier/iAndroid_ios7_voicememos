@@ -189,7 +189,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 RelativeLayout.LayoutParams.FILL_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpTitle.setMargins(ScalePx.scalePx(mContext, 31),
-                ScalePx.scalePx(mContext, 13), 0, 0);
+                ScalePx.scalePx(mContext, 13), ScalePx.scalePx(mContext, 31), 0);
         holder.txtRecordName.setLayoutParams(lpTitle);
 
         holder.txtRecordNameEditable.setVisibility(View.GONE);
@@ -218,25 +218,30 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 13), 0, 0);
         holder.playControl.setLayoutParams(lpPlay);
 
-        LinearLayout.LayoutParams lpLeftTime = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpLeftTime = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpLeftTime.setMargins(ScalePx.scalePx(mContext, 36),
                 0, 0, 0);
+        lpLeftTime.addRule(RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.TRUE);
         holder.mCurrentTime.setLayoutParams(lpLeftTime);
-
-        LinearLayout.LayoutParams lpSeekBar = new LinearLayout.LayoutParams(
-                ScalePx.scalePx(mContext, 340),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        
+        RelativeLayout.LayoutParams lpSeekBar = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        System.out.println("lay  width  "+lpSeekBar.width);
         lpSeekBar.setMargins(ScalePx.scalePx(mContext, 18),
                 ScalePx.scalePx(mContext, 13), 0, 0);
+        lpSeekBar.addRule(RelativeLayout.RIGHT_OF,R.id.current_positon);
+        lpSeekBar.addRule(RelativeLayout.LEFT_OF,R.id.current_remain);
         holder.bar.setLayoutParams(lpSeekBar);
 
-        LinearLayout.LayoutParams lpRightTime = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpRightTime = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpRightTime.setMargins(ScalePx.scalePx(mContext, 18),
-                0, 0, 0);
+                0, ScalePx.scalePx(mContext, 33), 0);
+        lpRightTime.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
         holder.mCurrentRemain.setLayoutParams(lpRightTime);
 
         LinearLayout.LayoutParams lpLine = new LinearLayout.LayoutParams(
@@ -330,11 +335,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         view.setClickable(false);
 //        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
-        holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate,
+        holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, holder.txtRecordName.getText().toString(), strDate,
                 memoid));
         holder.del.setEnabled(true);
-        holder.btnHiddenDelete.setOnClickListener(new OnClickDelete(path, itemname, memoid));
-        holder.del.setOnClickListener(new OnClickDelete(path, itemname, memoid));
+        holder.btnHiddenDelete.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder));
+        holder.del.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder));
         holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
         
         if (isCollapsed) {
@@ -492,9 +497,10 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         private final String path;
         private final String itemname;
         private final int memoid;
-
-        private OnClickDelete(String path, String itemname, int memoid) {
+        private final ViewHolder holder;
+        private OnClickDelete(String path, String itemname, int memoid,ViewHolder holder) {
             this.path = path;
+            this.holder= holder;
             this.itemname = itemname;
             this.memoid = memoid;
         }
@@ -506,7 +512,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             }
             Intent delIntent = new Intent(mContext, MemoDelete.class);
             delIntent.putExtra("mCurrentMemoId", memoid);
-            delIntent.putExtra("memoname", itemname);
+            delIntent.putExtra("memoname", holder.txtRecordName.getText().toString());
             delIntent.putExtra("memopath", path);
             setAChanged(delIntent, DEL_REQUEST);
 //            startActivityForResult(delIntent, DEL_REQUEST);
@@ -553,7 +559,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             VoiceMemo memo = new VoiceMemo();
             memo.setMemId(String.valueOf(memoid));
             memo.setMemCreatedDate(dd);
-            memo.setMemName(itemname);
+            memo.setMemName(holder.txtRecordName.getText().toString());
             memo.setMemPath(path);
             memo.setMemDuration(secs);
             currentMemo = memo;
@@ -643,16 +649,33 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lpTitle.setMargins(ScalePx.scalePx(mContext, 31),
                         0, 0, 0);
-                TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
-                EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
+                final TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
+                final EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
                 itemtitle.setLayoutParams(lpTitle);
-                String title = itemname.getText().toString();
+                final String title = itemname.getText().toString();
+                final TextView idtextview =  (TextView)item.findViewById(R.id.memos_item__id);
                 itemname.setVisibility(View.INVISIBLE);
                 itemtitle.setTextSize(itemname.getTextSize());
                 itemtitle.setText(title);
                 itemtitle.setVisibility(View.VISIBLE);
-
-            }
+                 itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                    
+                                    @Override
+                                    public void onFocusChange(View v, boolean hasFocus) {
+                                        // TODO Auto-generated method stub
+                                        if(!hasFocus){
+                                            String newname = itemtitle.getText().toString();
+                                            if(!title.equals(newname)){
+                                                //memeoname nodified  update momeinfo
+                                                System.out.println("(Integer)   "+(Integer)idtextview.getTag());
+                                                MemosUtils.updateVoiceName(mContext, newname,
+                                                        (Integer) idtextview.getTag());
+                                                itemname.setText(newname);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
         } else {
             //
 //            textViewEdit.setText(getResources().getString(R.string.edit));

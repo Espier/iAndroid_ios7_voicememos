@@ -98,6 +98,15 @@ public class MemosUtils {
         }
     }
     
+    public static int getEllipsizeByViewWidth(String str,int viewWidth) {
+        TextPaint paint = new TextPaint();
+        float size = paint.measureText(str);
+        float charsize = size/str.length();
+        final int LENGTH = (int) (viewWidth/charsize);
+        return LENGTH;
+    }
+    
+    
     public static String makeDateString(Context context, int type, long timestamp) {
         String dateFormat = context.getString(R.string.date_time_format);
         if (type == EspierVoiceMemos7.LABEL_TYPE_NONE) {

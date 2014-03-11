@@ -23,6 +23,7 @@ public class MemoDelete extends Activity implements OnClickListener {
     int mCurrentMemoId;
     private String memopath;
     String index;
+    int width;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +36,8 @@ public class MemoDelete extends Activity implements OnClickListener {
         // LinearLayout layout = (LinearLayout) findViewById(R.id.buttonlay);
         // layout.
         del = (Button) findViewById(R.id.memo_del_ok);
+        int ems = MemosUtils.getEllipsizeByViewWidth(memoname, width);
+        del.setEms(ems);
         del.setHeight(ScalePx.scalePx(this, 88));
         LinearLayout.LayoutParams lay = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -46,8 +49,7 @@ public class MemoDelete extends Activity implements OnClickListener {
 //          String strDot = "...";
 //          String str = itemname.substring(0, 16- strDot.length());
           
-        String shortName = MemosUtils.Ellipsize(memoname,this);
-        del.setText(getResources().getString(R.string.delete) + "\"" + shortName + "\"");
+        del.setText(memoname);
         cancel = (Button) findViewById(R.id.memo_del_cancel);
         LinearLayout.LayoutParams lay2 = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -95,5 +97,14 @@ public class MemoDelete extends Activity implements OnClickListener {
         setResult(Activity.RESULT_OK,in);
         finish();
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        // TODO Auto-generated method stub
+        super.onWindowFocusChanged(hasFocus);
+        del = (Button) findViewById(R.id.memo_del_ok);
+        width = del.getWidth();
+    }
+    
 
 }
