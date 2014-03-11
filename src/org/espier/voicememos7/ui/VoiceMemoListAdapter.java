@@ -330,11 +330,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         view.setClickable(false);
 //        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
-        holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, itemname, strDate,
+        holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, holder.txtRecordName.getText().toString(), strDate,
                 memoid));
         holder.del.setEnabled(true);
-        holder.btnHiddenDelete.setOnClickListener(new OnClickDelete(path, itemname, memoid));
-        holder.del.setOnClickListener(new OnClickDelete(path, itemname, memoid));
+        holder.btnHiddenDelete.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder));
+        holder.del.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder));
         holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
         
         if (isCollapsed) {
@@ -492,9 +492,10 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         private final String path;
         private final String itemname;
         private final int memoid;
-
-        private OnClickDelete(String path, String itemname, int memoid) {
+        private final ViewHolder holder;
+        private OnClickDelete(String path, String itemname, int memoid,ViewHolder holder) {
             this.path = path;
+            this.holder= holder;
             this.itemname = itemname;
             this.memoid = memoid;
         }
@@ -506,7 +507,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             }
             Intent delIntent = new Intent(mContext, MemoDelete.class);
             delIntent.putExtra("mCurrentMemoId", memoid);
-            delIntent.putExtra("memoname", itemname);
+            delIntent.putExtra("memoname", holder.txtRecordName.getText().toString());
             delIntent.putExtra("memopath", path);
             setAChanged(delIntent, DEL_REQUEST);
 //            startActivityForResult(delIntent, DEL_REQUEST);
@@ -553,7 +554,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             VoiceMemo memo = new VoiceMemo();
             memo.setMemId(String.valueOf(memoid));
             memo.setMemCreatedDate(dd);
-            memo.setMemName(itemname);
+            memo.setMemName(holder.txtRecordName.getText().toString());
             memo.setMemPath(path);
             memo.setMemDuration(secs);
             currentMemo = memo;

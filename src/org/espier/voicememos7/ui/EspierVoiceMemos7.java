@@ -579,14 +579,32 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lpTitle.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31),
                         0, 0, 0);
-                TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
-                EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
+                final TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
+                final EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
                 itemtitle.setLayoutParams(lpTitle);
-                String title = itemname.getText().toString();
+              final TextView idtextview =  (TextView) findViewById(R.id.memos_item__id);
+                final String title = itemname.getText().toString();
                 itemname.setVisibility(View.INVISIBLE);
                 itemtitle.setTextSize(itemname.getTextSize());
                 itemtitle.setText(title);
                 itemtitle.setVisibility(View.VISIBLE);
+                itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        // TODO Auto-generated method stub
+                        if(!hasFocus){
+                            String newname = itemtitle.getText().toString();
+                            if(!title.equals(newname)){
+                                //memeoname nodified  update momeinfo
+                                System.out.println("(Integer)   "+(Integer)idtextview.getTag());
+                                MemosUtils.updateVoiceName(getApplicationContext(), newname,
+                                        (Integer) idtextview.getTag());
+                                itemname.setText(newname);
+                            }
+                        }
+                    }
+                });
 
             }
         } else {
