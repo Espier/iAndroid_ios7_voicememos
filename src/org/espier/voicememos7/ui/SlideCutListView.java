@@ -139,11 +139,11 @@ public class SlideCutListView extends ListView {
                     
                 }
                 
-                if (itemView != null &&itemView.getScrollX()>0) {
-                    restoreItem();
-                    return false;
-                    
-                }
+//                if (itemView != null &&getitemView.getScrollX()>0) {
+//                    restoreItem();
+//                    return false;
+//                    
+//                }
                 itemView = itemWholeView.findViewById(R.id.memos_item_visible);
 //                itemView = getChildAt(slidePosition - getFirstVisiblePosition());
                 
@@ -225,7 +225,7 @@ public class SlideCutListView extends ListView {
     public void restoreItem() {
         if (itemView!=null) {
             itemView.scrollTo(0,0);
-//            hiddenButton.setEnabled(false);
+            hiddenButton.setEnabled(false);
         }
     }
 
@@ -291,6 +291,12 @@ public class SlideCutListView extends ListView {
 //        if(itemView==null){
 //            return super.onTouchEvent(ev);
 //        }
+        
+//        if (isDown == false) {
+//            restoreItem();
+//            return super.onTouchEvent(ev);
+//        }
+//        isDown = false;
         Log.d("adsf", "getScrollx=" + String.valueOf(itemView.getScrollX()));
         Log.d("adsf", "getScrolly=" + String.valueOf(itemView.getScrollY()));
         if (itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
