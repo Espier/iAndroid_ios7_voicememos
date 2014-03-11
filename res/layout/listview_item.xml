@@ -94,29 +94,42 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="10dip"
+            android:layout_weight="1"
             android:contentDescription="@string/finish"
             android:src="@drawable/play" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1" >
+            android:layout_weight="5" >
 
             <TextView
                 android:id="@+id/current_positon"
+                android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dip"
                 android:gravity="top"
                 android:text="0:00" />
+            
+            <TextView
+                android:layout_alignParentRight="true"
+                android:id="@+id/current_remain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:gravity="top"
+                android:text="-0:00" />
 
             <SeekBar
                 android:id="@android:id/progress"
+                android:layout_toRightOf="@id/current_positon"
+                android:layout_toLeftOf="@id/current_remain"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
                 android:drawablePadding="5dip"
                 android:gravity="center_vertical"
                 android:maxHeight="2dip"
@@ -125,15 +138,8 @@
                 android:thumb="@drawable/thumb"
                 android:thumbOffset="0.0dp" />
 
-            <TextView
-                android:id="@+id/current_remain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
-                android:layout_marginRight="10dip"
-                android:gravity="top"
-                android:text="-0:00" />
-        </LinearLayout>
+            
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
