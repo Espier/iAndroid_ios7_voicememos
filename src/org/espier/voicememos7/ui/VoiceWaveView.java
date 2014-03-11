@@ -1,6 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -568,7 +569,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawRecordView(Canvas canvas)
     {
-        x = w * time / (time_x * 1000) + margin_lef_init;
+        //x = w * time / (time_x * 1000) + margin_lef_init;
         x = margin_lef_init + time * v;
         if (x >= w / 2) {
             x = w / 2;
@@ -1065,6 +1066,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         }
                         if (recorder != null && !recorder.isReSet) {
                             int amp = recorder.getMaxAmplitude();
+                            
                             voice_list.add(amp / 300f);
 
                         }
