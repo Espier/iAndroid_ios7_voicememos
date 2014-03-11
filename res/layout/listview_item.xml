@@ -28,11 +28,18 @@
             </Button>
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/memos_item_visible"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
-
+			<ImageView 
+			    android:id="@+id/deleteimage"
+			    android:layout_gravity="center_horizontal"
+			    android:layout_marginLeft="10dip"
+			    android:layout_height="fill_parent"
+			    android:layout_width="wrap_content"
+			    android:src="@drawable/delete"
+			    />
             <RelativeLayout
                 android:id="@+id/memos_item_bg"
                 android:layout_width="fill_parent"
@@ -71,7 +78,7 @@
                     android:layout_toRightOf="@id/memos_item_create_date"
                     android:textColor="@color/black" />
             </RelativeLayout>
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout
