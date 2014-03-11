@@ -189,7 +189,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 RelativeLayout.LayoutParams.FILL_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpTitle.setMargins(ScalePx.scalePx(mContext, 31),
-                ScalePx.scalePx(mContext, 13), 0, 0);
+                ScalePx.scalePx(mContext, 13), ScalePx.scalePx(mContext, 31), 0);
         holder.txtRecordName.setLayoutParams(lpTitle);
 
         holder.txtRecordNameEditable.setVisibility(View.GONE);
