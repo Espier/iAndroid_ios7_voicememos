@@ -189,7 +189,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 RelativeLayout.LayoutParams.FILL_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpTitle.setMargins(ScalePx.scalePx(mContext, 31),
-                ScalePx.scalePx(mContext, 13), 0, 0);
+                ScalePx.scalePx(mContext, 13), ScalePx.scalePx(mContext, 31), 0);
         holder.txtRecordName.setLayoutParams(lpTitle);
 
         holder.txtRecordNameEditable.setVisibility(View.GONE);
@@ -218,25 +218,30 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 13), 0, 0);
         holder.playControl.setLayoutParams(lpPlay);
 
-        LinearLayout.LayoutParams lpLeftTime = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpLeftTime = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpLeftTime.setMargins(ScalePx.scalePx(mContext, 36),
                 0, 0, 0);
+        lpLeftTime.addRule(RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.TRUE);
         holder.mCurrentTime.setLayoutParams(lpLeftTime);
-
-        LinearLayout.LayoutParams lpSeekBar = new LinearLayout.LayoutParams(
-                ScalePx.scalePx(mContext, 340),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        
+        RelativeLayout.LayoutParams lpSeekBar = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        System.out.println("lay  width  "+lpSeekBar.width);
         lpSeekBar.setMargins(ScalePx.scalePx(mContext, 18),
                 ScalePx.scalePx(mContext, 13), 0, 0);
+        lpSeekBar.addRule(RelativeLayout.RIGHT_OF,R.id.current_positon);
+        lpSeekBar.addRule(RelativeLayout.LEFT_OF,R.id.current_remain);
         holder.bar.setLayoutParams(lpSeekBar);
 
-        LinearLayout.LayoutParams lpRightTime = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpRightTime = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpRightTime.setMargins(ScalePx.scalePx(mContext, 18),
-                0, 0, 0);
+                0, ScalePx.scalePx(mContext, 33), 0);
+        lpRightTime.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
         holder.mCurrentRemain.setLayoutParams(lpRightTime);
 
         LinearLayout.LayoutParams lpLine = new LinearLayout.LayoutParams(
@@ -246,32 +251,31 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 38), 0, 0);
         holder.cellGrayLine.setLayoutParams(lpLine);
 
-        LinearLayout.LayoutParams lpShare = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpShare = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpShare.setMargins(ScalePx.scalePx(mContext, 32),
                 ScalePx.scalePx(mContext, 16), 0,
                 ScalePx.scalePx(mContext, 24));
-        lpShare.weight = 0;
+        lpShare.addRule(RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.TRUE);
         holder.share.setLayoutParams(lpShare);
 
-        LinearLayout.LayoutParams lpEdit = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpEdit = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpEdit.setMargins(0,
                 ScalePx.scalePx(mContext, 16), 0, ScalePx.scalePx(mContext, 24));
-        lpEdit.weight = 1;
-        lpEdit.gravity = Gravity.CENTER_VERTICAL;
+        lpEdit.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);
         holder.edit.setLayoutParams(lpEdit);
 
-        LinearLayout.LayoutParams lpDelete = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpDelete = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpDelete.setMargins(0,
                 ScalePx.scalePx(mContext, 16),
                 ScalePx.scalePx(mContext, 32),
                 0);
-        lpDelete.weight = 0;
+        lpDelete.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
         holder.del.setLayoutParams(lpDelete);
 
         view.setTag(holder);

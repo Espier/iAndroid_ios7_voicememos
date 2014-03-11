@@ -103,7 +103,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private org.espier.voicememos7.ui.VoiceWaveView waveView;
     private org.espier.voicememos7.util.Recorder mRecorder;
     private org.espier.voicememos7.ui.VoiceMemoListAdapter mVoiceMemoListAdapter;
-    int height;
+    int height,width;
     public String mCurrentPath;
     public Integer mCurrentMemoId = -1;
     public String memoName;
@@ -937,8 +937,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         int top = rect.top;//
 
         height = getWindowManager().getDefaultDisplay().getHeight() - top;
-        int width = getWindowManager().getDefaultDisplay().getWidth();
-
+        width = getWindowManager().getDefaultDisplay().getWidth();
         RelativeLayout.LayoutParams relP = new android.widget.RelativeLayout.LayoutParams(
                 android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
                 (int) (height * 0.9 * 4 / 7 - 30));
