@@ -111,6 +111,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     int indexnum;
     private CheapSoundFile mSoundFile;
     private File mFile;
+    private boolean isEditable = false;
     private boolean firstTime = true;
     TextView txtRecordName;
     View emptyView;
@@ -557,7 +558,20 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
                 break;
             case R.id.editButton:
-                showOrHiddenDelete();
+                // in edit status
+                TextView tv = (TextView)findViewById(R.id.editButton);
+                if (isEditable) {
+                    tv.setText(R.string.edit);
+                    mVoiceMemoListAdapter.showOrHiddenDelete(false);
+                    isEditable = false;
+                } else {
+                // in normal status
+                    tv.setText(R.string.finish);
+                    mVoiceMemoListAdapter.showOrHiddenDelete(true);
+                    isEditable = true;
+                }
+                
+//                showOrHiddenDelete();
 
                 break;
             default:
@@ -565,48 +579,48 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
     }
 
-    private void showOrHiddenDelete() {
-        // TODO Auto-generated method stub textview changeto editView
-        if (textViewEdit.getText().toString().equals(getResources().getString(R.string.edit))) {
-            // show delete image textview show finish
-            textViewEdit.setText(getResources().getString(R.string.finish));
-            for (int i = 0; i < slideCutListView.getCount(); i++) {
-                View item = slideCutListView.getChildAt(i);
-                ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
-                delete.setVisibility(View.VISIBLE);
-                RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.FILL_PARENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                lpTitle.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31),
-                        0, 0, 0);
-                TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
-                EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
-                itemtitle.setLayoutParams(lpTitle);
-                String title = itemname.getText().toString();
-                itemname.setVisibility(View.INVISIBLE);
-                itemtitle.setTextSize(itemname.getTextSize());
-                itemtitle.setText(title);
-                itemtitle.setVisibility(View.VISIBLE);
-
-            }
-        } else {
-            //
-            textViewEdit.setText(getResources().getString(R.string.edit));
-            for (int i = 0; i < slideCutListView.getCount(); i++) {
-                View item = slideCutListView.getChildAt(i);
-                ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
-                delete.setVisibility(View.GONE);
-
-                TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
-                EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
-                String title = itemtitle.getText().toString();
-                itemtitle.setVisibility(View.INVISIBLE);
-                itemname.setText(title);
-                itemname.setVisibility(View.VISIBLE);
-
-            }
-        }
-    }
+//    private void showOrHiddenDelete() {
+//        // TODO Auto-generated method stub textview changeto editView
+//        if (textViewEdit.getText().toString().equals(getResources().getString(R.string.edit))) {
+//            // show delete image textview show finish
+//            textViewEdit.setText(getResources().getString(R.string.finish));
+//            for (int i = 0; i < slideCutListView.getCount(); i++) {
+//                View item = slideCutListView.getChildAt(i);
+//                ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
+//                delete.setVisibility(View.VISIBLE);
+//                RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
+//                        RelativeLayout.LayoutParams.FILL_PARENT,
+//                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+//                lpTitle.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31),
+//                        0, 0, 0);
+//                TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
+//                EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
+//                itemtitle.setLayoutParams(lpTitle);
+//                String title = itemname.getText().toString();
+//                itemname.setVisibility(View.INVISIBLE);
+//                itemtitle.setTextSize(itemname.getTextSize());
+//                itemtitle.setText(title);
+//                itemtitle.setVisibility(View.VISIBLE);
+//
+//            }
+//        } else {
+//            //
+//            textViewEdit.setText(getResources().getString(R.string.edit));
+//            for (int i = 0; i < slideCutListView.getCount(); i++) {
+//                View item = slideCutListView.getChildAt(i);
+//                ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
+//                delete.setVisibility(View.GONE);
+//
+//                TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
+//                EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
+//                String title = itemtitle.getText().toString();
+//                itemtitle.setVisibility(View.INVISIBLE);
+//                itemname.setText(title);
+//                itemname.setVisibility(View.VISIBLE);
+//
+//            }
+//        }
+//    }
 
     @Override
     protected void onResume() {
