@@ -157,6 +157,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
     boolean isCliclEditBar;
 
     float v_scroll;
+    
+    int[] dataToClip;
+    int clip_interval;
 
     /**
      * @return the isEditing
@@ -286,6 +289,21 @@ public class VoiceWaveView extends View implements OnGestureListener {
             clip_time = clip_right_time - clip_left_time;
 
             time_to_edit = 0;
+            
+            //set data for clip
+            clip_interval = (int)(time_voice_all/time_x/1000/6);
+            clip_interval = clip_interval==0?1:clip_interval;
+            int num = numFrames/clip_interval;
+            dataToClip = new int[num];
+            if (clip_interval<=1) {
+                dataToClip = frameGains;
+            }
+            else {
+                for(int i=0;i<num && i*clip_interval<numFrames; i++)
+                {
+                    dataToClip[i] = frameGains[i*clip_interval];
+                }
+            }
 
         }
 
@@ -747,52 +765,67 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawVoiceEdit(Canvas canvas, float start_pos, float s)
     {
+     
+        int dataToClip_size = dataToClip.length;
         int pos_l = getFramePositionByTime(clip_left_time);
         int pos_r = getFramePositionByTime(clip_right_time);
+        pos_l = pos_l/clip_interval;
+        pos_r = pos_r/clip_interval;
+        
         pos_l = (pos_l < 0) ? 0 : pos_l;
         pos_r = (pos_r < 0) ? 0 : pos_r;
-        pos_l = (pos_l >= numFrames - 1) ? (numFrames - 1) : pos_l;
-        pos_r = (pos_r >= numFrames - 1) ? (numFrames - 1) : pos_r;
+        pos_l = (pos_l >= dataToClip_size - 1) ? (dataToClip_size - 1) : pos_l;
+        pos_r = (pos_r >= dataToClip_size - 1) ? (dataToClip_size - 1) : pos_r;
         int clip_num = pos_r - pos_l;
         float delt_x = s / clip_num;
         float zoom = (isZoomLeft || isZoomRight) ? zoomLevel : 1;
+        
+        
 
         if (isZoomRight) {
             
-            for (int i = pos_r; i > 0 && i < numFrames  ; i--) {
-                canvas.drawLine(right_edit_bar_pos - (pos_r - i) * delt_x * zoom, y_mid_line
-                        - (float) frameGains[i] * factor,
-                        right_edit_bar_pos - (pos_r - i) * delt_x * zoom, y_mid_line
-                                + (float) frameGains[i]
+            for (int i = pos_r; i > 0 && i < dataToClip_size  ; i--) {
+                float x =right_edit_bar_pos - (pos_r - i) * delt_x * zoom;
+                canvas.drawLine(x, y_mid_line
+                        - (float) dataToClip[i] * factor,
+                        x, y_mid_line
+                                + (float) dataToClip[i]
                                 * factor,
                         voiceLinePaint);
+                if (x<0) {
+                    break;
+                }
             }
 
-            for (int i = 0; i < numFrames - pos_r && pos_r + i < numFrames; i++) {
-                canvas.drawLine(right_edit_bar_pos + i * delt_x * zoom, y_mid_line
-                        - (float) frameGains[pos_r + i] * factor,
-                        right_edit_bar_pos + i * delt_x * zoom, y_mid_line
-                                + (float) frameGains[pos_r + i] * factor,
+            for (int i = 0; i < dataToClip_size - pos_r && pos_r + i < dataToClip_size; i++) {
+                float x = right_edit_bar_pos + i * delt_x * zoom;
+                canvas.drawLine(x, y_mid_line
+                        - (float) dataToClip[pos_r + i] * factor,
+                        x, y_mid_line
+                                + (float) dataToClip[pos_r + i] * factor,
                         voiceLinePaint);
+                if (x>w) {
+                    break;
+                }
             }
         }
         else {
             // left data
-            for (int i = pos_l-1; i > 0 && i < numFrames; i--) {
+            for (int i = pos_l-1; i > 0 && i < dataToClip_size; i--) {
                 canvas.drawLine(start_pos - (pos_l - i) * delt_x * zoom, y_mid_line
-                        - (float) frameGains[i] * factor,
-                        start_pos - (pos_l - i) * delt_x * zoom, y_mid_line + (float) frameGains[i]
+                        - (float) dataToClip[i] * factor,
+                        start_pos - (pos_l - i) * delt_x * zoom, y_mid_line + (float) dataToClip[i]
                                 * factor,
                         voiceLinePaint);
             }
             // clip data
            
-            for (int i = 0; i < clip_num && pos_l + i < numFrames ; i++) {
+            for (int i = 0; i < clip_num && pos_l + i < dataToClip_size ; i++) {
                 float x_p = start_pos+i*delt_x*zoom;
                 
                     canvas.drawLine(x_p, y_mid_line
-                            - (float) frameGains[pos_l + i] * factor,
-                            x_p, y_mid_line + (float) frameGains[pos_l + i]
+                            - (float) dataToClip[pos_l + i] * factor,
+                            x_p, y_mid_line + (float) dataToClip[pos_l + i]
                                     * factor,
                             voiceLinePaint);
                
@@ -800,11 +833,11 @@ public class VoiceWaveView extends View implements OnGestureListener {
             }
             // right data
             float clip_width = clip_num * delt_x;
-            for (int i = 0; i < numFrames - pos_r && pos_r + i < numFrames; i++) {
+            for (int i = 0; i < dataToClip_size - pos_r && pos_r + i < dataToClip_size; i++) {
                 canvas.drawLine(start_pos + clip_width + i * delt_x * zoom, y_mid_line
-                        - (float) frameGains[pos_r + i] * factor,
+                        - (float) dataToClip[pos_r + i] * factor,
                         start_pos + clip_width + i * delt_x * zoom, y_mid_line
-                                + (float) frameGains[pos_r + i] * factor,
+                                + (float) dataToClip[pos_r + i] * factor,
                         voiceLinePaint);
             }
 
