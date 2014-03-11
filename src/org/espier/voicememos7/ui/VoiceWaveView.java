@@ -1,6 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,8 +15,6 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
-//import android.view.View;
-
 import android.view.View;
 
 import org.espier.voicememos7.model.CheapSoundFile;
@@ -89,6 +88,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private float h_db2db;
 
     private float margin_lef_init;
+    
+    float start_move_time_textview = 120;
 
     private String blueColorString = "#007aff";
     private int blueColor;
@@ -350,7 +351,6 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void init()
     {
-        // startPlay();
         gestureDetector = new GestureDetector(this);
         gestureDetector.setIsLongpressEnabled(false);
         viewStatus = VIEW_STATUS_RECORD;
@@ -381,7 +381,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         timeTextPaint = new Paint();
         timeTextPaint.setTextSize(ScalePx.scalePx(context, 60));
         timeTextPaint.setColor(Color.WHITE);
-        timeTextPaint.setTypeface(Typeface.SANS_SERIF);
+        //timeTextPaint.setTypeface(Typeface.DEFAULT);
 
         grayLinePaint = new Paint();
         grayColor = Color.parseColor(grayColorString);
@@ -533,7 +533,6 @@ public class VoiceWaveView extends View implements OnGestureListener {
         }
         // right_edit_bar_pos = end_pos;
 
-        float start_move_time_textview = 80;
         float q = (w / 2 - start_move_time_textview);
         try {
             drawXAxisEdit(canvas, margin_lef_init, fac);
@@ -553,7 +552,6 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawToEditView(Canvas canvas)
     {
         x = w / 2;
-        float start_move_time_textview = 80;
         float q = (w / 2 - start_move_time_textview);
         time_to_edit = time_to_edit>time_voice_all?time_voice_all:time_to_edit;
         time_to_edit = time_to_edit<0?0:time_to_edit;
@@ -571,7 +569,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawRecordView(Canvas canvas)
     {
-        x = w * time / (time_x * 1000) + margin_lef_init;
+        //x = w * time / (time_x * 1000) + margin_lef_init;
         x = margin_lef_init + time * v;
         if (x >= w / 2) {
             x = w / 2;
@@ -585,7 +583,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         }
         // v = w / (time_x * 1000);
 
-        float start_move_time_textview = 80;
+        
 
         float q = (x < start_move_time_textview) ? 0 : (x - start_move_time_textview);
         try {
@@ -621,7 +619,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawSlideLineEdit(Canvas canvas, float offset)
     {
         float x = offset;
-        if (getFromPlayTime() > clip_left_time && time_to_edit < clip_right_time) {
+        if (getFromPlayTime() > clip_left_time && time_to_edit < clip_right_time && time_to_edit>0) {
             long t = (time_to_edit - clip_left_time);
             float v = (right_edit_bar_pos - left_edit_bar_pos) / (clip_right_time - clip_left_time);
             x = +left_edit_bar_pos + t * v;
@@ -643,6 +641,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawEditBar(Canvas canvas)
     {
         float time_width = 70;
+        
+        // mask
+        canvas.drawRect(left_edit_bar_pos-1, y_top_line, right_edit_bar_pos+1, y_bottom_line, maskPaint);
         // left
         canvas.drawLine(left_edit_bar_pos, y_top_line, left_edit_bar_pos, y_bottom_line,
                 editBarPaint);
@@ -670,8 +671,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                             + timeTopPaint.getTextSize(), timeTopPaint);
         }
 
-        // mask
-        canvas.drawRect(left_edit_bar_pos, y_top_line, right_edit_bar_pos, y_bottom_line, maskPaint);
+        
 
     }
 
@@ -758,8 +758,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         float zoom = (isZoomLeft || isZoomRight) ? zoomLevel : 1;
 
         if (isZoomRight) {
-            // left data
-            for (int i = pos_r; i > 0 && i < numFrames; i--) {
+            
+            for (int i = pos_r; i > 0 && i < numFrames  ; i--) {
                 canvas.drawLine(right_edit_bar_pos - (pos_r - i) * delt_x * zoom, y_mid_line
                         - (float) frameGains[i] * factor,
                         right_edit_bar_pos - (pos_r - i) * delt_x * zoom, y_mid_line
@@ -778,7 +778,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         }
         else {
             // left data
-            for (int i = pos_l; i > 0 && i < numFrames; i--) {
+            for (int i = pos_l-1; i > 0 && i < numFrames; i--) {
                 canvas.drawLine(start_pos - (pos_l - i) * delt_x * zoom, y_mid_line
                         - (float) frameGains[i] * factor,
                         start_pos - (pos_l - i) * delt_x * zoom, y_mid_line + (float) frameGains[i]
@@ -786,12 +786,17 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         voiceLinePaint);
             }
             // clip data
-            for (int i = 0; i < clip_num && pos_l + i < numFrames; i++) {
-                canvas.drawLine(start_pos + i * delt_x * zoom, y_mid_line
-                        - (float) frameGains[pos_l + i] * factor,
-                        start_pos + i * delt_x * zoom, y_mid_line + (float) frameGains[pos_l + i]
-                                * factor,
-                        voiceLinePaint);
+           
+            for (int i = 0; i < clip_num && pos_l + i < numFrames ; i++) {
+                float x_p = start_pos+i*delt_x*zoom;
+                
+                    canvas.drawLine(x_p, y_mid_line
+                            - (float) frameGains[pos_l + i] * factor,
+                            x_p, y_mid_line + (float) frameGains[pos_l + i]
+                                    * factor,
+                            voiceLinePaint);
+               
+                
             }
             // right data
             float clip_width = clip_num * delt_x;
@@ -932,11 +937,11 @@ public class VoiceWaveView extends View implements OnGestureListener {
         {
             canvas.drawText(voice_db_list[i], w - num_margin_right,
                     y_mid_line + h_db2midline + i * (h_db2db + voicedbPaint.getTextSize())
-                            + voicedbPaint.getTextSize(), isCliclEditBar ? voicedbGrayPaint
+                            + voicedbPaint.getTextSize(), isCliclEditBar && viewStatus==VIEW_STATUS_EDIT ? voicedbGrayPaint
                             : voicedbPaint);
             canvas.drawText(voice_db_list[i], w - num_margin_right, y_mid_line
                     - h_db2midline - i * (h_db2db + voicedbPaint.getTextSize()),
-                    isCliclEditBar ? voicedbGrayPaint : voicedbPaint);
+                    isCliclEditBar&& viewStatus==VIEW_STATUS_EDIT ? voicedbGrayPaint : voicedbPaint);
         }
 
     }
@@ -1061,6 +1066,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         }
                         if (recorder != null && !recorder.isReSet) {
                             int amp = recorder.getMaxAmplitude();
+                            
                             voice_list.add(amp / 300f);
 
                         }
