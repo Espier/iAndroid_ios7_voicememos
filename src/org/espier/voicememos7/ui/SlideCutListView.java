@@ -215,17 +215,17 @@ public class SlideCutListView extends ListView {
             itemView.scrollTo(screenWidth / 5, 0);
             // scrollLeft();
             hiddenButton.setEnabled(true);
+            isScrolling = true;
         } else {
             // 滚回到原始位置,为了偷下懒这里是直接调用scrollTo滚动
             itemView.scrollTo(0, 0);
             hiddenButton.setEnabled(false);
-            isScrolling = true;
+            
         }
 
     }
     
     public void restoreItem() {
-        isScrolling = true;
         if (itemView!=null) {
             itemView.scrollTo(0,0);
             hiddenButton.setEnabled(false);
@@ -306,12 +306,12 @@ public class SlideCutListView extends ListView {
 //        isDown = false;
         Log.d("adf","isScrolling="+String.valueOf(isScrolling));
         Log.d("adf","hiddenButton.isEnalbed="+String.valueOf(hiddenButton.isEnabled()));
-//        if (isScrolling) {
-//            
-//            restoreItem();
-//            
-//            return super.onTouchEvent(ev);
-//        }
+        if (isScrolling && ev.getAction() == MotionEvent.ACTION_UP) {
+            
+            restoreItem();
+            isScrolling = false;
+            return super.onTouchEvent(ev);
+        }
         Log.d("adsf", "getScrollx=" + String.valueOf(itemView.getScrollX()));
         Log.d("adsf", "getScrolly=" + String.valueOf(itemView.getScrollY()));
         if (itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
