@@ -97,7 +97,7 @@ public class CheapSoundFile {
         }
         CheapSoundFile soundFile = factory.create();
         soundFile.setProgressListener(progressListener);
-        soundFile.ReadFile(f);
+//        soundFile.ReadFile(f);
         return soundFile;
     }
 
