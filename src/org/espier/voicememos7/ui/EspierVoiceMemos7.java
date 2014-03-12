@@ -1292,6 +1292,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                         emptyView.setVisibility(View.VISIBLE);
                     }
                 }
+                TextView tv = (TextView)findViewById(R.id.editButton);
+                tv.setVisibility(View.VISIBLE);
                 // resetPlayer();
             }
         }
