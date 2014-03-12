@@ -181,7 +181,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.position = cursor.getPosition();
         holder.btnHiddenDelete = (Button)view.findViewById(R.id.hiddenDeleteButon);
         holder.bgView = view.findViewById(R.id.memos_item_bg);
-        
         RelativeLayout.LayoutParams lpButton = new RelativeLayout.LayoutParams(
                 ScalePx.scalePx(mContext, 130),
                 ScalePx.scalePx(mContext, 108));
