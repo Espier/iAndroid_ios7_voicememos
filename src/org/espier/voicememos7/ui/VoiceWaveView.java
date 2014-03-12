@@ -288,6 +288,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
             clip_time = clip_right_time - clip_left_time;
 
             time_to_edit = 0;
+            
+            //
+            setVoiceClipped(false);
 
             // set data for clip
             clip_interval = (int) (time_voice_all / time_x / 1000 / 5);
