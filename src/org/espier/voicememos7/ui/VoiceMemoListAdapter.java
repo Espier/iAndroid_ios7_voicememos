@@ -184,7 +184,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         
         RelativeLayout.LayoutParams lpButton = new RelativeLayout.LayoutParams(
                 ScalePx.scalePx(mContext, 130),
-                ScalePx.scalePx(mContext, 90));
+                ScalePx.scalePx(mContext, 108));
         lpButton.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
         holder.btnHiddenDelete.setLayoutParams(lpButton);
         
