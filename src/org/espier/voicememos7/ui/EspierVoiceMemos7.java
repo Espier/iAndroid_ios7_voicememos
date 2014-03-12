@@ -1476,10 +1476,24 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             };
             
             
-    public CheapSoundFile generateSoundFile(String memPath)
+    public CheapSoundFile generateSoundFile(String memPath,VoiceMemo memo)
     {
+        if(currentEditMemo!=null && currentEditMemo.getMemId().equals(memo.getMemId()))
+        {
+            mediaStatus = MEDIA_STATE_EDIT;
+            RelativeLayout editLayout = (RelativeLayout) findViewById(R.id.editlayout);
+            editLayout.setVisibility(View.VISIBLE);
+
+            RelativeLayout playLayout = (RelativeLayout) findViewById(R.id.playlayout);
+            playLayout.setVisibility(View.GONE);
+            updateEditModeButtonStatus();
+            ScrollToTop();
+            waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
+            waveView.setCheapSoundFile(mSoundFile);
+           return mSoundFile;
+        }
         try {
-            
+            currentEditMemo = memo;
             mSoundFile = CheapSoundFile.create(memPath, listener);
             SoundReadTask readTask = new SoundReadTask();
             readTask.execute(memPath);
@@ -1488,7 +1502,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return mSoundFile;
     }
 
@@ -1535,7 +1548,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
     @Override
     public void onVoiceEditClicked(CheapSoundFile mSoundFil1e, VoiceMemo memo) {
-        CheapSoundFile mSoundFile = generateSoundFile(memo.getMemPath());
+        CheapSoundFile mSoundFile = generateSoundFile(memo.getMemPath(),memo);
         if (mSoundFile == null)
             return;
         
@@ -1544,7 +1557,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         // int numFrames = mSoundFile.getNumFrames();
         // int totalTime = numFrames *
         // mSoundFile.getSamplesPerFrame()/sampleRate;
-        currentEditMemo = memo;
+
         textVoiceTimeInEditMode.setVisibility(View.VISIBLE);
         textVoiceTimeInEditMode.setText(memo.getMemCreatedDate());
         textVoiceNameInEditMode.setText(memo.getMemName());
