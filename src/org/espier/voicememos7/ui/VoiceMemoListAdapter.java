@@ -77,6 +77,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         void onPlayStatusChanged(int status, long position);
 
         void onPlayStopFired();
+        
+        void onSlideItem(View view);
 
     }
 
@@ -109,23 +111,24 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     }
 
     private void setOnVoiceEditClicked(CheapSoundFile mSoundFile, VoiceMemo memos) {
-
         if (mOnListViewChangedListener != null)
             mOnListViewChangedListener.onVoiceEditClicked(mSoundFile, memos);
     }
 
-    private void notifyPlayCompletion()
-    {
-        if (mOnListViewChangedListener != null)
-        {
+    private void notifyPlayCompletion() {
+        if (mOnListViewChangedListener != null) {
             mOnListViewChangedListener.onPlayStopFired();
         }
     }
 
-    private void setOnPlayPositionChanged(int status, long position)
-    {
+    private void setOnPlayPositionChanged(int status, long position) {
         if (mOnListViewChangedListener != null)
             mOnListViewChangedListener.onPlayStatusChanged(status, position);
+    }
+
+    private void SlideItem(View view) {
+        if (mOnListViewChangedListener != null)
+            mOnListViewChangedListener.onSlideItem(view);
     }
 
     public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
@@ -635,56 +638,65 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         }
     }
     
-    public void  showOrHiddenDelete(boolean isShow) {
+    public void showOrHiddenDelete(boolean isShow) {
         // TODO Auto-generated method stub textview changeto editView
         if (isShow) {
             // show delete image textview show finish
-            //textViewEdit.setText(getResources().getString(R.string.finish));
-            for (View item :list) {
-//            for (int i = 0; i < slideCutListView.getCount(); i++) {
-//                View item = slideCutListView.getChildAt(i);
+            // textViewEdit.setText(getResources().getString(R.string.finish));
+            for (final View item : list) {
+                // for (int i = 0; i < slideCutListView.getCount(); i++) {
+                // View item = slideCutListView.getChildAt(i);
                 ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
                 delete.setVisibility(View.VISIBLE);
+                delete.setOnClickListener(new View.OnClickListener() {
+                    
+                    @Override
+                    public void onClick(View v) {
+                        SlideItem(item);
+                        
+                    }
+                });
                 RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.FILL_PARENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lpTitle.setMargins(ScalePx.scalePx(mContext, 31),
                         ScalePx.scalePx(mContext, 13), ScalePx.scalePx(mContext, 31), 0);
                 final TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
-                final EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
+                final EditText itemtitle = (EditText) item
+                        .findViewById(R.id.memos_item_title_editable);
                 itemtitle.setLayoutParams(lpTitle);
                 final String title = itemname.getText().toString();
-                final TextView idtextview =  (TextView)item.findViewById(R.id.memos_item__id);
+                final TextView idtextview = (TextView) item.findViewById(R.id.memos_item__id);
                 itemname.setVisibility(View.INVISIBLE);
 //                itemtitle.setTextSize(17);
                 itemtitle.setText(title);
                 itemtitle.setVisibility(View.VISIBLE);
-                 itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                                    
-                                    @Override
-                                    public void onFocusChange(View v, boolean hasFocus) {
-                                        // TODO Auto-generated method stub
-                                        if(!hasFocus){
-                                            String newname = itemtitle.getText().toString();
-                                            if(!title.equals(newname)){
-                                                //memeoname nodified  update momeinfo
-                                                System.out.println("(Integer)   "+(Integer)idtextview.getTag());
-                                                MemosUtils.updateVoiceName(mContext, newname,
-                                                        (Integer) idtextview.getTag());
-                                                itemname.setText(newname);
-                                            }
-                                        }
-                                    }
-                                });
+                itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        // TODO Auto-generated method stub
+                        if (!hasFocus) {
+                            String newname = itemtitle.getText().toString();
+                            if (!title.equals(newname)) {
+                                // memeoname nodified update momeinfo
+                                System.out.println("(Integer)   " + (Integer) idtextview.getTag());
+                                MemosUtils.updateVoiceName(mContext, newname,
+                                        (Integer) idtextview.getTag());
+                                itemname.setText(newname);
                             }
+                        }
+                    }
+                });
+            }
         } else {
             //
-//            textViewEdit.setText(getResources().getString(R.string.edit));
-            for (View item:list) {
-//                View item = slideCutListView.getChildAt(i);
+            // textViewEdit.setText(getResources().getString(R.string.edit));
+            for (View item : list) {
+                // View item = slideCutListView.getChildAt(i);
                 ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
                 delete.setVisibility(View.GONE);
-
+                delete.setOnClickListener(null);
                 TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
                 EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
                 String title = itemtitle.getText().toString();
