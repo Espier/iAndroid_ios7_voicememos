@@ -58,6 +58,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.espier.voicememos7.R;
+import org.espier.voicememos7.R.string;
 import org.espier.voicememos7.db.MemosProvider;
 import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
@@ -138,7 +139,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private final int EDIT_STATE_CROP_CHANGE = 4;
     private TextView txtMainTitle;
     private TransparentProgressDialog progressAnimationDialog;
-
+    private TransparentProgressDialog progressAnimationDialogWhite;
+    
     private int mediaStatus = 0;
     private int recordingStatus = 1;
     private int editStatus = 2;
@@ -319,7 +321,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         start.setOnTouchListener(onTouchListener);
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        progressAnimationDialog = new TransparentProgressDialog(this);
+        progressAnimationDialog = new TransparentProgressDialog(this,R.anim.loading);
+        progressAnimationDialogWhite = new TransparentProgressDialog(this, R.anim.loading_white);
     }
 
     private void initEditLayout()
@@ -1223,6 +1226,89 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     }
 
+    public String trim(Boolean isNewFile,String mMemPath,String mMemName,int memId,long mStartPosition,long mEndPosition)
+    {
+        AMRFileUtils fileUtils = new AMRFileUtils();
+        int startFrame = fileUtils.secondsToFrames(mStartPosition * 0.001);
+        int endFrame = fileUtils.secondsToFrames(mEndPosition * 0.001);
+        if (startFrame == 0 && endFrame == 0) 
+        {
+            return "";
+        }
+        else if (mEndPosition - mStartPosition < 1000) 
+        {
+            return "";
+        }
+        
+        File inputFile = new File(mMemPath);
+        File outputFile = Recorder.createTempFile();
+        try {
+          fileUtils.ReadFile(inputFile);
+          fileUtils.WriteFile(outputFile, startFrame, endFrame - startFrame);
+
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        String memPath = outputFile.getAbsolutePath();
+        if(isNewFile)
+        {
+            String newFileNameString = mMemName+getString(R.string.copy);
+            memPath = insertVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition),newFileNameString,memPath);
+        }
+        else {
+            inputFile.delete();
+            updateVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition),memId);
+        }
+        
+        return memPath;
+    }
+    
+    private String insertVoiceMemo(File outputFile,int duration,String memName,String mMemPath)
+    {
+        if (duration < 1000) {
+            return "";
+        }
+        ContentValues cv = new ContentValues();
+        long modDate = outputFile.lastModified();
+        long current = System.currentTimeMillis();
+        Date date = new Date(current);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String filepath = outputFile.getAbsolutePath();
+        String path = filepath.substring(0,filepath.lastIndexOf("/")+1);
+        String title = formatter.format(date);
+        String newname = path+memName+"-"+title+".amr";
+        File file = AMRFileUtils.rename(filepath, newname);
+        mMemPath = file.getAbsolutePath();
+        cv.put(VoiceMemo.Memos.DATA, file.getAbsolutePath());
+        cv.put(VoiceMemo.Memos.LABEL, memName);
+        cv.put(VoiceMemo.Memos.LABEL_TYPE, 0);
+        cv.put(VoiceMemo.Memos.CREATE_DATE, current);
+        cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
+        cv.put(VoiceMemo.Memos.DURATION, duration);
+        getContentResolver().insert(VoiceMemo.Memos.CONTENT_URI, cv);
+        return mMemPath;
+    }
+
+    private void updateVoiceMemo(File outputFile, int duration,int mMemoId) 
+    {
+        if (duration < 1000) {
+            return;
+          }
+
+          ContentValues cv = new ContentValues();
+          long modDate = outputFile.lastModified();
+          cv.put(VoiceMemo.Memos.DATA, outputFile.getAbsolutePath());
+          cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
+          cv.put(VoiceMemo.Memos.DURATION, duration);
+
+          if (mMemoId != -1) {
+            Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI, mMemoId);
+            getContentResolver().update(memoUri, cv, null, null);
+          }
+    }
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
@@ -1235,15 +1321,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 // Get Extra parameters
 
                 String mMemPath = data.getStringExtra("memoPath");
-                currentEditMemo = MemosUtils.getMemoByPath(EspierVoiceMemos7.this, mMemPath);
-
-                onVoiceEditClicked(null, currentEditMemo);
-
-                editStatus = EDIT_STATE_INIT;
-                waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
-                waveView.setTime_to_edit(0);
-                updateUIByCropStatus();
-                mVoiceMemoListAdapter.notifyDataSetChanged();
+                String mMemName = data.getStringExtra("memoName");
+                int mMemoId = data.getIntExtra("memoId",0);
+                long mStartPosition = data.getLongExtra("start", 0);
+                long mEndPosition = data.getLongExtra("end", 0);
+                Boolean isNew = data.getBooleanExtra("isnew",false);
+                TrimTask trimTask = new TrimTask();
+                trimTask.execute(isNew,mMemPath,mMemName,mMemoId,mStartPosition,mEndPosition);
             }
         }
         if (resultCode == Activity.RESULT_OK) {
@@ -1263,6 +1347,73 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 // resetPlayer();
             }
         }
+    }
+    
+    class TrimTask extends AsyncTask<Object,Void, String>
+    {
+        @Override
+        protected void onPreExecute() {
+            progressAnimationDialogWhite.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Object... params) {
+            Boolean isNew = (Boolean)params[0];
+            String mMemPath = (String)params[1];
+            String mMemName = (String)params[2];
+            int mMemoId = (Integer)params[3];
+            long mStartPosition = (Long)params[4];
+            long mEndPosition = (Long)params[5];
+            String mPath = trim(isNew, mMemPath, mMemName, mMemoId, mStartPosition, mEndPosition);
+            currentEditMemo = MemosUtils.getMemoByPath(EspierVoiceMemos7.this, mPath);
+            
+            try {
+                mSoundFile = CheapSoundFile.create(mPath, listener);
+                File mFile1 = new File(mPath);
+                mSoundFile.ReadFile(mFile1);               
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return mPath;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            String mPath = result;
+            if(mPath.equals(""))
+            {
+                return;
+            }
+          
+            editStatus = EDIT_STATE_INIT;
+            waveView.setTime_to_edit(0);
+            updateUIByCropStatus();
+            mVoiceMemoListAdapter.notifyDataSetChanged();
+            
+            textVoiceTimeInEditMode.setVisibility(View.VISIBLE);
+            textVoiceTimeInEditMode.setText(currentEditMemo.getMemCreatedDate());
+            textVoiceNameInEditMode.setText(currentEditMemo.getMemName());
+            
+            RelativeLayout editLayout = (RelativeLayout) findViewById(R.id.editlayout);
+            editLayout.setVisibility(View.VISIBLE);
+
+            RelativeLayout playLayout = (RelativeLayout) findViewById(R.id.playlayout);
+            playLayout.setVisibility(View.GONE);
+            updateEditModeButtonStatus();
+            waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
+            if(mSoundFile == null)
+            {
+                return;
+            }
+            waveView.setCheapSoundFile(mSoundFile);
+            progressAnimationDialogWhite.dismiss();
+            super.onPostExecute(result);
+        }
+        
+        
     }
 
     private void deleteMemo(int memoId, String path) {
@@ -1444,7 +1595,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         private ImageView iv;
         AnimationDrawable frameAnimation;
-        public TransparentProgressDialog(Context context) {
+        public TransparentProgressDialog(Context context, int aniId) {
             super(context, R.style.TransparentProgressDialog);
                 WindowManager.LayoutParams wlmp = getWindow().getAttributes();
                 wlmp.gravity = Gravity.CENTER_HORIZONTAL;
@@ -1456,7 +1607,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             layout.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             iv = new ImageView(context);
-            iv.setBackgroundResource(R.anim.loading);
+            iv.setBackgroundResource(aniId);
             layout.addView(iv, params);
             addContentView(layout, params);
         }

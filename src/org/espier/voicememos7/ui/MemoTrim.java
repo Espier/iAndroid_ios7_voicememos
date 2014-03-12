@@ -135,9 +135,13 @@ public class MemoTrim extends Activity implements OnClickListener {
         {
             case R.id.memo_trim_origin:
             {
-                trim(false);
                 Intent intent = new Intent();
                 intent.putExtra("memoPath", mMemPath);
+                intent.putExtra("memoName", mMemName);
+                intent.putExtra("memoId", mMemoId);
+                intent.putExtra("start", mStartPosition);
+                intent.putExtra("end", mEndPosition);
+                intent.putExtra("isnew", false);
                 setResult(9001, intent);
                 finish();
             }
@@ -145,9 +149,13 @@ public class MemoTrim extends Activity implements OnClickListener {
             
             case R.id.trim_save_new:
             {
-                trim(true);
                 Intent intent = new Intent();
                 intent.putExtra("memoPath", mMemPath);
+                intent.putExtra("memoName", mMemName);
+                intent.putExtra("memoId", mMemoId);
+                intent.putExtra("start", mStartPosition);
+                intent.putExtra("end", mEndPosition);
+                intent.putExtra("isnew", true);
                 setResult(9001, intent);
                 finish();
             }
@@ -160,85 +168,5 @@ public class MemoTrim extends Activity implements OnClickListener {
             break;
         }
 
-    }
-    
-    public void trim(Boolean isNewFile)
-    {
-        AMRFileUtils fileUtils = new AMRFileUtils();
-        int startFrame = fileUtils.secondsToFrames(mStartPosition * 0.001);
-        int endFrame = fileUtils.secondsToFrames(mEndPosition * 0.001);
-        if (startFrame == 0 && endFrame == 0) 
-        {
-            return;
-        }
-        else if (mEndPosition - mStartPosition < 1000) 
-        {
-            return;
-        }
-        
-        File inputFile = new File(mMemPath);
-        File outputFile = Recorder.createTempFile();
-        try {
-          fileUtils.ReadFile(inputFile);
-          fileUtils.WriteFile(outputFile, startFrame, endFrame - startFrame);
-
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-        mMemPath = outputFile.getAbsolutePath();
-        if(isNewFile)
-        {
-            String newFileNameString = mMemName+getString(R.string.copy);
-            insertVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition),newFileNameString);
-        }
-        else {
-            inputFile.delete();
-            updateVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition));
-        }
-    }
-    
-    private void insertVoiceMemo(File outputFile,int duration,String memName)
-    {
-        if (duration < 1000) {
-            return;
-        }
-        ContentValues cv = new ContentValues();
-        long modDate = outputFile.lastModified();
-        long current = System.currentTimeMillis();
-        Date date = new Date(current);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        String filepath = outputFile.getAbsolutePath();
-        String path = filepath.substring(0,filepath.lastIndexOf("/")+1);
-        String title = formatter.format(date);
-        String newname = path+memName+"-"+title+".amr";
-       File file = AMRFileUtils.rename(filepath, newname);
-       mMemPath = file.getAbsolutePath();
-        cv.put(VoiceMemo.Memos.DATA, file.getAbsolutePath());
-        cv.put(VoiceMemo.Memos.LABEL, memName);
-        cv.put(VoiceMemo.Memos.LABEL_TYPE, 0);
-        cv.put(VoiceMemo.Memos.CREATE_DATE, current);
-        cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
-        cv.put(VoiceMemo.Memos.DURATION, duration);
-        getContentResolver().insert(VoiceMemo.Memos.CONTENT_URI, cv);
-    }
-
-    private void updateVoiceMemo(File outputFile, int duration) 
-    {
-        if (duration < 1000) {
-            return;
-          }
-
-          ContentValues cv = new ContentValues();
-          long modDate = outputFile.lastModified();
-          cv.put(VoiceMemo.Memos.DATA, outputFile.getAbsolutePath());
-          cv.put(VoiceMemo.Memos.MODIFICATION_DATE, (int) (modDate / 1000));
-          cv.put(VoiceMemo.Memos.DURATION, duration);
-
-          if (mMemoId != -1) {
-            Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI, mMemoId);
-            getContentResolver().update(memoUri, cv, null, null);
-          }
     }
 }
