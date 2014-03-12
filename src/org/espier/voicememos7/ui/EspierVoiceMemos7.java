@@ -1434,6 +1434,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         waveView.invalidate();
     }
     
+    @Override
+    public void onSlideItem(View view) {
+        Log.d("","view="+String.valueOf(view.toString()));
+        slideCutListView.scrollLeft(view);
+         }
     
     private class TransparentProgressDialog extends Dialog {
 

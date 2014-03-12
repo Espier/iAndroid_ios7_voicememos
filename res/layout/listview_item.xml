@@ -32,15 +32,22 @@
             android:id="@+id/memos_item_visible"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
-			<ImageView 
+            <LinearLayout 
+                android:layout_height="fill_parent"
+			    android:layout_width="wrap_content"
+                >
+                <ImageView 
 			    android:id="@+id/deleteimage"
 			    android:visibility="gone"
-			    android:layout_gravity="center_horizontal"
+			    android:layout_gravity="center_vertical"
 			    android:layout_marginLeft="10dip"
-			    android:layout_height="fill_parent"
+			    android:layout_height="wrap_content"
 			    android:layout_width="wrap_content"
 			    android:src="@drawable/delete"
 			    />
+                
+            </LinearLayout>
+			
             <RelativeLayout
                 android:id="@+id/memos_item_bg"
                 android:layout_width="fill_parent"
@@ -52,6 +59,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
+                    android:textSize="20sp"
                     android:singleLine="true"
                     android:textColor="@color/black" />
 
@@ -61,6 +69,7 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:inputType="text"
+                    android:textSize="20sp"
                     android:singleLine="true"
                     android:textColor="@color/black" />
 
