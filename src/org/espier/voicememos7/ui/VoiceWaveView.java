@@ -157,6 +157,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     int[] dataToClip;
     int clip_interval;
     boolean isDownToStopFling;
+    int top_time_height;
 
     /**
      * @return the isEditing
@@ -393,6 +394,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         timeTopPaint.setTextSize(ScalePx.scalePx(context, 24));
         timeTopPaint.setColor(Color.WHITE);
         timeTopPaint.setStrokeWidth(0.5f);
+        top_time_height = ScalePx.scalePx(context, (int)timeTopPaint.getTextSize());
 
         timeTopGrayPaint = new Paint();
         timeTopGrayPaint.setTextSize(ScalePx.scalePx(context, 24));
@@ -740,7 +742,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             canvas.drawText(timeFormat(clip_left_time),
                     left_edit_bar_pos < (w - time_width) ? left_edit_bar_pos
                             : (left_edit_bar_pos - time_width), y_xaxis
-                            + timeTopPaint.getTextSize(), timeTopPaint);
+                            + top_time_height, timeTopPaint);
         }
 
         // right
@@ -754,7 +756,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             canvas.drawText(timeFormat(clip_right_time),
                     (right_edit_bar_pos > time_width) ? (right_edit_bar_pos - time_width)
                             : right_edit_bar_pos, y_xaxis
-                            + timeTopPaint.getTextSize(), timeTopPaint);
+                            + top_time_height, timeTopPaint);
         }
 
     }
@@ -932,7 +934,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             }
             if (i != -1) {
                 canvas.drawText(timeAxisFormat(time_list.get(i)), x + text_offset, y_xaxis
-                        + timeTopPaint.getTextSize(), timeTopPaint);
+                        + top_time_height, timeTopPaint);
 
             }
         }
@@ -966,9 +968,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
                 index_s++;
                 canvas.drawText(timeAxisFormat(t1), x1 + text_offset,
-                        y_xaxis + timeTopPaint.getTextSize(), timeTopPaint);
+                        y_xaxis + top_time_height, timeTopPaint);
                 canvas.drawText(timeAxisFormat(t2), x2 + text_offset,
-                        y_xaxis + timeTopPaint.getTextSize(), timeTopPaint);
+                        y_xaxis + top_time_height, timeTopPaint);
 
             }
 
@@ -1009,7 +1011,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             for (int i = 0; i < n; i++) {
                 canvas.drawText(timeAxisFormat(second_time + i * t_Grid), (i + 1) * grid_width * 4
                         + text_offset, y_xaxis
-                        + timeTopPaint.getTextSize(), isCliclEditBar ? timeTopGrayPaint
+                        + top_time_height, isCliclEditBar ? timeTopGrayPaint
                         : timeTopPaint);
             }
         }
@@ -1017,7 +1019,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
             for (int i = 0; i < m_fact + 1; i++) {
                 canvas.drawText(timeAxisFormat(i), (j + i) * grid_width * 4 + text_offset, y_xaxis
-                        + timeTopPaint.getTextSize(), isCliclEditBar ? timeTopGrayPaint
+                        + top_time_height, isCliclEditBar ? timeTopGrayPaint
                         : timeTopPaint);
             }
         }
