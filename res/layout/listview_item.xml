@@ -52,6 +52,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
+                    android:textSize="20sp"
                     android:singleLine="true"
                     android:textColor="@color/black" />
 
@@ -61,6 +62,7 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:inputType="text"
+                    android:textSize="20sp"
                     android:singleLine="true"
                     android:textColor="@color/black" />
 

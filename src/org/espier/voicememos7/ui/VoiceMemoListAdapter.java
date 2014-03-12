@@ -660,7 +660,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                         RelativeLayout.LayoutParams.FILL_PARENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lpTitle.setMargins(ScalePx.scalePx(mContext, 31),
-                        0, 0, 0);
+                        ScalePx.scalePx(mContext, 13), ScalePx.scalePx(mContext, 31), 0);
                 final TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
                 final EditText itemtitle = (EditText) item
                         .findViewById(R.id.memos_item_title_editable);
@@ -668,7 +668,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 final String title = itemname.getText().toString();
                 final TextView idtextview = (TextView) item.findViewById(R.id.memos_item__id);
                 itemname.setVisibility(View.INVISIBLE);
-                itemtitle.setTextSize(itemname.getTextSize());
+//                itemtitle.setTextSize(17);
                 itemtitle.setText(title);
                 itemtitle.setVisibility(View.VISIBLE);
                 itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {

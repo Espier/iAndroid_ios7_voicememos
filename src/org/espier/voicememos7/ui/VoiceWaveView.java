@@ -291,7 +291,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
             time_to_edit = 0;
             
             //set data for clip
-            clip_interval = (int)(time_voice_all/time_x/1000/6);
+            clip_interval = (int)(time_voice_all/time_x/1000/5);
             clip_interval = clip_interval==0?1:clip_interval;
             int num = numFrames/clip_interval;
             dataToClip = new int[num];
@@ -301,7 +301,11 @@ public class VoiceWaveView extends View implements OnGestureListener {
             else {
                 for(int i=0;i<num && i*clip_interval<numFrames; i++)
                 {
-                    dataToClip[i] = frameGains[i*clip_interval];
+                    for (int j = 0; j < clip_interval; j++) {
+                        dataToClip[i] += frameGains[i*clip_interval+j];
+                    }
+                    dataToClip[i] = dataToClip[i]/clip_interval;
+                    
                 }
             }
 
@@ -637,7 +641,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawSlideLineEdit(Canvas canvas, float offset)
     {
         float x = offset;
-        if (getFromPlayTime() > clip_left_time && time_to_edit < clip_right_time && time_to_edit>0) {
+        if (getFromPlayTime() > clip_left_time && time_to_edit < clip_right_time && time_to_edit>1) {
             long t = (time_to_edit - clip_left_time);
             float v = (right_edit_bar_pos - left_edit_bar_pos) / (clip_right_time - clip_left_time);
             x = +left_edit_bar_pos + t * v;
@@ -648,6 +652,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                     slideLinePaint);
         }
 
+        //3 hori line
         canvas.drawLine(0, y_top_line, getWidth(), y_top_line, isCliclEditBar?deepDarkGrayLinePaint:grayLinePaint);
         canvas.drawLine(0, y_bottom_line, getWidth(), y_bottom_line
                 , isCliclEditBar?deepDarkGrayLinePaint:grayLinePaint);
@@ -663,7 +668,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         // mask
         canvas.drawRect(left_edit_bar_pos-1, y_top_line, right_edit_bar_pos+1, y_bottom_line, maskPaint);
         // left
-        canvas.drawLine(left_edit_bar_pos, y_top_line, left_edit_bar_pos, y_bottom_line,
+        canvas.drawLine(left_edit_bar_pos, y_top_line-2, left_edit_bar_pos, y_bottom_line,
                 editBarPaint);
         // canvas.drawLine(x, y_top_line, x, y_bottom_line, voiceLinePaint);
         canvas.drawCircle(left_edit_bar_pos, y_top_line - cicle_radius, cicle_radius, editBarPaint);
@@ -728,8 +733,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 // x_ = (s-offset)/n*i+offset;
                 x_ = offset + v * invalidate_rate * i;
             }
-            canvas.drawLine(x_, y_mid_line - voice_list.get(i),
-                    x_, y_mid_line + voice_list.get(i), voiceLinePaint);
+            float amp = voice_list.get(i);
+            amp = amp>(y_mid_line-y_top_line)*0.9f?(y_mid_line-y_top_line)*0.9f:amp;
+            canvas.drawLine(x_, y_mid_line - amp,
+                    x_, y_mid_line + amp, voiceLinePaint);
 
         }
 
