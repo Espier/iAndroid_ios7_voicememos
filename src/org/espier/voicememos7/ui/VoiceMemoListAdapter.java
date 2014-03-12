@@ -274,7 +274,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         lpDelete.setMargins(0,
                 ScalePx.scalePx(mContext, 16),
                 ScalePx.scalePx(mContext, 32),
-                0);
+                ScalePx.scalePx(mContext, 24));
         lpDelete.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
         holder.del.setLayoutParams(lpDelete);
 
