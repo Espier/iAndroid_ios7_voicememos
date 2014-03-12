@@ -17,6 +17,7 @@ import android.content.res.Resources.Theme;
 import android.database.Cursor;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -39,6 +40,8 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -133,6 +136,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private final int EDIT_STATE_INIT = 2;
     private final int EDIT_STATE_CROP_REDY = 3;
     private final int EDIT_STATE_CROP_CHANGE = 4;
+    private TextView txtMainTitle;
+    private TransparentProgressDialog progressAnimationDialog;
 
     private int mediaStatus = 0;
     private int recordingStatus = 1;
@@ -249,7 +254,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_memo_main);
         init();
-        TextView txtMainTitle = (TextView) findViewById(R.id.txtMainTitle);
+        txtMainTitle = (TextView) findViewById(R.id.txtMainTitle);
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         rlp.setMargins(0, ScalePx.scalePx(this, 29), 0, 0);
@@ -314,7 +319,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         start.setOnTouchListener(onTouchListener);
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-
+        progressAnimationDialog = new TransparentProgressDialog(this);
     }
 
     private void initEditLayout()
@@ -438,12 +443,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     {
         if (editStatus == EDIT_STATE_INIT)
         {
+            txtMainTitle.setText(getString(R.string.edit));
             layoutCrop.setVisibility(View.GONE);
             layoutEdit.setVisibility(View.VISIBLE);
             textViewVoiceEditFinishInEditMode.setVisibility(View.VISIBLE);
         }
         else if (editStatus == EDIT_STATE_CROP_REDY || editStatus == EDIT_STATE_CROP_CHANGE)
         {
+            txtMainTitle.setText(getString(R.string.crop));
             layoutCrop.setVisibility(View.VISIBLE);
             layoutEdit.setVisibility(View.GONE);
             textViewVoiceEditFinishInEditMode.setVisibility(View.GONE);
@@ -530,6 +537,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 break;
             case R.id.redButton:
                 mediaStatus = MEDIA_STATE_RECORDING;
+                txtMainTitle.setText(getString(R.string.recording));
                 recordingStatus = RECORDING_STATE_ONGOING;
                 waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_RECORD);
                 firstTime = false;
@@ -679,11 +687,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         if (mediaStatus == MEDIA_STATE_EDIT)
         {
+            txtMainTitle.setText(getString(R.string.edit));
             editLayout.setVisibility(View.VISIBLE);
             playLayout.setVisibility(View.GONE);
         }
         else if (mediaStatus == MEDIA_STATE_RECORDING)
         {
+            txtMainTitle.setText(getString(R.string.recording));
             editLayout.setVisibility(View.GONE);
             playLayout.setVisibility(View.VISIBLE);
         }
@@ -1333,6 +1343,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     class SoundReadTask extends AsyncTask<String, Void, Void>
     {
+        @Override
+        protected void onPreExecute() {
+            progressAnimationDialog.show();
+            super.onPreExecute();
+        }
 
         @Override
         protected Void doInBackground(String... params) {
@@ -1350,6 +1365,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         @Override
         protected void onPostExecute(Void result) {
+            progressAnimationDialog.dismiss();
             mediaStatus = MEDIA_STATE_EDIT;
             RelativeLayout editLayout = (RelativeLayout) findViewById(R.id.editlayout);
             editLayout.setVisibility(View.VISIBLE);
@@ -1418,11 +1434,40 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         waveView.setTime_to_end();
         waveView.invalidate();
     }
-
+    
     @Override
     public void onSlideItem(View view) {
         Log.d("","view="+String.valueOf(view.toString()));
         slideCutListView.scrollLeft(view);
-        
+         }
+    
+    private class TransparentProgressDialog extends Dialog {
+
+        private ImageView iv;
+        AnimationDrawable frameAnimation;
+        public TransparentProgressDialog(Context context) {
+            super(context, R.style.TransparentProgressDialog);
+                WindowManager.LayoutParams wlmp = getWindow().getAttributes();
+                wlmp.gravity = Gravity.CENTER_HORIZONTAL;
+                getWindow().setAttributes(wlmp);
+            setTitle(null);
+            setCancelable(false);
+            setOnCancelListener(null);
+            LinearLayout layout = new LinearLayout(context);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            iv = new ImageView(context);
+            iv.setBackgroundResource(R.anim.loading);
+            layout.addView(iv, params);
+            addContentView(layout, params);
+        }
+
+        @Override
+        public void show() {
+            super.show();
+            frameAnimation = (AnimationDrawable)iv.getBackground();
+            frameAnimation.start();
+            
+        }
     }
 }
