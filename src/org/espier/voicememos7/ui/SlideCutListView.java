@@ -204,6 +204,23 @@ public class SlideCutListView extends ListView {
         
         postInvalidate(); // 刷新itemView
     }
+    
+    public void scrollLeft(View view) {
+        removeDirection = RemoveDirection.LEFT;
+        final int delta = (screenWidth - itemView.getScrollX());
+        View v = view.findViewById(R.id.memos_item_visible);
+        // 调用startScroll方法来设置一些滚动的参数，我们在computeScroll()方法中调用scrollTo来滚动item
+        v.scrollTo(screenWidth / 5, 0);
+        // scrollLeft();
+        
+        isScrolling = true;
+        hiddenButton.setEnabled(true);
+        //hiddenButton.setVisibility(View.VISIBLE);
+//        View btnDelete = (View)itemView.findViewById(R.id.memos_item_delete_button);
+//        btnDelete.setVisibility(View.VISIBLE);
+        
+        postInvalidate(); // 刷新itemView
+    }
 
     /**
      * 根据手指滚动itemView的距离来判断是滚动到开始位置还是向左或者向右滚动

@@ -1417,4 +1417,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         waveView.setTime_to_end();
         waveView.invalidate();
     }
+
+    @Override
+    public void onSlideItem(View view) {
+        Log.d("","view="+String.valueOf(view.toString()));
+        slideCutListView.scrollLeft(view);
+        
+    }
 }
