@@ -327,7 +327,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         RelativeLayout.LayoutParams rlpRecordName = new RelativeLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         rlpRecordName.setMargins(ScalePx.scalePx(this, 31),
-                ScalePx.scalePx(this, 13), 0, 0);
+                ScalePx.scalePx(this, 13), 0, ScalePx.scalePx(this, 13));
+        rlpRecordName.addRule(RelativeLayout.LEFT_OF,R.id.editimage);
         RelativeLayout.LayoutParams rlpRecordName2 = new RelativeLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         rlpRecordName2.setMargins(ScalePx.scalePx(this, 31),
