@@ -83,7 +83,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public static final int REFRESH = 1;
     public static int LABEL_TYPE_NONE = 0;
     private MediaPlayer mCurrentMediaPlayer;
-    private static final int DEL_REQUEST = 2;
     private static final int TRIM_REQUEST = 9000;
     private static final int TRIM_DONE = 9001;
     TextView date;
@@ -579,49 +578,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
     }
 
-//    private void showOrHiddenDelete() {
-//        // TODO Auto-generated method stub textview changeto editView
-//        if (textViewEdit.getText().toString().equals(getResources().getString(R.string.edit))) {
-//            // show delete image textview show finish
-//            textViewEdit.setText(getResources().getString(R.string.finish));
-//            for (int i = 0; i < slideCutListView.getCount(); i++) {
-//                View item = slideCutListView.getChildAt(i);
-//                ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
-//                delete.setVisibility(View.VISIBLE);
-//                RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(
-//                        RelativeLayout.LayoutParams.FILL_PARENT,
-//                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-//                lpTitle.setMargins(ScalePx.scalePx(EspierVoiceMemos7.this, 31),
-//                        0, 0, 0);
-//                TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
-//                EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
-//                itemtitle.setLayoutParams(lpTitle);
-//                String title = itemname.getText().toString();
-//                itemname.setVisibility(View.INVISIBLE);
-//                itemtitle.setTextSize(itemname.getTextSize());
-//                itemtitle.setText(title);
-//                itemtitle.setVisibility(View.VISIBLE);
-//
-//            }
-//        } else {
-//            //
-//            textViewEdit.setText(getResources().getString(R.string.edit));
-//            for (int i = 0; i < slideCutListView.getCount(); i++) {
-//                View item = slideCutListView.getChildAt(i);
-//                ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
-//                delete.setVisibility(View.GONE);
-//
-//                TextView itemname = (TextView) item.findViewById(R.id.memos_item_title);
-//                EditText itemtitle = (EditText) item.findViewById(R.id.memos_item_title_editable);
-//                String title = itemtitle.getText().toString();
-//                itemtitle.setVisibility(View.INVISIBLE);
-//                itemname.setText(title);
-//                itemname.setVisibility(View.VISIBLE);
-//
-//            }
-//        }
-//    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -824,15 +780,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             }
         });
         slideCutListView.setRemoveListener(this);
-        slideCutListView.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-                // TODO: deal with onItemClick
-                Log.d("adf", "inonitemclick");
-            }
-
-        });
+//        slideCutListView.setOnItemClickListener(new OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+//                // TODO: deal with onItemClick
+//                Log.d("adf", "inonitemclick");
+//            }
+//
+//        });
         date = (TextView) findViewById(R.id.txtDate);
         String datetime = (String) DateFormat.format("yy-M-dd", System.currentTimeMillis());
         date.setText(datetime);
@@ -1278,19 +1234,19 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             }
         }
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == DEL_REQUEST) {
+            if (requestCode == MemosUtils.DELETE_WITH_CONFIRM) {
                 int id = data.getIntExtra("mCurrentMemoId", -1);
                 String memopath = data.getStringExtra("memopath");
                 deleteMemo(id, memopath);
-                mVoiceMemoListAdapter.notifyDataSetChanged();
-                mVoiceMemoListAdapter.collapseAllItems();
-                slideCutListView.restoreItem();
-                mCurrentDuration = 0;
-                if (mVoiceMemoListAdapter.getCount() == 0) {
-                    if (emptyView != null) {
-                        emptyView.setVisibility(View.VISIBLE);
-                    }
-                }
+//                mVoiceMemoListAdapter.notifyDataSetChanged();
+//                mVoiceMemoListAdapter.collapseAllItems();
+//                slideCutListView.restoreItem();
+//                mCurrentDuration = 0;
+//                if (mVoiceMemoListAdapter.getCount() == 0) {
+//                    if (emptyView != null) {
+//                        emptyView.setVisibility(View.VISIBLE);
+//                    }
+//                }
                 // resetPlayer();
             }
         }
@@ -1307,6 +1263,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             file.delete();
         }
         mCurrentPosition = -1;
+        mVoiceMemoListAdapter.notifyDataSetChanged();
+        mVoiceMemoListAdapter.collapseAllItems();
+        slideCutListView.restoreItem();
+        mCurrentDuration = 0;
+        if (mVoiceMemoListAdapter.getCount() == 0) {
+            if (emptyView != null) {
+                emptyView.setVisibility(View.VISIBLE);
+            }
+        }
 
     }
 
@@ -1326,7 +1291,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     public void onAChanged(Intent intent, int state) {
-        startActivityForResult(intent, state);
+        if (state == MemosUtils.DELETE_WITH_CONFIRM)
+            startActivityForResult(intent, state);
+        else {
+            int id = intent.getIntExtra("mCurrentMemoId", -1);
+            String memopath = intent.getStringExtra("memopath");
+            deleteMemo(id, memopath);
+        }
     }
 
     public CheapSoundFile generateSoundFile(String memPath)

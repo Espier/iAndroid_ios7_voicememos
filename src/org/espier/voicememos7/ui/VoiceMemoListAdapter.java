@@ -52,7 +52,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     private CheapSoundFile mSoundFile;
     private static final int REFRESH = 1;
     private final int MEDIA_STATE_EDIT = 1;
-    private static final int DEL_REQUEST = 2;
+    
     protected int mCurrentDuration;
     public MediaPlayer mCurrentMediaPlayer;
     private int mediaStatus = 0;
@@ -98,7 +98,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         mOnListViewChangedListener = listener;
     }
 
-    private void setAChanged(Intent intentA, int request) {
+    private void deleteItem(Intent intentA, int request) {
         if (mOnListViewChangedListener != null)
             mOnListViewChangedListener.onAChanged(intentA, request);
     }
@@ -338,8 +338,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, holder.txtRecordName.getText().toString(), strDate,
                 memoid));
         holder.del.setEnabled(true);
-        holder.btnHiddenDelete.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder));
-        holder.del.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder));
+        holder.btnHiddenDelete.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder,MemosUtils.DELETE_WITHOUT_CONFIRM));
+        holder.del.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder,MemosUtils.DELETE_WITH_CONFIRM));
         holder.playControl.setOnClickListener(new OnClickPlay(holder, path));
         
         if (isCollapsed) {
@@ -498,11 +498,14 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         private final String itemname;
         private final int memoid;
         private final ViewHolder holder;
-        private OnClickDelete(String path, String itemname, int memoid,ViewHolder holder) {
+        private int message;
+        
+        private OnClickDelete(String path, String itemname, int memoid,ViewHolder holder,int message) {
             this.path = path;
             this.holder= holder;
             this.itemname = itemname;
             this.memoid = memoid;
+            this.message = message;
         }
 
         @Override
@@ -514,8 +517,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             delIntent.putExtra("mCurrentMemoId", memoid);
             delIntent.putExtra("memoname", holder.txtRecordName.getText().toString());
             delIntent.putExtra("memopath", path);
-            setAChanged(delIntent, DEL_REQUEST);
-//            startActivityForResult(delIntent, DEL_REQUEST);
+            deleteItem(delIntent, this.message);
         }
     }
 

@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class MemosUtils {
+    public static final int DELETE_WITH_CONFIRM = 2;
+    public static final int DELETE_WITHOUT_CONFIRM = 3;
     private static StringBuilder sFormatBuilder = new StringBuilder();
     private static Formatter sFormatter = new Formatter(sFormatBuilder, Locale.getDefault());
     private static final Object[] sTimeArgs = new Object[5];
