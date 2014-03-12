@@ -158,6 +158,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     int[] dataToClip;
     int clip_interval;
+    boolean isDownToStopFling;
 
     /**
      * @return the isEditing
@@ -1275,6 +1276,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         if (getViewStatus() == VIEW_STATUS_TO_EDIT || getViewStatus() == VIEW_STATUS_EDIT) {
             if (event.getAction() == MotionEvent.ACTION_UP && isCliclEditBar)
             {
+                isDownToStopFling = false;
                 isZoomLeft = false;
                 isZoomRight = false;
                 invalidate();
@@ -1288,6 +1290,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     @Override
     public boolean onDown(MotionEvent e) {
+        isDownToStopFling = true;
         if (viewStatus == VIEW_STATUS_EDIT) {
             if (Math.abs(e.getX() - left_edit_bar_pos) < 30) {
                 isZoomLeft = true;
@@ -1300,12 +1303,14 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
             invalidate();
         }
+        
         return true;
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
+        isDownToStopFling = false;
         if (viewStatus == VIEW_STATUS_TO_EDIT) {
             v_scroll = velocityX;
 
@@ -1314,7 +1319,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 @Override
                 public void run() {
                     int i = 15;
-                    while (i > 0) {
+                    while (i > 0 && !isDownToStopFling) {
 
                         time_to_edit -= i *i* v_scroll / 30/15;
 
@@ -1322,7 +1327,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         msg.what = 1;
                         handler.sendMessage(msg);
                         try {
-                            Thread.sleep(invalidate_rate * 4);
+                            Thread.sleep(invalidate_rate * 5);
                         } catch (Exception e) {
 
                         }
@@ -1528,6 +1533,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
+        isDownToStopFling =false;
         return true;
     }
 
