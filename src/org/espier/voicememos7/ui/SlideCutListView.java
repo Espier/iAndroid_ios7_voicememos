@@ -242,15 +242,13 @@ public class SlideCutListView extends ListView {
         
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             lastY = (int)ev.getY();
-//            if (hiddenButton.isEnabled())
-//                isScrolling = true;
         }
         
          
-        Log.d("adf","in onTouchEvent:");
+        
         if (isSlide && slidePosition != AdapterView.INVALID_POSITION) {
             isDown = true;
-            Log.d("adf","in if ");
+            
             requestDisallowInterceptTouchEvent(true);
             addVelocityTracker(ev);
             final int action = ev.getAction();
@@ -258,11 +256,11 @@ public class SlideCutListView extends ListView {
             
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
-                    Log.d("adf","in action down ");
+            
                     
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    Log.d("adf","onTouchEvent: action move");
+                    
                     
                     MotionEvent cancelEvent = MotionEvent.obtain(ev);
                     cancelEvent.setAction(MotionEvent.ACTION_CANCEL |
@@ -275,7 +273,7 @@ public class SlideCutListView extends ListView {
                     itemView.scrollBy(deltaX, 0);
                     return true; // 拖动的时候ListView不滚动
                 case MotionEvent.ACTION_UP:
-                    Log.d("adf","in action up ");
+                    
                     int velocityX = getScrollVelocity();
                     if (velocityX > SNAP_VELOCITY) {
                         //scrollRight();
@@ -295,25 +293,14 @@ public class SlideCutListView extends ListView {
         }
         if (Math.abs(ev.getY() - lastY)>mTouchSlop)
             return super.onTouchEvent(ev);
-//        if(itemView==null){
-//            return super.onTouchEvent(ev);
-//        }
-        
-//        if (isDown == false) {
-//            restoreItem();
-//            return super.onTouchEvent(ev);
-//        }
-//        isDown = false;
-        Log.d("adf","isScrolling="+String.valueOf(isScrolling));
-        Log.d("adf","hiddenButton.isEnalbed="+String.valueOf(hiddenButton.isEnabled()));
+
         if (isScrolling && ev.getAction() == MotionEvent.ACTION_UP) {
             
             restoreItem();
             isScrolling = false;
             return super.onTouchEvent(ev);
         }
-        Log.d("adsf", "getScrollx=" + String.valueOf(itemView.getScrollX()));
-        Log.d("adsf", "getScrolly=" + String.valueOf(itemView.getScrollY()));
+
         if (itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
             View itemWholeView = getChildAt(slidePosition - getFirstVisiblePosition());
             if(itemWholeView==null){
