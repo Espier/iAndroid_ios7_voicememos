@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.database.Cursor;
@@ -20,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -108,7 +110,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public String memoName;
     private String memo_name;
     int indexnum;
-    private CheapSoundFile mSoundFile;
+    private CheapSoundFile mSoundFile = null;
     private File mFile;
     private boolean isEditable = false;
     private boolean firstTime = true;
@@ -580,6 +582,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     protected void onResume() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onResume();
 
         hiddenView.setOnClickListener(new View.OnClickListener() {
@@ -931,10 +934,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         adapter.remove(adapter.getItem(position));
         switch (direction) {
             case RIGHT:
-                Toast.makeText(this, "�����冲�����  " + position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "?????冲?????  " + position, Toast.LENGTH_SHORT).show();
                 break;
             case LEFT:
-                Toast.makeText(this, "���宸�������  " + position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "???宸???????  " + position, Toast.LENGTH_SHORT).show();
                 break;
 
             default:
@@ -1238,15 +1241,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 int id = data.getIntExtra("mCurrentMemoId", -1);
                 String memopath = data.getStringExtra("memopath");
                 deleteMemo(id, memopath);
-//                mVoiceMemoListAdapter.notifyDataSetChanged();
-//                mVoiceMemoListAdapter.collapseAllItems();
-//                slideCutListView.restoreItem();
-//                mCurrentDuration = 0;
-//                if (mVoiceMemoListAdapter.getCount() == 0) {
-//                    if (emptyView != null) {
-//                        emptyView.setVisibility(View.VISIBLE);
-//                    }
-//                }
+                mVoiceMemoListAdapter.notifyDataSetChanged();
+                mVoiceMemoListAdapter.collapseAllItems();
+                slideCutListView.restoreItem();
+                mCurrentDuration = 0;
+                if (mVoiceMemoListAdapter.getCount() == 0) {
+                    if (emptyView != null) {
+                        emptyView.setVisibility(View.VISIBLE);
+                    }
+                }
                 // resetPlayer();
             }
         }
@@ -1272,6 +1275,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 emptyView.setVisibility(View.VISIBLE);
             }
         }
+        TextView tv = (TextView)findViewById(R.id.editButton);
+                tv.setVisibility(View.VISIBLE);
 
     }
 
@@ -1300,13 +1305,22 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
     }
 
+    final CheapSoundFile.ProgressListener listener =
+            new CheapSoundFile.ProgressListener() {
+                public boolean reportProgress(double fractionComplete) {
+//                    Log.d("Fraction", String.valueOf(fractionComplete));
+                    return true;
+                }
+            };
+            
+            
     public CheapSoundFile generateSoundFile(String memPath)
     {
-        CheapSoundFile mSoundFile = null;
         try {
-            File mFile1 = new File(memPath);
-            mSoundFile = CheapSoundFile.create(memPath, null);
-            mSoundFile.ReadFile(mFile1);
+            
+            mSoundFile = CheapSoundFile.create(memPath, listener);
+            SoundReadTask readTask = new SoundReadTask();
+            readTask.execute(memPath);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -1316,18 +1330,47 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         return mSoundFile;
     }
 
+    class SoundReadTask extends AsyncTask<String, Void, Void>
+    {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String memPath = params[0];
+            File mFile1 = new File(memPath);
+            try {
+                mSoundFile.ReadFile(mFile1);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mediaStatus = MEDIA_STATE_EDIT;
+            RelativeLayout editLayout = (RelativeLayout) findViewById(R.id.editlayout);
+            editLayout.setVisibility(View.VISIBLE);
+
+            RelativeLayout playLayout = (RelativeLayout) findViewById(R.id.playlayout);
+            playLayout.setVisibility(View.GONE);
+            updateEditModeButtonStatus();
+            ScrollToTop();
+            waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
+            waveView.setCheapSoundFile(mSoundFile);
+            super.onPostExecute(result);
+        }
+        
+        
+        
+    }
     @Override
     public void onVoiceEditClicked(CheapSoundFile mSoundFil1e, VoiceMemo memo) {
         CheapSoundFile mSoundFile = generateSoundFile(memo.getMemPath());
         if (mSoundFile == null)
             return;
-        mediaStatus = MEDIA_STATE_EDIT;
-        ScrollToTop();
-        RelativeLayout editLayout = (RelativeLayout) findViewById(R.id.editlayout);
-        editLayout.setVisibility(View.VISIBLE);
-
-        RelativeLayout playLayout = (RelativeLayout) findViewById(R.id.playlayout);
-        playLayout.setVisibility(View.GONE);
+        
 
         // int sampleRate = mSoundFile.getSampleRate();
         // int numFrames = mSoundFile.getNumFrames();
@@ -1337,10 +1380,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         textVoiceTimeInEditMode.setVisibility(View.VISIBLE);
         textVoiceTimeInEditMode.setText(memo.getMemCreatedDate());
         textVoiceNameInEditMode.setText(memo.getMemName());
-
-        updateEditModeButtonStatus();
-        waveView.setViewStatus(VoiceWaveView.VIEW_STATUS_TO_EDIT);
-        waveView.setCheapSoundFile(mSoundFile);
     }
 
     @Override

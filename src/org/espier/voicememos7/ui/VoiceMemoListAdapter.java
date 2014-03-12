@@ -251,32 +251,31 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 38), 0, 0);
         holder.cellGrayLine.setLayoutParams(lpLine);
 
-        LinearLayout.LayoutParams lpShare = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpShare = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpShare.setMargins(ScalePx.scalePx(mContext, 32),
                 ScalePx.scalePx(mContext, 16), 0,
                 ScalePx.scalePx(mContext, 24));
-        lpShare.weight = 0;
+        lpShare.addRule(RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.TRUE);
         holder.share.setLayoutParams(lpShare);
 
-        LinearLayout.LayoutParams lpEdit = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpEdit = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpEdit.setMargins(0,
                 ScalePx.scalePx(mContext, 16), 0, ScalePx.scalePx(mContext, 24));
-        lpEdit.weight = 1;
-        lpEdit.gravity = Gravity.CENTER_VERTICAL;
+        lpEdit.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);
         holder.edit.setLayoutParams(lpEdit);
 
-        LinearLayout.LayoutParams lpDelete = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpDelete = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpDelete.setMargins(0,
                 ScalePx.scalePx(mContext, 16),
                 ScalePx.scalePx(mContext, 32),
-                0);
-        lpDelete.weight = 0;
+                ScalePx.scalePx(mContext, 24));
+        lpDelete.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
         holder.del.setLayoutParams(lpDelete);
 
         view.setTag(holder);
