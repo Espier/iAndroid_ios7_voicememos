@@ -55,8 +55,6 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     int w;
     float v;
-    float slide_line_top_margin = 0;
-    float slide_line_bottom_margin = 120;
     List<Float> voice_list = new ArrayList<Float>();
     List<Integer> time_list = new ArrayList<Integer>();
 
@@ -73,9 +71,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private float time_per_pixel;
     // private float width_per_second = grid_width*4;;
     private float y_xaxis = 0;
-    private float h_high_line = 30;
-    private float h_low_line = 5;
-    private float y_top_line = y_xaxis + h_high_line;
+    private float h_high_line ;
+    private float h_low_line ;
+    private float y_top_line ;
     private float h_block;
     private float y_mid_line;
     private float y_bottom_line;
@@ -87,7 +85,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private float margin_lef_init;
 
-    float start_move_time_textview = 120;
+    float start_move_time_textview ;
 
     private String blueColorString = "#007aff";
     private int blueColor;
@@ -133,8 +131,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
     int currentFramPos;
     float timePerFrame;
 
-    float edit_margin_left = 30;
-    float edit_margin_right = 40;
+    float edit_margin_left ;
+    float edit_margin_right ;
 
     float left_edit_bar_pos;
     float right_edit_bar_pos;
@@ -468,11 +466,17 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void initView()
     {
+        edit_margin_left = ScalePx.scalePx(context, 40);
+        edit_margin_right = ScalePx.scalePx(context, 50);
+        start_move_time_textview = ScalePx.scalePx(context, 160);
         grid_width = ScalePx.scalePx(context, 24);
         time_x = getWidth() / (grid_width * 4);
         time_per_pixel = time_x * 1000 / getWidth();
         h_block = ScalePx.scalePx(context, 176);
         cicle_radius = ScalePx.scalePx(context, 7);
+        h_high_line = ScalePx.scalePx(context, 30);
+        h_low_line = ScalePx.scalePx(context, 5);
+        y_top_line = y_xaxis + h_high_line;
         y_mid_line = y_xaxis + h_high_line + h_block;
         y_bottom_line = y_xaxis + h_high_line + h_block * 2;
         h_bottomLine2timetext = ScalePx.scalePx(context, 28);
@@ -721,7 +725,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void drawEditBar(Canvas canvas)
     {
-        float time_width = 70;
+        float time_width = ScalePx.scalePx(context, 80);
 
         // mask
         canvas.drawRect(left_edit_bar_pos - 1, y_top_line, right_edit_bar_pos + 1, y_bottom_line,
