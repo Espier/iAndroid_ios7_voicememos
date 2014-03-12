@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.database.Cursor;
@@ -625,6 +626,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     protected void onResume() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onResume();
 
         hiddenView.setOnClickListener(new View.OnClickListener() {

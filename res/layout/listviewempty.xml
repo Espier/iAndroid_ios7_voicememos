@@ -61,7 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="无新录音"
+        android:text="@string/no_memo"
+        android:textSize="17sp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#000000" />
 
