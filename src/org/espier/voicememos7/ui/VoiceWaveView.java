@@ -636,7 +636,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         // v = w / (time_x * 1000);
 
         float q = (x < start_move_time_textview) ? 0 : (x - start_move_time_textview);
-        
+
         try {
             drawTimeTextView(canvas, q);
         } catch (Exception e) {
@@ -644,7 +644,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         }
         try {
             drawXAxis(canvas, margin_lef_init);
-            
+
         } catch (Exception e) {
             Log.e("record mode err:", "draw x axis  err," + e.toString());
 
