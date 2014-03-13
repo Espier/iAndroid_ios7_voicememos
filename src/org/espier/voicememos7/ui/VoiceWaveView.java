@@ -1400,19 +1400,25 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
         if (viewStatus == VIEW_STATUS_EDIT)
         {
+            if (distanceX>0) {
+                Log.e("scroll", "left");
+            }
+            else {
+                Log.e("scroll", "right");
+            }
             float t_per_pixel = time_voice_all / (zoomLevel * voice_distance);
             final float zone = 20;
             if (isZoomLeft) {
                 // long temp = clip_left_time;
                 left_edit_bar_pos -= distanceX;
-                if (left_edit_bar_pos < edit_margin_left + zone) {
+                if (left_edit_bar_pos <= edit_margin_left && distanceX>0) {
                     Thread scrollThread = new Thread(new Runnable() {
 
                         @Override
                         public void run() {
                             // TODO Auto-generated method stub
                             while (isZoomLeft && clip_left_time > 0
-                                    && left_edit_bar_pos <= (edit_margin_left + zone)) {
+                                   ) {
                                 clip_left_time -= 10;
                                 try {
                                     Thread.sleep(invalidate_rate);
