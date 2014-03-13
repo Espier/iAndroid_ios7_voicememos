@@ -158,6 +158,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     int clip_interval;
     boolean isDownToStopFling;
     int top_time_height;
+    float temp_amp;
 
     /**
      * @return the isEditing
@@ -1177,7 +1178,14 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         if (recorder != null && !recorder.isReSet) {
                             int amp = recorder.getMaxAmplitude();
 
-                            voice_list.add(amp / 300f);
+                            if (amp!=0) {
+                                temp_amp = amp;
+                                
+                            }
+                            else {
+                                temp_amp = temp_amp*0.95f;
+                            }
+                            voice_list.add(temp_amp / 250f);
 
                         }
 
