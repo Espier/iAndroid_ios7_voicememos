@@ -1,6 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,7 +31,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     long time_to_edit = 0;
 
     // public float time_axix_len;
-    public static final int invalidate_rate = 20;
+    public static final int invalidate_rate = 10;
 
     public static final float num_margin_right = 10;
     // public static final float width_per_second = 60;
@@ -158,6 +159,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
     int clip_interval;
     boolean isDownToStopFling;
     int top_time_height;
+    float temp_amp;
+    int index_voice_zero;
+    
 
     /**
      * @return the isEditing
@@ -1142,6 +1146,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     public void start()
     {
         if (viewStatus == VIEW_STATUS_RECORD) {
+            
             timer = new Timer();
             timerTask = new TimerTask() {
 
@@ -1177,7 +1182,18 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         if (recorder != null && !recorder.isReSet) {
                             int amp = recorder.getMaxAmplitude();
 
-                            voice_list.add(amp / 300f);
+                            if (amp!=0) {
+                                temp_amp = amp;
+                                index_voice_zero =1;
+                            }
+                            else {
+                               
+                                index_voice_zero ++;
+                                temp_amp = temp_amp-0.05f*temp_amp*index_voice_zero*index_voice_zero;
+                                temp_amp = temp_amp<0?0:temp_amp;
+                                
+                            }
+                            voice_list.add(temp_amp / ScalePx.scalePx(context, 320));
 
                         }
 
@@ -1392,19 +1408,25 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
         if (viewStatus == VIEW_STATUS_EDIT)
         {
+            if (distanceX>0) {
+                Log.e("scroll", "left");
+            }
+            else {
+                Log.e("scroll", "right");
+            }
             float t_per_pixel = time_voice_all / (zoomLevel * voice_distance);
             final float zone = 20;
             if (isZoomLeft) {
                 // long temp = clip_left_time;
                 left_edit_bar_pos -= distanceX;
-                if (left_edit_bar_pos < edit_margin_left + zone) {
+                if (left_edit_bar_pos <= edit_margin_left && distanceX>0) {
                     Thread scrollThread = new Thread(new Runnable() {
 
                         @Override
                         public void run() {
                             // TODO Auto-generated method stub
                             while (isZoomLeft && clip_left_time > 0
-                                    && left_edit_bar_pos <= (edit_margin_left + zone)) {
+                                   ) {
                                 clip_left_time -= 10;
                                 try {
                                     Thread.sleep(invalidate_rate);
