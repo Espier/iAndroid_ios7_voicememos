@@ -53,7 +53,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     private static final int REFRESH = 1;
     private final int MEDIA_STATE_EDIT = 1;
     
-    protected int mCurrentDuration;
+    protected int durationAllTime;
     public MediaPlayer mCurrentMediaPlayer;
     private int mediaStatus = 0;
     private File mFile;
@@ -622,7 +622,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 notifyPlayCompletion();
             }
         });
-        mCurrentDuration = (Integer) ((View) (currentViewHolder.duration)).getTag();
+        durationAllTime = (Integer) ((View) (currentViewHolder.duration)).getTag();
         long next = refreshNow(currentViewHolder);
         queueNextRefresh(next, currentViewHolder);
     }
@@ -729,13 +729,13 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             currentPos = pos;
         }
         setOnPlayPositionChanged(0, currentPos);
-        if ((pos >= 0) && (mCurrentDuration > 0)) {
+        if ((pos >= 0) && (durationAllTime > 0)) {
             view.mCurrentTime.setText(MemosUtils.makeTimeString(mContext,
                     pos / 1000));
             view.mCurrentRemain.setText("-"
                     + MemosUtils.makeTimeString(mContext,
-                            ((mCurrentDuration - pos) / 1000)));
-            int progress = (int) (1000 * pos / mCurrentDuration);
+                            ((durationAllTime - pos) / 1000)));
+            int progress = (int) (1000 * pos / durationAllTime);
             view.bar.setProgress(progress);
 
         } else {
@@ -747,7 +747,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         int width = view.bar.getWidth();
         if (width == 0)
             width = 320;
-        long smoothrefreshtime = mCurrentDuration / width;
+        long smoothrefreshtime = durationAllTime / width;
 
         if (smoothrefreshtime > remaining)
             return 40;
