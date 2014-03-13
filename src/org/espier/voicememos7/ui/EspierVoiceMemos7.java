@@ -1337,7 +1337,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 mVoiceMemoListAdapter.collapseAllItems();
                 slideCutListView.restoreItem();
                 mCurrentDuration = 0;
-                if (mVoiceMemoListAdapter.getCount() == 0) {
+                if (slideCutListView.getCount() == 0) {
                     if (emptyView != null) {
                         emptyView.setVisibility(View.VISIBLE);
                     }
