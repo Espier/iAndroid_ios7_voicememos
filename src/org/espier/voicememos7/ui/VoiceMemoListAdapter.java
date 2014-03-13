@@ -620,6 +620,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 currentViewHolder.playControl.setImageResource(R.drawable.play);
                 mRecorder.stopPlayback();
                 notifyPlayCompletion();
+                currentViewHolder.bar.setProgress(1000);
             }
         });
         mCurrentDuration = (Integer) ((View) (currentViewHolder.duration)).getTag();
@@ -718,7 +719,10 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         long pos = mCurrentMediaPlayer.getCurrentPosition();
         if(currentPos >= durationAllTime)
         {
+            view.mCurrentTime.setText("0:00");
+            view.bar.setProgress(1000);
             currentPos = durationAllTime;
+            return 40;
         }
         else if(currentPos <= durationAllTime && (durationAllTime - pos) <=200)
         {

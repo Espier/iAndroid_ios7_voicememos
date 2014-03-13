@@ -1028,6 +1028,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
         TextView ok = (TextView) view.findViewById(R.id.ok);
+        final TextView text_note = (TextView) view.findViewById(R.id.text_note);
+        
         cancel.setOnTouchListener(onTouchListener);
         ok.setOnTouchListener(onTouchListener);
         cancel.setOnClickListener(new OnClickListener() {
@@ -1042,8 +1044,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onClick(View v) {
-                if (text.getText().toString().equals(""))
+                String name = text.getText().toString();
+                if (name.equals(""))
                 {
+                    return;
+                }
+                if(isConSpeCharacters(name)){
+                    //show textview
+                    text_note.setVisibility(View.VISIBLE);
+                    
                     return;
                 }
                 if (mediaStatus == MEDIA_STATE_EDIT)
@@ -1061,6 +1070,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                 dialogdismiss.sendEmptyMessage(1);
             }
+
+            
         });
 
         dialog = new Dialog(EspierVoiceMemos7.this, R.style.dialog);
@@ -1074,7 +1085,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.width = ScalePx.scalePx(this, 540);
-        lp.height = ScalePx.scalePx(this, 344);
+        lp.height = ScalePx.scalePx(this, 380);
         dialogWindow.setAttributes(lp);
         dialog.show();
     }
@@ -1133,6 +1144,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
         TextView ok = (TextView) view.findViewById(R.id.ok);
+        final TextView text_note = (TextView) view.findViewById(R.id.text_note);
+        
         // ok.setBackgroundColor(getResources().getColor(R.color.red));
         cancel.setOnClickListener(new View.OnClickListener() {
 
@@ -1150,6 +1163,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             public void onClick(View v) {
                 String name
                 = ((EditText) view.findViewById(R.id.memoname)).getText().toString();
+                
+                if(isConSpeCharacters(name)){
+                    //show textview
+                    text_note.setVisibility(View.VISIBLE);
+                    
+                    return;
+                }
+                
                 if (memo_name.equals(name)) {
                     SharedPreferences sp = EspierVoiceMemos7.this.getSharedPreferences("espier",
                             EspierVoiceMemos7.MODE_PRIVATE);
@@ -1169,6 +1190,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 txtRecordName.setText("");
                 ScollToBottom();
             }
+
+           
         });
         // AlertDialog.Builder builder = new Builder(EspierVoiceMemos7.this);
         dialog = new Dialog(EspierVoiceMemos7.this, R.style.dialog);
@@ -1182,12 +1205,20 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.width = ScalePx.scalePx(this, 540);
-        lp.height = ScalePx.scalePx(this, 344);
+        lp.height = ScalePx.scalePx(this, 380);
         dialogWindow.setAttributes(lp);
         dialog.show();
 
     }
-
+    private boolean isConSpeCharacters(String name) {
+        // TODO Auto-generated method stub
+            // TODO Auto-generated method stub
+            if(name.replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length()==0){
+                //如果不包含特殊字符
+                return false;
+               }
+               return true;
+    }
     private void insertVoiceMemo(String memoname) {
         // TODO Auto-generated method stub
         System.out.println("insert 1");
