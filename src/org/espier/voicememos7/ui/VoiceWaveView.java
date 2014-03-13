@@ -1185,7 +1185,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                             else {
                                 temp_amp = temp_amp*0.95f;
                             }
-                            voice_list.add(temp_amp / 250f);
+                            voice_list.add(temp_amp / ScalePx.scalePx(context, 300));
 
                         }
 
