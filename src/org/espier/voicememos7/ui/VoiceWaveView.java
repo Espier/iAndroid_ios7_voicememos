@@ -394,6 +394,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         timeTopPaint.setTextSize(ScalePx.scalePx(context, 24));
         timeTopPaint.setColor(Color.WHITE);
         timeTopPaint.setStrokeWidth(0.5f);
+        timeTopPaint.setAntiAlias(true);
+
         top_time_height = ScalePx.scalePx(context, (int)timeTopPaint.getTextSize());
 
         timeTopGrayPaint = new Paint();
@@ -401,11 +403,15 @@ public class VoiceWaveView extends View implements OnGestureListener {
         deepDarkGrayColor = Color.parseColor(deepDarkGrayColorString);
         timeTopGrayPaint.setColor(deepDarkGrayColor);
         timeTopGrayPaint.setStrokeWidth(0.5f);
+        timeTopGrayPaint.setAntiAlias(true);
+
 
         timeTextPaint = new Paint();
         timeTextPaint.setTextSize(ScalePx.scalePx(context, 60));
         timeTextPaint.setColor(Color.WHITE);
-        // timeTextPaint.setTypeface(Typeface.DEFAULT);
+        timeTextPaint.setAntiAlias(true);
+//        timeTextPaint.setDither(true);
+        
 
         grayLinePaint = new Paint();
         grayColor = Color.parseColor(grayColorString);
@@ -445,6 +451,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         voicedbGrayPaint.setColor(deepDarkGrayColor);
         voicedbGrayPaint.setTextAlign(Align.RIGHT);
         voicedbGrayPaint.setTextSize(ScalePx.scalePx(context, 14));
+        voicedbGrayPaint.setAntiAlias(true);
+
 
         handler = new Handler()
         {
