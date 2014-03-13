@@ -1435,12 +1435,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
         TextView tv = (TextView)findViewById(R.id.editButton);
         tv.setVisibility(View.VISIBLE);
-        if (mVoiceMemoListAdapter.getCount()==0) {
-            if (isEditable) {
-                tv.setText(R.string.edit);
-                isEditable = false;
-            }
-        }
+//        if (mVoiceMemoListAdapter.getCount()==0) {
+//            if (isEditable) {
+//                tv.setText(R.string.edit);
+//                isEditable = false;
+//            }
+//        }
             
 
     }
