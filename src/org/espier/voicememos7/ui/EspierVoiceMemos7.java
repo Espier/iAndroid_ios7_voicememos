@@ -166,7 +166,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         @Override
         public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
@@ -355,7 +354,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                // TODO Auto-generated method stub
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         textViewVoiceEditFinishInEditMode.setTextColor(getResources().getColor(
@@ -782,8 +780,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         finished.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // TODO Auto-generated method stub
+            public boolean onTouch(View v, MotionEvent event) {                
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         finished.setTextColor(getResources().getColor(R.color.finish_text_color));
@@ -801,7 +798,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 //
 //            @Override
 //            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-//                // TODO: deal with onItemClick
+//                
 //                Log.d("adf", "inonitemclick");
 //            }
 //
@@ -818,7 +815,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void listViewaddData() {
-        // TODO Auto-generated method stub
+       
         Cursor cs1 = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
         while (cs1.moveToNext()) {
             String path = cs1.getString(cs1.getColumnIndexOrThrow("data"));
@@ -903,7 +900,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        // TODO Auto-generated method stub
+        
         super.onWindowFocusChanged(hasFocus);
         Rect rect = new Rect();
         getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
@@ -1154,7 +1151,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
+                
                 dialogdismiss.sendEmptyMessage(1);
                 ScollToBottom();
                 return;
@@ -1343,7 +1340,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
+       
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == TRIM_REQUEST)
@@ -1449,7 +1446,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     private void deleteMemo(int memoId, String path) {
-        // TODO Auto-generated method stub
         Uri memoUri = ContentUris.withAppendedId(VoiceMemo.Memos.CONTENT_URI,
                 memoId);
         System.out.println(memoUri.toString());
@@ -1469,7 +1465,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             }
         }
         TextView tv = (TextView)findViewById(R.id.editButton);
-                tv.setVisibility(View.VISIBLE);
+        tv.setVisibility(View.VISIBLE);
+//        if (mVoiceMemoListAdapter.getCount()==0) {
+//            if (isEditable) {
+//                tv.setText(R.string.edit);
+//                isEditable = false;
+//            }
+//        }
+            
 
     }
 
@@ -1481,7 +1484,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     protected void onDestroy() {
-        // TODO Auto-generated method stub
         waveView.destroy();
         waveView = null;
         super.onDestroy();
