@@ -14,11 +14,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SeekBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -164,6 +166,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         final View view = super.newView(context, cursor, parent);
         ViewHolder holder = new ViewHolder();
+       
         holder.playControl = (ImageView) view.findViewById(R.id.memos_item_play);
         holder.txtRecordName = (TextView) view.findViewById(R.id.memos_item_title);
         holder.txtRecordNameEditable = (EditText) view.findViewById(R.id.memos_item_title_editable);
@@ -279,7 +282,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 24));
         lpDelete.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
         holder.del.setLayoutParams(lpDelete);
-
+        RelativeLayout memos_item_delete_hidden = (RelativeLayout)view.findViewById(R.id.memos_item_delete_hidden);
+        RelativeLayout.LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT,ScalePx.scalePx(mContext, 108));
+        memos_item_delete_hidden.setLayoutParams(lp);
         view.setTag(holder);
         Log.d("add view to list","view:"+String.valueOf(view.toString()));
         list.add(view);

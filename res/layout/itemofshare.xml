@@ -8,8 +8,8 @@
     android:background="@color/dialog_b_c" >
     <ImageView 
         android:id="@+id/my_list_icon" 
-        android:layout_width="wrap_content" 
-        android:layout_height="wrap_content" 
+        android:layout_width="90dip" 
+        android:layout_height="90dip" 
         android:layout_marginLeft="3.0dip" 
         android:src="@drawable/icon"
         android:scaleType="fitXY" />
