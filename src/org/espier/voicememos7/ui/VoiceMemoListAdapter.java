@@ -63,6 +63,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public org.espier.voicememos7.util.Recorder mRecorder;
     private Cursor cursor;
     private int expandedPosition = -1;
+    private int EditPosition = 0;
     protected boolean isCollapsed = true;
     ViewHolder currentViewHolder;
     VoiceMemo currentMemo;
@@ -342,7 +343,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 //        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
         holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, holder.txtRecordName.getText().toString(), strDate,
-                memoid));
+                memoid,view));
         holder.del.setEnabled(true);
         holder.btnHiddenDelete.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder,MemosUtils.DELETE_WITHOUT_CONFIRM));
         holder.del.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder,MemosUtils.DELETE_WITH_CONFIRM));
@@ -465,7 +466,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             // if status is not collapsed(expanded), and the item clicked is not
             // the expanded one,
             // then collapse it, and restore the color to white and black.
-            if (expandedPosition >= 0 && isCollapsed == false) {
+            if (expandedPosition >= 0 && isCollapsed == false ) {
                 DisplayEditButton(true);
                 collapseAllItems();
                 holder.bar.setProgress(0);
@@ -534,15 +535,17 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         private final String itemname;
         private final String dd;
         private final int memoid;
+        private View view;
 
         private OnClickEdit(String path, int secs, ViewHolder holder, String itemname, String dd,
-                int memoid) {
+                int memoid,View view) {
             this.path = path;
             this.secs = secs;
             this.holder = holder;
             this.itemname = itemname;
             this.dd = dd;
             this.memoid = memoid;
+            this.view = view;
         }
 
         @Override
@@ -571,7 +574,17 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             memo.setMemPath(path);
             memo.setMemDuration(secs);
             currentMemo = memo;
+            
             setOnVoiceEditClicked(null, memo);
+//            LinearLayout layout = (LinearLayout) view.findViewById(R.id.playlayout);
+//            LinearLayout sharelayout = (LinearLayout) view.findViewById(R.id.sharelayout);
+//            layout.setVisibility(View.GONE);
+//            sharelayout.setVisibility(View.GONE);
+//            DisplayEditButton(true);
+//            EditPosition = -1;
+            
+            setItemVisible(view, false);
+            collapseAllItems();
         }
     }
 
