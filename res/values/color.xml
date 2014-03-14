@@ -167,4 +167,5 @@
   <color name="timecode_shadow">#aa000000</color>
   <color name="finish_text_color">#d4d4d4</color>
   <color name="seekbartextcolor">#ededed</color>
+  <color name="font_gray">#666666</color>
 </resources>
