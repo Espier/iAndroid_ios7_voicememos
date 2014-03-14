@@ -54,7 +54,7 @@ public class AdapterOfShareListView extends BaseAdapter {
         }else {
             view = convertView;
         }
-        LinearLayout.LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lp = new LayoutParams(ScalePx.scalePx(context, 120),ScalePx.scalePx(context, 120));
         lp.setMargins(ScalePx.scalePx(context, 15), ScalePx.scalePx(context, 40), ScalePx.scalePx(context, 15), ScalePx.scalePx(context, 10));
         ImageView imageView = (ImageView) view.findViewById(R.id.my_list_icon);
         imageView.setLayoutParams(lp);

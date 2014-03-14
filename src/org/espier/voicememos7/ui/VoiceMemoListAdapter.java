@@ -14,11 +14,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SeekBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -53,13 +55,14 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     private static final int REFRESH = 1;
     private final int MEDIA_STATE_EDIT = 1;
     
-    protected int mCurrentDuration;
+    protected int durationAllTime;
     public MediaPlayer mCurrentMediaPlayer;
     private int mediaStatus = 0;
     private File mFile;
     public org.espier.voicememos7.util.Recorder mRecorder;
     private Cursor cursor;
     private int expandedPosition = -1;
+    private int EditPosition = 0;
     protected boolean isCollapsed = true;
     ViewHolder currentViewHolder;
     VoiceMemo currentMemo;
@@ -168,6 +171,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         final View view = super.newView(context, cursor, parent);
         ViewHolder holder = new ViewHolder();
+       
         holder.playControl = (ImageView) view.findViewById(R.id.memos_item_play);
         holder.txtRecordName = (TextView) view.findViewById(R.id.memos_item_title);
         holder.txtRecordNameEditable = (EditText) view.findViewById(R.id.memos_item_title_editable);
@@ -283,7 +287,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 ScalePx.scalePx(mContext, 24));
         lpDelete.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
         holder.del.setLayoutParams(lpDelete);
-
+        RelativeLayout memos_item_delete_hidden = (RelativeLayout)view.findViewById(R.id.memos_item_delete_hidden);
+        RelativeLayout.LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT,ScalePx.scalePx(mContext, 108));
+        memos_item_delete_hidden.setLayoutParams(lp);
         view.setTag(holder);
         Log.d("add view to list","view:"+String.valueOf(view.toString()));
         list.add(view);
@@ -341,7 +347,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 //        holder.txtRecordName.setOnFocusChangeListener(new OnClickRecordName(holder));
         holder.share.setOnClickListener(new OnClickShare(context, path));
         holder.edit.setOnClickListener(new OnClickEdit(path, secs, holder, holder.txtRecordName.getText().toString(), strDate,
-                memoid));
+                memoid,view));
         holder.del.setEnabled(true);
         holder.btnHiddenDelete.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder,MemosUtils.DELETE_WITHOUT_CONFIRM));
         holder.del.setOnClickListener(new OnClickDelete(path, holder.txtRecordName.getText().toString(), memoid,holder,MemosUtils.DELETE_WITH_CONFIRM));
@@ -479,7 +485,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             // if status is not collapsed(expanded), and the item clicked is not
             // the expanded one,
             // then collapse it, and restore the color to white and black.
-            if (expandedPosition >= 0 && isCollapsed == false) {
+            if (expandedPosition >= 0 && isCollapsed == false ) {
                 DisplayEditButton(true);
                 collapseAllItems();
                 holder.bar.setProgress(0);
@@ -548,15 +554,17 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         private final String itemname;
         private final String dd;
         private final int memoid;
+        private View view;
 
         private OnClickEdit(String path, int secs, ViewHolder holder, String itemname, String dd,
-                int memoid) {
+                int memoid,View view) {
             this.path = path;
             this.secs = secs;
             this.holder = holder;
             this.itemname = itemname;
             this.dd = dd;
             this.memoid = memoid;
+            this.view = view;
         }
 
         @Override
@@ -585,7 +593,17 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             memo.setMemPath(path);
             memo.setMemDuration(secs);
             currentMemo = memo;
+            
             setOnVoiceEditClicked(null, memo);
+//            LinearLayout layout = (LinearLayout) view.findViewById(R.id.playlayout);
+//            LinearLayout sharelayout = (LinearLayout) view.findViewById(R.id.sharelayout);
+//            layout.setVisibility(View.GONE);
+//            sharelayout.setVisibility(View.GONE);
+//            DisplayEditButton(true);
+//            EditPosition = -1;
+            
+            setItemVisible(view, false);
+            collapseAllItems();
         }
     }
 
@@ -642,7 +660,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 currentViewHolder.bar.setProgress(1000);
             }
         });
-        mCurrentDuration = (Integer) ((View) (currentViewHolder.duration)).getTag();
+        durationAllTime = (Integer) ((View) (currentViewHolder.duration)).getTag();
         long next = refreshNow(currentViewHolder);
         queueNextRefresh(next, currentViewHolder);
     }
@@ -752,13 +770,13 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             currentPos = pos;
         }
         setOnPlayPositionChanged(0, currentPos);
-        if ((pos >= 0) && (mCurrentDuration > 0)) {
+        if ((pos >= 0) && (durationAllTime > 0)) {
             view.mCurrentTime.setText(MemosUtils.makeTimeString(mContext,
                     pos / 1000));
             view.mCurrentRemain.setText("-"
                     + MemosUtils.makeTimeString(mContext,
-                            ((mCurrentDuration - pos) / 1000)));
-            int progress = (int) (1000 * pos / mCurrentDuration);
+                            ((durationAllTime - pos) / 1000)));
+            int progress = (int) (1000 * pos / durationAllTime);
             view.bar.setProgress(progress);
 
         } else {
@@ -770,7 +788,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         int width = view.bar.getWidth();
         if (width == 0)
             width = 320;
-        long smoothrefreshtime = mCurrentDuration / width;
+        long smoothrefreshtime = durationAllTime / width;
 
         if (smoothrefreshtime > remaining)
             return 40;

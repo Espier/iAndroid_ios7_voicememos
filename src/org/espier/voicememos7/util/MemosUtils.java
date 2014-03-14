@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.TextPaint;
 
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MemosUtils {
+    private static Typeface mIosUltLtTypeface, mIosMdTypeface, mThTypeface;
     public static final int DELETE_WITH_CONFIRM = 2;
     public static final int DELETE_WITHOUT_CONFIRM = 3;
     private static StringBuilder sFormatBuilder = new StringBuilder();
@@ -170,6 +172,33 @@ public class MemosUtils {
             memo.setModifiedDate(modified);
         }
         return memo;
+    }
+    
+    public static Typeface getIosUltLtTypeface(Context context) {
+        if (mIosUltLtTypeface == null) {
+            mIosUltLtTypeface =
+                    Typeface.createFromAsset(context.getApplicationContext().getAssets(),
+                            "HelveticaNeueLTPro-UltLt.otf");
+        }   
+        return mIosUltLtTypeface;
+    }   
+
+    public static Typeface getIosMdTypeface(Context context) {
+        if (mIosMdTypeface == null) {
+            mIosMdTypeface =
+                    Typeface.createFromAsset(context.getApplicationContext().getAssets(),
+                            "HelveticaNeueLTStd-Lt-large-less-greater.otf");
+        }   
+        return mIosMdTypeface;
+    }   
+
+    public static Typeface getIosThTypeface(Context context) {
+        if (mThTypeface == null) {
+            mThTypeface =
+                    Typeface.createFromAsset(context.getApplicationContext().getAssets(),
+                            "HelveticaNeueLTPro-Th-time.otf");
+        }   
+        return mThTypeface;
     }
     
 }

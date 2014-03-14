@@ -1,7 +1,6 @@
 
 package org.espier.voicememos7.ui;
 
-import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,12 +10,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 
 import org.espier.voicememos7.model.CheapSoundFile;
+import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.ScalePx;
 
@@ -397,8 +398,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
         timeTopPaint = new Paint();
         timeTopPaint.setTextSize(ScalePx.scalePx(context, 24));
         timeTopPaint.setColor(Color.WHITE);
-        timeTopPaint.setStrokeWidth(0.5f);
+        //timeTopPaint.setStrokeWidth(0.5f);
         timeTopPaint.setAntiAlias(true);
+       // timeTopPaint.setTypeface(MemosUtils.getIosThTypeface(context));
 
         top_time_height = ScalePx.scalePx(context, (int)timeTopPaint.getTextSize());
 
@@ -408,13 +410,16 @@ public class VoiceWaveView extends View implements OnGestureListener {
         timeTopGrayPaint.setColor(deepDarkGrayColor);
         timeTopGrayPaint.setStrokeWidth(0.5f);
         timeTopGrayPaint.setAntiAlias(true);
+       // timeTopGrayPaint.setTypeface(MemosUtils.getIosThTypeface(context));
+        
 
 
         timeTextPaint = new Paint();
         timeTextPaint.setTextSize(ScalePx.scalePx(context, 60));
         timeTextPaint.setColor(Color.WHITE);
         timeTextPaint.setAntiAlias(true);
-//        timeTextPaint.setDither(true);
+        timeTextPaint.setTypeface(MemosUtils.getIosThTypeface(context));
+
         
 
         grayLinePaint = new Paint();
@@ -456,6 +461,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         voicedbGrayPaint.setTextAlign(Align.RIGHT);
         voicedbGrayPaint.setTextSize(ScalePx.scalePx(context, 14));
         voicedbGrayPaint.setAntiAlias(true);
+       // voicedbGrayPaint.setTypeface(MemosUtils.getIosThTypeface(context));
 
 
         handler = new Handler()
@@ -508,7 +514,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
         // long t1 = System.currentTimeMillis();
-        initView();
+        initView();        
 
         w = getWidth();
         v = grid_width * 4 / 1000f;
@@ -752,8 +758,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
         if (isCliclEditBar) {
             canvas.drawText(timeFormat(clip_left_time),
-                    left_edit_bar_pos < (w - time_width) ? left_edit_bar_pos
-                            : (left_edit_bar_pos - time_width), y_xaxis
+                    left_edit_bar_pos < (w - time_width) ? left_edit_bar_pos+cicle_radius
+                            : (left_edit_bar_pos - time_width-cicle_radius*2), y_xaxis
                             + top_time_height, timeTopPaint);
         }
 
@@ -1408,12 +1414,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
         if (viewStatus == VIEW_STATUS_EDIT)
         {
-            if (distanceX>0) {
-                Log.e("scroll", "left");
-            }
-            else {
-                Log.e("scroll", "right");
-            }
+            
             float t_per_pixel = time_voice_all / (zoomLevel * voice_distance);
             final float zone = 20;
             if (isZoomLeft) {
