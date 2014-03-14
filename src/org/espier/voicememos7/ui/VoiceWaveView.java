@@ -514,7 +514,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
         // long t1 = System.currentTimeMillis();
-        initView();
+        initView();        
 
         w = getWidth();
         v = grid_width * 4 / 1000f;
