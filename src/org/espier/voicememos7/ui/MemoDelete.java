@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextPaint;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -36,6 +38,8 @@ public class MemoDelete extends Activity implements OnClickListener {
         // LinearLayout layout = (LinearLayout) findViewById(R.id.buttonlay);
         // layout.
         del = (Button) findViewById(R.id.memo_del_ok);
+        del.setTypeface(MemosUtils.getIosThTypeface(this));
+        del.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,42));
         int ems = MemosUtils.getEllipsizeByViewWidth(memoname, width);
         del.setEms(ems);
         del.setHeight(ScalePx.scalePx(this, 88));
@@ -51,6 +55,11 @@ public class MemoDelete extends Activity implements OnClickListener {
           
         del.setText(getResources().getString(R.string.delete)+"\""+memoname+"\"");
         cancel = (Button) findViewById(R.id.memo_del_cancel);
+        cancel.setTypeface(MemosUtils.getIosThTypeface(this));
+        cancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,42));
+        TextPaint paint = cancel.getPaint();
+        paint.setFakeBoldText(true);
+        
         LinearLayout.LayoutParams lay2 = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
         lay2.setMargins(ScalePx.scalePx(this, 16), ScalePx.scalePx(this, 16),
