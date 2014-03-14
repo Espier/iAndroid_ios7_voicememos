@@ -757,13 +757,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             public void onClick(View v) {
 
                 if (isSoundOn) {
-                    audioManager.setMode(AudioManager.STREAM_MUSIC);
+//                    mVoiceMemoListAdapter.getCurrentMediaPlayer().setAudioStreamType(AudioManager.STREAM_MUSIC);
                     audioManager.setSpeakerphoneOn(true);
+                    setVolumeControlStream(AudioManager.STREAM_MUSIC);
+                    audioManager.setMode(AudioManager.MODE_RINGTONE);
                     isSoundOn = false;
                     sound.setImageResource(R.drawable.volume_blue);
                 } else {
-                    audioManager.setMode(AudioManager.STREAM_MUSIC);
+//                    mVoiceMemoListAdapter.getCurrentMediaPlayer().setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
                     audioManager.setSpeakerphoneOn(false);
+                    setVolumeControlStream(AudioManager.STREAM_MUSIC);
+                    audioManager.setMode(AudioManager.STREAM_MUSIC);
                     sound.setImageResource(R.drawable.volume_gray);
                     isSoundOn = true;
                 }
