@@ -62,7 +62,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public MediaPlayer mCurrentMediaPlayer;
     private int mediaStatus = 0;
     private File mFile;
-    public OnSeekBarChangeListener mSeekListener;
     public org.espier.voicememos7.util.Recorder mRecorder;
     private Cursor cursor;
     private int expandedPosition = -1;
@@ -170,6 +169,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
         return super.getView(position, convertView, parent);
 
+    }
+    
+    public MediaPlayer getCurrentMediaPlayer()
+    {
+        return mCurrentMediaPlayer;
     }
 
     @Override
@@ -393,6 +397,22 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     }
 
+    private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
+
+        public void onStartTrackingTouch(SeekBar bar) {
+        }
+
+        public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
+            if (!fromuser)
+                return;
+            int pos = durationAllTime * progress / 1000;
+            mRecorder.seekTo(pos);
+        }
+
+        public void onStopTrackingTouch(SeekBar bar) {
+        }
+    };
+    
     public void collapseAllItems() {
         for (int j = 0; j < list.size(); j++) {
             
