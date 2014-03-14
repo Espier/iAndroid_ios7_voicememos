@@ -140,31 +140,17 @@ public class SlideCutListView extends ListView {
                     
                 }
                 
-//                if (itemView != null &&getitemView.getScrollX()>0) {
-//                    restoreItem();
-//                    return false;
-//                    
-//                }
                 itemView = itemWholeView.findViewById(R.id.memos_item_visible);
-//                itemView = getChildAt(slidePosition - getFirstVisiblePosition());
                 
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-//                if(itemView==null){
-//                    return super.dispatchTouchEvent(event);
-//                }
-                Log.d("listview","action move:getScrollX"+String.valueOf(itemView.getScrollX()));
-                Log.d("listview","action move:downX"+String.valueOf(downX));
-                Log.d("listview","action move:event.getX()"+String.valueOf(event.getX()));
+
                 if (Math.abs(getScrollVelocity()) > SNAP_VELOCITY
                         || (event.getX() - downX > mTouchSlop && itemView.getScrollX()>0 )||(downX - event.getX()> mTouchSlop && Math
                                 .abs(event.getY() - downY) < mTouchSlop)) {
                     isSlide = true;
                 }
-//                if (Math.abs(event.getY() - downY)>mTouchSlop)
-//                    return false;
-                Log.d("listview","action move:isSlide="+String.valueOf(isSlide));
                 
                 break;
             }
@@ -318,7 +304,7 @@ public class SlideCutListView extends ListView {
             return super.onTouchEvent(ev);
         }
 
-        if (itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
+        if (itemView!=null && itemView.getScrollX() <= 0 && ev.getAction() == MotionEvent.ACTION_UP) {
             View itemWholeView = getChildAt(slidePosition - getFirstVisiblePosition());
             if(itemWholeView==null){
                 return super.onTouchEvent(ev);

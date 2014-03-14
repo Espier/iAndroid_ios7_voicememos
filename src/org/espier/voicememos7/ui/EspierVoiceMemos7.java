@@ -1102,12 +1102,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         final View view = this.getLayoutInflater().inflate(R.layout.items, null);
         view.setPadding(0, 0, 0, 0);
-        // view.setBackgroundColor(getResources().getColor(R.color.blue));
         view.setBackgroundDrawable(getResources().getDrawable(R.drawable.radius));
         RelativeLayout.LayoutParams rellay = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         rellay.setMargins(0, ScalePx.scalePx(this, 30), 0, 0);
         TextView title = (TextView) view.findViewById(R.id.textView1);
+        title.setTextSize(ScalePx.scalePx(this, 34));
+        
         title.setPadding(0, 0, 0, 0);
         title.setWidth(ScalePx.scalePx(this, 540));
         title.setLayoutParams(rellay);
