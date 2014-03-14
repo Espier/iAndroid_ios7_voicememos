@@ -385,13 +385,14 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     }
 
     private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
+
         public void onStartTrackingTouch(SeekBar bar) {
         }
 
         public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
             if (!fromuser)
                 return;
-            int pos = mCurrentDuration * progress / 1000;
+            int pos = durationAllTime * progress / 1000;
             mRecorder.seekTo(pos);
         }
 
