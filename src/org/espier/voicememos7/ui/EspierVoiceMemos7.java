@@ -662,6 +662,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 return false;
             }
         });
+        if(mVoiceMemoListAdapter!=null&&mVoiceMemoListAdapter.currentHolder!=null
+                &&mVoiceMemoListAdapter.currentHolder.del!=null){
+            mVoiceMemoListAdapter.currentHolder.del.setImageResource(R.drawable.trash);
+            mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.action);
+            mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
+            mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
+            this.changeTextViewColorBlue();
+            this.changSoundColorBlue();
+            mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
+        }
+        
     }
 
     private void ScollToBottom() {
@@ -1685,4 +1696,33 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             
         }
     }
+
+    @Override
+    public void changeTextViewColorGray() {
+        // TODO Auto-generated method stub
+        TextView tv = (TextView)findViewById(R.id.editButton);
+        tv.setTextColor(getResources().getColor(R.color.font_gray));
+    }
+
+    @Override
+    public void changeTextViewColorBlue() {
+        // TODO Auto-generated method stub
+        TextView tv = (TextView)findViewById(R.id.editButton);
+        tv.setTextColor(getResources().getColor(R.color.font_color));
+    }
+
+    @Override
+    public void changSoundColorGray() {
+        // TODO Auto-generated method stub
+        sound.setImageResource(R.drawable.volume_gray);
+    }
+
+    @Override
+    public void changSoundColorBlue() {
+        // TODO Auto-generated method stub
+        sound.setImageResource(R.drawable.volume_blue);
+    }
+    
+    
+    
 }

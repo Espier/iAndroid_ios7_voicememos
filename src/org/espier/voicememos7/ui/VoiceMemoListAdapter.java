@@ -2,10 +2,12 @@
 package org.espier.voicememos7.ui;
 
 import android.R.integer;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
@@ -29,6 +31,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.model.VoiceMemo;
+import org.espier.voicememos7.ui.VoiceMemoListAdapter.ViewHolder;
 import org.espier.voicememos7.util.AMRFileUtils;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
@@ -67,6 +70,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     ViewHolder currentViewHolder;
     VoiceMemo currentMemo;
     private long currentPos = 0;
+    Drawable thumb_gray;
 
     public interface OnListViewChangedListener {
         
@@ -79,6 +83,10 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         void onPlayStatusChanged(int status, long position);
 
         void onPlayStopFired();
+        void changeTextViewColorGray();
+        void changeTextViewColorBlue();
+        void changSoundColorGray();
+        void changSoundColorBlue();
         
         void onSlideItem(View view);
 
@@ -97,6 +105,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             }
         }
     };
+    public ViewHolder currentHolder;
 
     public void setOnListViewChangedListener(OnListViewChangedListener listener) {
         mOnListViewChangedListener = listener;
@@ -171,7 +180,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         final View view = super.newView(context, cursor, parent);
         ViewHolder holder = new ViewHolder();
-       
+        thumb_gray =context.getResources().getDrawable(R.drawable.thumb_gray);
         holder.playControl = (ImageView) view.findViewById(R.id.memos_item_play);
         holder.txtRecordName = (TextView) view.findViewById(R.id.memos_item_title);
         holder.txtRecordNameEditable = (EditText) view.findViewById(R.id.memos_item_title_editable);
@@ -189,6 +198,10 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.position = cursor.getPosition();
         holder.btnHiddenDelete = (Button)view.findViewById(R.id.hiddenDeleteButon);
         holder.bgView = view.findViewById(R.id.memos_item_bg);
+        
+        LinearLayout.LayoutParams llp = new android.widget.LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,ScalePx.scalePx(mContext, 108));
+        
+        holder.bgView.setLayoutParams(llp);
         RelativeLayout.LayoutParams lpButton = new RelativeLayout.LayoutParams(
                 ScalePx.scalePx(mContext, 130),
                 ScalePx.scalePx(mContext, 108));
@@ -477,6 +490,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             
             // if click the expanded item, ignore the click operation
             ViewHolder holder = (ViewHolder) v.getTag();
+            currentHolder = holder;
             if (holder.bgView.getScrollX()<0)
                 return;
 
@@ -535,8 +549,17 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             this.message = message;
         }
 
+        @SuppressLint("ResourceAsColor")
         @Override
         public void onClick(View arg0) {
+            holder.del.setImageResource(R.drawable.trash_gray);
+            holder.share.setImageResource(R.drawable.action_gray);
+            holder.playControl.setImageResource(R.drawable.play_gray);
+            holder.edit.setTextColor(R.color.gray);
+            mOnListViewChangedListener.changeTextViewColorGray();
+            mOnListViewChangedListener.changSoundColorGray();
+            holder.bar.setThumb(thumb_gray);
+            
             if (mRecorder.getState() != Recorder.IDLE_STATE) {
                 mRecorder.stopPlayback();
             }

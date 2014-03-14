@@ -27,6 +27,8 @@
             android:text="@string/list_delete"
             android:textColor="@color/font_color_red"
             android:textSize="20sp"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
             android:textStyle="bold" />
 
         <Button
