@@ -1110,7 +1110,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.width = ScalePx.scalePx(this, 540);
-        lp.height = ScalePx.scalePx(this, 380);
+        lp.height = ScalePx.scalePx(this, 370);
         dialogWindow.setAttributes(lp);
         dialog.show();
     }
@@ -1248,7 +1248,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.width = ScalePx.scalePx(this, 540);
-        lp.height = ScalePx.scalePx(this, 380);
+        lp.height = ScalePx.scalePx(this, 370);
         dialogWindow.setAttributes(lp);
         dialog.show();
 
