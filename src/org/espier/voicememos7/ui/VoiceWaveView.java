@@ -1,6 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -785,6 +786,20 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawVoice(Canvas canvas, float s, float offset)
     {
         int n = voice_list.size();
+        
+//        float size = (time_x*1000/2/invalidate_rate);
+//        float delt_x = w/2/size;
+//        for(int i=0;i<n;i++)
+//        {
+//            float amp = voice_list.get(n-i-1);
+//            float x_ = s-i*delt_x;
+//            amp = amp > (y_mid_line - y_top_line) * 0.9f ? (y_mid_line - y_top_line) * 0.9f : amp;
+//            canvas.drawLine(x_, y_mid_line - amp,
+//                    x_, y_mid_line + amp, voiceLinePaint);
+//        }
+        
+        
+        
         // float[] points = new float[n * 4];
         //
         // for (int i = 0; i < n; i++)
