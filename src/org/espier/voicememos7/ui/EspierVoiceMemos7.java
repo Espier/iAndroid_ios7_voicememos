@@ -540,6 +540,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                 break;
             case R.id.redButton:
+                mVoiceMemoListAdapter.ExitCurrentEditMode();
+                start.requestFocus();
                 mediaStatus = MEDIA_STATE_RECORDING;
                 txtMainTitle.setText(getString(R.string.main_title));
                 recordingStatus = RECORDING_STATE_ONGOING;
@@ -1213,7 +1215,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onClick(View v) {
-                
+                waveView.clearData();
                 dialogdismiss.sendEmptyMessage(1);
                 ScollToBottom();
                 return;
@@ -1553,6 +1555,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     protected void onDestroy() {
+        if(mRecorder.getState() != Recorder.IDLE_STATE)
+        {
+            mRecorder.stopPlayback();
+        }
         waveView.destroy();
         waveView = null;
         super.onDestroy();
@@ -1690,9 +1696,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 updateEditModeButtonStatus();
             }
         }
-        waveView.setTime_to_edit(position);
-        waveView.invalidate();
-    }
+        if(waveView!=null)
+        {
+            waveView.setTime_to_edit(position);
+            waveView.invalidate();
+        }
+ }
 
     @Override
     public void onPlayStopFired()
