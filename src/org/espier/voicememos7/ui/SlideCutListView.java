@@ -12,8 +12,12 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Scroller;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import org.espier.voicememos7.R;
 
@@ -190,6 +194,25 @@ public class SlideCutListView extends ListView {
         
         postInvalidate(); // 刷新itemView
     }
+    final static class ViewHolder {
+        ImageView playControl;
+        TextView txtRecordName;
+        EditText txtRecordNameEditable;
+        TextView createDate;
+        TextView duration;
+        TextView path;
+        TextView id;
+        ImageView cellGrayLine;
+        TextView mCurrentTime;
+        TextView mCurrentRemain;
+        SeekBar bar;
+        ImageView share;
+        ImageView del;
+        TextView edit;
+        Button btnHiddenDelete;
+        int position;
+        View bgView;
+    }
     
     public void scrollLeft(View view) {
         removeDirection = RemoveDirection.LEFT;
@@ -198,6 +221,8 @@ public class SlideCutListView extends ListView {
         // 调用startScroll方法来设置一些滚动的参数，我们在computeScroll()方法中调用scrollTo来滚动item
         v.scrollTo(screenWidth / 5, 0);
         // scrollLeft();
+//        ViewHolder holder = (ViewHolder)v.getTag();
+//        Log.d("view name","view name = "+holder.txtRecordName.getText().toString());
         
         isScrolling = true;
         hiddenButton.setEnabled(true);

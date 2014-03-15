@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -31,6 +32,8 @@ public class MemoShare extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.memos_share);
         TextView text = (TextView) findViewById(R.id.memo_del_cancel);
+        text.setTypeface(MemosUtils.getIosThTypeface(this));
+        text.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,42));
         text.setOnClickListener(this);
 
         Intent intent = getIntent();

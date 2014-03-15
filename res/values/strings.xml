@@ -48,8 +48,8 @@
 	<string name="error_mediadb_new_record">Couldn\'t save recorded audio.</string>
 	<string name="new_memo">New Record</string>
 	<string name="new_memo_name">Please enter a name for this record</string>
-	<string name="edit">edit</string>
-	<string name="ok">ok</string>
+	<string name="edit">Edit</string>
+	<string name="ok">Ok</string>
 	<string name="memo">Voice memo</string>
 	<string name="no_memo">No new recordings</string>
 	<string name="crop">Trim</string>
