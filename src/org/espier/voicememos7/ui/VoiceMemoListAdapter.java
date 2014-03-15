@@ -752,13 +752,19 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 itemtitle.setVisibility(View.VISIBLE);
                 itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
+                    private int time = 0;
+
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         // TODO Auto-generated method stub
                         if (!hasFocus) {
-                            
-                            InputMethodManager mInputMethodManager=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//                            time  = time+1;
+//                            System.out.println("lost focus");
+//                            if(time ==3 ){
+//                              InputMethodManager mInputMethodManager=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+//                              mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//                              time =0;
+//                            }
                             String newname = itemtitle.getText().toString();
                             if (!title.equals(newname)) {
                                 // memeoname nodified update momeinfo
