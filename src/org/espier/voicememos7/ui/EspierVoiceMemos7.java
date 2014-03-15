@@ -540,6 +540,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                 break;
             case R.id.redButton:
+                mVoiceMemoListAdapter.ExitCurrentEditMode();
                 start.requestFocus();
                 mediaStatus = MEDIA_STATE_RECORDING;
                 txtMainTitle.setText(getString(R.string.main_title));

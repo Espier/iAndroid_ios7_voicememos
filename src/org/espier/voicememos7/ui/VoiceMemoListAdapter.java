@@ -500,7 +500,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             
             // if click the expanded item, ignore the click operation
             ViewHolder holder = (ViewHolder) v.getTag();
-            currentHolder = holder;
             if (holder.bgView.getScrollX()<0)
                 return;
 
@@ -516,17 +515,21 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             if (expandedPosition >= 0 && isCollapsed == false ) {
                 DisplayEditButton(true);
                 collapseAllItems();
-                
-                holder.bar.setProgress(0);
-                holder.playControl.setImageResource(R.drawable.play);
-                holder.mCurrentRemain.setText("-" + holder.duration.getText());
-                holder.mCurrentTime.setText("0:00");
+                if(currentHolder!=null)
+                {
+                    currentHolder.bar.setProgress(0);
+                    currentHolder.playControl.setImageResource(R.drawable.play);
+                    currentHolder.mCurrentRemain.setText("-" + currentHolder.duration.getText());
+                    currentHolder.mCurrentTime.setText("0:00");
+                    mRecorder.stopPlayback();
+                }
                 expandedPosition = -1;
                 isCollapsed = true;
                 setItemScroll(true);
-                mRecorder.stopPlayback();
                 return;
             }
+            
+            currentHolder = holder;
             // expand the view
             DisplayEditButton(false);
             setItemVisible(v, true);
@@ -535,6 +538,26 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             expandItem(v);
             expandedPosition =  position;
             setItemScroll(false);
+        }
+
+       
+    }
+    
+    public void ExitCurrentEditMode() {
+        if(currentHolder!=null)
+        {
+            collapseAllItems();
+        }
+        else {
+            return;
+        }
+        if(mRecorder.getState() == Recorder.IDLE_STATE || mRecorder.getState() == Recorder.PLAYING_STATE || mRecorder.getState() == Recorder.PLAYER_PAUSE_STATE)
+        {
+            currentHolder.bar.setProgress(0);
+            currentHolder.playControl.setImageResource(R.drawable.play);
+            currentHolder.mCurrentRemain.setText("-" + currentHolder.duration.getText());
+            currentHolder.mCurrentTime.setText("0:00");
+            mRecorder.stopPlayback();
         }
     }
 
