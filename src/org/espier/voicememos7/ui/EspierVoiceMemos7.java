@@ -1214,7 +1214,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onClick(View v) {
-                
+                waveView.clearData();
                 dialogdismiss.sendEmptyMessage(1);
                 ScollToBottom();
                 return;
