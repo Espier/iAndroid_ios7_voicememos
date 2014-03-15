@@ -173,6 +173,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     if (dialog != null) {
                         dialog.dismiss();
                     }
+                    firstclick = true;
                     break;
 
                 default:
@@ -990,6 +991,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         public void onStopTrackingTouch(SeekBar bar) {
         }
     };
+    protected boolean firstclick = true;
 
     private void changeVoiceMemName()
     {
@@ -1069,31 +1071,35 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onClick(View v) {
-                String name = text.getText().toString();
-                if (name.equals(""))
-                {
-                    return;
-                }
-                if(isConSpeCharacters(name)){
-                    //show textview
-                    text_note.setVisibility(View.VISIBLE);
-                    
-                    return;
-                }
-                if (mediaStatus == MEDIA_STATE_EDIT)
-                {
-                    textVoiceNameInEditMode.setText(text.getText().toString());
-                    MemosUtils.updateVoiceName(getApplicationContext(), text.getText().toString(),
-                            Integer.valueOf(currentEditMemo.getMemId()));
-                    currentEditMemo = MemosUtils.getMemoByID(getApplicationContext(),
-                            currentEditMemo.getMemId());
-                }
+                if(firstclick){
+                    firstclick = false;
+                    String name = text.getText().toString();
+                    if (name.equals(""))
+                    {
+                        return;
+                    }
+                    if(isConSpeCharacters(name)){
+                        //show textview
+                        text_note.setVisibility(View.VISIBLE);
+                        
+                        return;
+                    }
+                    if (mediaStatus == MEDIA_STATE_EDIT)
+                    {
+                        textVoiceNameInEditMode.setText(text.getText().toString());
+                        MemosUtils.updateVoiceName(getApplicationContext(), text.getText().toString(),
+                                Integer.valueOf(currentEditMemo.getMemId()));
+                        currentEditMemo = MemosUtils.getMemoByID(getApplicationContext(),
+                                currentEditMemo.getMemId());
+                    }
 
-                if (mediaStatus == MEDIA_STATE_RECORDING)
-                {
-                    txtRecordName.setText(text.getText().toString());
+                    if (mediaStatus == MEDIA_STATE_RECORDING)
+                    {
+                        txtRecordName.setText(text.getText().toString());
+                    }
+                    dialogdismiss.sendEmptyMessage(1);
                 }
-                dialogdismiss.sendEmptyMessage(1);
+               
             }
 
             
