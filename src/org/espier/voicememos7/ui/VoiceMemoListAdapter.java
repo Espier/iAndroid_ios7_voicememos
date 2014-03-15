@@ -72,6 +72,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     VoiceMemo currentMemo;
     private long currentPos = 0;
     Drawable thumb_gray;
+    public boolean canExpanding = true;
 
     public interface OnListViewChangedListener {
         
@@ -504,6 +505,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
             if (expandedPosition == position)
                 return;
+            
+            if (canExpanding == false)
+                return;
 
             // if status is not collapsed(expanded), and the item clicked is not
             // the expanded one,
@@ -713,8 +717,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     }
     
     public void showOrHiddenDelete(boolean isShow) {
-        // TODO Auto-generated method stub textview changeto editView
+        //textview changeto editView
         if (isShow) {
+            canExpanding = false;
             // show delete image textview show finish
             // textViewEdit.setText(getResources().getString(R.string.finish));
             for (final View item : list) {
@@ -767,6 +772,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 });
             }
         } else {
+            canExpanding = true;
             //
             // textViewEdit.setText(getResources().getString(R.string.edit));
             for (View item : list) {

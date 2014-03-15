@@ -163,6 +163,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     RelativeLayout titlelayout;
     ImageView sound;
     TextView textViewEdit, textviewmemo;
+    private boolean scrollleft = false;
     Handler dialogdismiss = new Handler() {
 
         @Override
@@ -571,8 +572,21 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
                 break;
             case R.id.editButton:
+                
                 // in edit status
                 TextView tv = (TextView)findViewById(R.id.editButton);
+                if (scrollleft) {
+                    if (isEditable) {
+                        tv.setText(R.string.edit);
+                        slideCutListView.restoreItem();
+                        mVoiceMemoListAdapter.showOrHiddenDelete(false);
+                        isEditable = false;
+                    } else {
+                        tv.setText(R.string.edit);
+                        slideCutListView.restoreItem();
+                    }
+                    return;
+                }
                 if (isEditable) {
                     tv.setText(R.string.edit);
                     mVoiceMemoListAdapter.showOrHiddenDelete(false);
@@ -1101,7 +1115,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                
             }
-
             
         });
 
@@ -1750,6 +1763,20 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void setItemScroll(boolean canScroll) {
         slideCutListView.canScroll = canScroll;
+        
+    }
+
+    @Override
+    public void changeEditButton(boolean isEditable) {
+        Log.d("adf","changeEditButton"+String.valueOf(isEditable));
+        TextView tv = (TextView)findViewById(R.id.editButton);
+        if (isEditable)  {
+            tv.setText(R.string.edit);
+            scrollleft = false;
+        } else {
+            tv.setText(R.string.finish);
+            scrollleft = true;
+        }
         
     }
     
