@@ -26,6 +26,7 @@ import org.espier.voicememos7.R;
  * @author xiaanming
  */
 public class SlideCutListView extends ListView {
+    public boolean canScroll = true;
     /**
      * 当前滑动的ListView　position
      */
@@ -289,7 +290,8 @@ public class SlideCutListView extends ListView {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     
-                    
+                    if (canScroll == false)
+                        return true;
                     MotionEvent cancelEvent = MotionEvent.obtain(ev);
                     cancelEvent.setAction(MotionEvent.ACTION_CANCEL |
                             (ev.getActionIndex() << MotionEvent.ACTION_POINTER_INDEX_SHIFT));

@@ -89,6 +89,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         void changSoundColorBlue();
         
         void onSlideItem(View view);
+        
+        void setItemScroll(boolean canScroll);
 
     }
 
@@ -140,6 +142,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     private void SlideItem(View view) {
         if (mOnListViewChangedListener != null)
             mOnListViewChangedListener.onSlideItem(view);
+    }
+    
+    private void setItemScroll(boolean canScroll) {
+        if (mOnListViewChangedListener != null)
+            mOnListViewChangedListener.setItemScroll(canScroll);
     }
 
     public VoiceMemoListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
@@ -506,6 +513,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 holder.bar.setProgress(0);
                 expandedPosition = -1;
                 isCollapsed = true;
+                setItemScroll(true);
                 return;
             }
             // expand the view
@@ -515,6 +523,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             isCollapsed = false;
             expandItem(v);
             expandedPosition =  position;
+            setItemScroll(false);
         }
     }
 

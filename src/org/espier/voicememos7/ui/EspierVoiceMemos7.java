@@ -1718,28 +1718,30 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     public void changeTextViewColorGray() {
-        // TODO Auto-generated method stub
         TextView tv = (TextView)findViewById(R.id.editButton);
         tv.setTextColor(getResources().getColor(R.color.font_gray));
     }
 
     @Override
     public void changeTextViewColorBlue() {
-        // TODO Auto-generated method stub
         TextView tv = (TextView)findViewById(R.id.editButton);
         tv.setTextColor(getResources().getColor(R.color.font_color));
     }
 
     @Override
     public void changSoundColorGray() {
-        // TODO Auto-generated method stub
         sound.setImageResource(R.drawable.volume_gray);
     }
 
     @Override
     public void changSoundColorBlue() {
-        // TODO Auto-generated method stub
         sound.setImageResource(R.drawable.volume_blue);
+    }
+
+    @Override
+    public void setItemScroll(boolean canScroll) {
+        slideCutListView.canScroll = canScroll;
+        
     }
     
     
