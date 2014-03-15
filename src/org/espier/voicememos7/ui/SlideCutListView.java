@@ -110,6 +110,12 @@ public class SlideCutListView extends ListView {
         this.mRemoveListener = removeListener;
     }
     
+    public void changeEditButton(boolean isEditable) {
+        if (mRemoveListener != null)
+            mRemoveListener.changeEditButton(isEditable);
+            
+    }
+    
 
 
 
@@ -195,25 +201,6 @@ public class SlideCutListView extends ListView {
         
         postInvalidate(); // 刷新itemView
     }
-    final static class ViewHolder {
-        ImageView playControl;
-        TextView txtRecordName;
-        EditText txtRecordNameEditable;
-        TextView createDate;
-        TextView duration;
-        TextView path;
-        TextView id;
-        ImageView cellGrayLine;
-        TextView mCurrentTime;
-        TextView mCurrentRemain;
-        SeekBar bar;
-        ImageView share;
-        ImageView del;
-        TextView edit;
-        Button btnHiddenDelete;
-        int position;
-        View bgView;
-    }
     
     public void scrollLeft(View view) {
         removeDirection = RemoveDirection.LEFT;
@@ -230,7 +217,7 @@ public class SlideCutListView extends ListView {
         //hiddenButton.setVisibility(View.VISIBLE);
 //        View btnDelete = (View)itemView.findViewById(R.id.memos_item_delete_button);
 //        btnDelete.setVisibility(View.VISIBLE);
-        
+        changeEditButton(false);
         postInvalidate(); // 刷新itemView
     }
 
@@ -245,10 +232,12 @@ public class SlideCutListView extends ListView {
             // scrollLeft();
             hiddenButton.setEnabled(true);
             isScrolling = true;
+            changeEditButton(false);
         } else {
             // 滚回到原始位置,为了偷下懒这里是直接调用scrollTo滚动
             itemView.scrollTo(0, 0);
             hiddenButton.setEnabled(false);
+            changeEditButton(true);
             
         }
 
@@ -258,6 +247,7 @@ public class SlideCutListView extends ListView {
         if (itemView!=null) {
             itemView.scrollTo(0,0);
             hiddenButton.setEnabled(false);
+            changeEditButton(true);
             
         }
     }
@@ -398,13 +388,9 @@ public class SlideCutListView extends ListView {
         return velocity;
     }
 
-    /**
-     * 当ListView item滑出屏幕，回调这个接口 我们需要在回调方法removeItem()中移除该Item,然后刷新ListView
-     * 
-     * @author xiaanming
-     */
     public interface RemoveListener {
         public void removeItem(RemoveDirection direction, int position);
+        public void changeEditButton(boolean isEditable);
     }
 
     @Override
