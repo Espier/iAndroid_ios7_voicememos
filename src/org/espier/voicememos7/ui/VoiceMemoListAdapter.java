@@ -568,9 +568,12 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             holder.del.setImageResource(R.drawable.trash_gray);
             holder.share.setImageResource(R.drawable.action_gray);
             holder.playControl.setImageResource(R.drawable.play_gray);
+            if(arg0.getId()!=R.id.hiddenDeleteButon){
+                mOnListViewChangedListener.changSoundColorGray();
+                mOnListViewChangedListener.changeTextViewColorGray();
+            }
             holder.edit.setTextColor(R.color.gray);
-            mOnListViewChangedListener.changeTextViewColorGray();
-            mOnListViewChangedListener.changSoundColorGray();
+            
             holder.bar.setThumb(thumb_gray);
             
             if (mRecorder.getState() != Recorder.IDLE_STATE) {

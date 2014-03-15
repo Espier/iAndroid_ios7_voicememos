@@ -678,14 +678,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         });
         if(mVoiceMemoListAdapter!=null&&mVoiceMemoListAdapter.currentHolder!=null
                 &&mVoiceMemoListAdapter.currentHolder.del!=null){
-            mVoiceMemoListAdapter.currentHolder.del.setImageResource(R.drawable.trash);
-            mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.action);
-            mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
-            mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
-            this.changeTextViewColorBlue();
-            this.changSoundColorBlue();
-            mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
-        }
+               
+                mVoiceMemoListAdapter.currentHolder.del.setImageResource(R.drawable.trash);
+                mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.action);
+                mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
+                mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
+                
+                mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
+            
+            }
+        this.changeTextViewColorBlue();
+        this.changSoundColorBlue();
         
     }
 
@@ -1042,7 +1045,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         RelativeLayout.LayoutParams textlay = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         textlay.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 30),
-                ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 24));
+                ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 12));
         textlay.addRule(RelativeLayout.BELOW, R.id.textView2);
         text.setLayoutParams(textlay);
         text.setTextSize(ScalePx.scalePx(this, 18));
@@ -1059,7 +1062,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
         TextView ok = (TextView) view.findViewById(R.id.ok);
         final TextView text_note = (TextView) view.findViewById(R.id.text_note);
-        
+        RelativeLayout.LayoutParams relp =  new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+        relp.addRule(RelativeLayout.ALIGN_LEFT,R.id.memoname);
+        relp.addRule(RelativeLayout.ALIGN_RIGHT,R.id.memoname);
+        relp.addRule(RelativeLayout.BELOW,R.id.memoname);
+        relp.setMargins(0, 0, 0, ScalePx.scalePx(this, 16));
+        text_note.setPadding(0, 0, 0, ScalePx.scalePx(this, 12));
+        text_note.setLayoutParams(relp);
         cancel.setOnTouchListener(onTouchListener);
         ok.setOnTouchListener(onTouchListener);
         cancel.setOnClickListener(new OnClickListener() {
@@ -1114,7 +1123,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.width = ScalePx.scalePx(this, 540);
-        lp.height = ScalePx.scalePx(this, 380);
+        lp.height = ScalePx.scalePx(this, 370);
         dialogWindow.setAttributes(lp);
         dialog.show();
     }
@@ -1160,7 +1169,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         RelativeLayout.LayoutParams textlay = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         textlay.setMargins(ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 30),
-                ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 24));
+                ScalePx.scalePx(this, 30), ScalePx.scalePx(this, 12));
         textlay.addRule(RelativeLayout.BELOW, R.id.textView2);
         text.setLayoutParams(textlay);
         
@@ -1184,6 +1193,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         ok.setTypeface(MemosUtils.getIosThTypeface(this));
         ok.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,34));
         final TextView text_note = (TextView) view.findViewById(R.id.text_note);
+        
+        RelativeLayout.LayoutParams relp =  new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+        relp.addRule(RelativeLayout.ALIGN_LEFT,R.id.memoname);
+        relp.addRule(RelativeLayout.ALIGN_RIGHT,R.id.memoname);
+        relp.addRule(RelativeLayout.BELOW,R.id.memoname);
+//        relp.setMargins(0, 0, 0, ScalePx.scalePx(this, 240));
+        text_note.setPadding(0, 0, 0, ScalePx.scalePx(this, 12));
+        text_note.setLayoutParams(relp);
         
         // ok.setBackgroundColor(getResources().getColor(R.color.red));
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -1244,7 +1261,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.width = ScalePx.scalePx(this, 540);
-        lp.height = ScalePx.scalePx(this, 380);
+        lp.height = ScalePx.scalePx(this, 370);
         dialogWindow.setAttributes(lp);
         dialog.show();
 
