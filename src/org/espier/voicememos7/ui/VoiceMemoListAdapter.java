@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -761,6 +762,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                     public void onFocusChange(View v, boolean hasFocus) {
                         // TODO Auto-generated method stub
                         if (!hasFocus) {
+                            
+                            InputMethodManager mInputMethodManager=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             String newname = itemtitle.getText().toString();
                             if (!title.equals(newname)) {
                                 // memeoname nodified update momeinfo
