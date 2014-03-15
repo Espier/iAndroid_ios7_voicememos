@@ -76,7 +76,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     public interface OnListViewChangedListener {
         
-        public void onAChanged(Intent intent, int state);
+        public void onDeleteItem(Intent intent, int state);
 
         public void onVoiceEditClicked(CheapSoundFile mSoundFile, VoiceMemo memos);
 
@@ -117,7 +117,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     private void deleteItem(Intent intentA, int request) {
         if (mOnListViewChangedListener != null)
-            mOnListViewChangedListener.onAChanged(intentA, request);
+            mOnListViewChangedListener.onDeleteItem(intentA, request);
     }
 
     private void DisplayEditButton(boolean isDisplay) {
@@ -342,8 +342,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.txtRecordName.setFocusable(false);
         holder.txtRecordName.setTag(itemname);
         String displayString = MemosUtils.Ellipsize(itemname,context);
-//        String viewAddr = view.toString().substring(27, view.toString().length())+"@";
-        holder.txtRecordName.setText(displayString);
+        String viewAddr = view.toString().substring(27, view.toString().length())+"@";
+        holder.txtRecordName.setText(displayString+viewAddr);
         if (displayString.equals(itemname)) {
 
         }
@@ -572,6 +572,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         @SuppressLint("ResourceAsColor")
         @Override
         public void onClick(View arg0) {
+            Log.d("adf","click Delete view="+arg0.toString());
             holder.del.setImageResource(R.drawable.trash_gray);
             holder.share.setImageResource(R.drawable.action_gray);
             holder.playControl.setImageResource(R.drawable.play_gray);
