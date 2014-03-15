@@ -435,6 +435,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         }
         expandedPosition = -1;
         isCollapsed = true;
+        mRecorder.stopPlayback();
     }
 
     private void expandItem(View v) {
@@ -514,10 +515,15 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             if (expandedPosition >= 0 && isCollapsed == false ) {
                 DisplayEditButton(true);
                 collapseAllItems();
+                
                 holder.bar.setProgress(0);
+                holder.playControl.setImageResource(R.drawable.play);
+                holder.mCurrentRemain.setText("-" + holder.duration.getText());
+                holder.mCurrentTime.setText("0:00");
                 expandedPosition = -1;
                 isCollapsed = true;
                 setItemScroll(true);
+                mRecorder.stopPlayback();
                 return;
             }
             // expand the view
