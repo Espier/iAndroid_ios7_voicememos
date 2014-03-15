@@ -664,14 +664,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         });
         if(mVoiceMemoListAdapter!=null&&mVoiceMemoListAdapter.currentHolder!=null
                 &&mVoiceMemoListAdapter.currentHolder.del!=null){
-            mVoiceMemoListAdapter.currentHolder.del.setImageResource(R.drawable.trash);
-            mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.action);
-            mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
-            mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
-            this.changeTextViewColorBlue();
-            this.changSoundColorBlue();
-            mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
-        }
+               
+                mVoiceMemoListAdapter.currentHolder.del.setImageResource(R.drawable.trash);
+                mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.action);
+                mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
+                mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
+                
+                mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
+            
+            }
+        this.changeTextViewColorBlue();
+        this.changSoundColorBlue();
         
     }
 
