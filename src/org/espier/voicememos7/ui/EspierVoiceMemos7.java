@@ -1201,8 +1201,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                     SharedPreferences sp = EspierVoiceMemos7.this.getSharedPreferences("espier",
                             EspierVoiceMemos7.MODE_PRIVATE);
 
-                    int num = sp.getInt("Counter", 1);
-                    sp.edit().putInt("Counter", num + 1).commit();
+//                    int num = sp.getInt("Counter", 1);
+//                    sp.edit().putInt("Counter", num + 1).commit();
                     String exitstring = sp.getString("indexs", "");
                     sp.edit().putString("indexs", exitstring + "," + indexnum + ",").commit();
                 }
@@ -1394,7 +1394,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 mVoiceMemoListAdapter.collapseAllItems();
                 slideCutListView.restoreItem();
                 mCurrentDuration = 0;
+                System.out.println("get count "+slideCutListView.getCount());
                 if (slideCutListView.getCount() == 0) {
+                    SharedPreferences sp = EspierVoiceMemos7.this.getSharedPreferences("espier",
+                            EspierVoiceMemos7.MODE_PRIVATE);
+                    sp.edit().putString("indexs", "").commit();
+                    
                     if (emptyView != null) {
                         emptyView.setVisibility(View.VISIBLE);
                     }

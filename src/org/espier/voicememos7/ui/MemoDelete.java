@@ -99,6 +99,7 @@ public class MemoDelete extends Activity implements OnClickListener {
         if(indexnums.contains(","+index+",")){
             indexnums = indexnums.replace(","+index+",", "");
             sp.edit().putString("indexs", indexnums).commit();
+            
         }
         Intent in = new Intent();
         in.putExtra("mCurrentMemoId", mCurrentMemoId);
