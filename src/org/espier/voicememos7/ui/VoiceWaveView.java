@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
@@ -162,6 +161,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
     int top_time_height;
     float temp_amp;
     int index_voice_zero;
+    
+    float top_time_pos;
     
 
     /**
@@ -403,6 +404,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
        // timeTopPaint.setTypeface(MemosUtils.getIosThTypeface(context));
 
         top_time_height = ScalePx.scalePx(context, (int)timeTopPaint.getTextSize());
+        top_time_height = -(int)(timeTopPaint.getFontMetrics().ascent+0.5);
 
         timeTopGrayPaint = new Paint();
         timeTopGrayPaint.setTextSize(ScalePx.scalePx(context, 24));
@@ -494,9 +496,18 @@ public class VoiceWaveView extends View implements OnGestureListener {
         time_per_pixel = time_x * 1000 / getWidth();
         h_block = ScalePx.scalePx(context, 176);
         cicle_radius = ScalePx.scalePx(context, 7);
-        h_high_line = ScalePx.scalePx(context, 30);
+       // h_high_line = ScalePx.scalePx(context, 30);
+        
+       
+        
         h_low_line = ScalePx.scalePx(context, 5);
+        float div_dowm = ScalePx.scalePx(context, 8);
+        h_high_line = h_low_line + top_time_height +div_dowm ;
+       // Log.e("h-l-t-d", h_high_line+"--"+h_low_line+"--"+top_time_height+"--"+div_dowm);
+        
+        
         y_top_line = y_xaxis + h_high_line;
+        top_time_pos = y_top_line - h_low_line-div_dowm;
         y_mid_line = y_xaxis + h_high_line + h_block;
         y_bottom_line = y_xaxis + h_high_line + h_block * 2;
         h_bottomLine2timetext = ScalePx.scalePx(context, 28);
@@ -506,6 +517,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         time_text_font_size = ScalePx.scalePx(context, 24);
 
         margin_lef_init = ScalePx.scalePx(context, 31);
+
 
     }
 
@@ -759,8 +771,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         if (isCliclEditBar) {
             canvas.drawText(timeFormat(clip_left_time),
                     left_edit_bar_pos < (w - time_width) ? left_edit_bar_pos+cicle_radius
-                            : (left_edit_bar_pos - time_width-cicle_radius*2), y_xaxis
-                            + top_time_height, timeTopPaint);
+                            : (left_edit_bar_pos - time_width-cicle_radius*2), top_time_pos, timeTopPaint);
         }
 
         // right
@@ -773,8 +784,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
             canvas.drawText(timeFormat(clip_right_time),
                     (right_edit_bar_pos > time_width) ? (right_edit_bar_pos - time_width)
-                            : right_edit_bar_pos, y_xaxis
-                            + top_time_height, timeTopPaint);
+                            : right_edit_bar_pos, top_time_pos, timeTopPaint);
         }
 
     }
@@ -951,12 +961,17 @@ public class VoiceWaveView extends View implements OnGestureListener {
                         y_xaxis + h_high_line - h, darkGrayLineMiddlePaint);
             }
             if (i != -1) {
-                canvas.drawText(timeAxisFormat(time_list.get(i)), x + text_offset, y_xaxis
-                        + top_time_height, timeTopPaint);
+//                canvas.drawText(timeAxisFormat(time_list.get(i)), x + text_offset, y_xaxis
+//                        + top_time_height, timeTopPaint);
+//                
+                canvas.drawText(timeAxisFormat(time_list.get(i)), x + text_offset, top_time_pos, timeTopPaint);
+                
 
             }
         }
     }
+    
+    
 
     private void drawXAxisToEdit(Canvas canvas, float offset)
     {
@@ -986,9 +1001,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
                 index_s++;
                 canvas.drawText(timeAxisFormat(t1), x1 + text_offset,
-                        y_xaxis + top_time_height, timeTopPaint);
+                        top_time_pos, timeTopPaint);
                 canvas.drawText(timeAxisFormat(t2), x2 + text_offset,
-                        y_xaxis + top_time_height, timeTopPaint);
+                        top_time_pos, timeTopPaint);
 
             }
 
@@ -1028,16 +1043,14 @@ public class VoiceWaveView extends View implements OnGestureListener {
         if (fac >= 1) {
             for (int i = 0; i < n; i++) {
                 canvas.drawText(timeAxisFormat(second_time + i * t_Grid), (i + 1) * grid_width * 4
-                        + text_offset, y_xaxis
-                        + top_time_height, isCliclEditBar ? timeTopGrayPaint
+                        + text_offset, top_time_pos, isCliclEditBar ? timeTopGrayPaint
                         : timeTopPaint);
             }
         }
         else {
 
             for (int i = 0; i < m_fact + 1; i++) {
-                canvas.drawText(timeAxisFormat(i), (j + i) * grid_width * 4 + text_offset, y_xaxis
-                        + top_time_height, isCliclEditBar ? timeTopGrayPaint
+                canvas.drawText(timeAxisFormat(i), (j + i) * grid_width * 4 + text_offset, top_time_pos, isCliclEditBar ? timeTopGrayPaint
                         : timeTopPaint);
             }
         }
