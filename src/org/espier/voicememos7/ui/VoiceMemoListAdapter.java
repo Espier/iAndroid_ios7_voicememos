@@ -752,7 +752,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             canExpanding = false;
             // show delete image textview show finish
             // textViewEdit.setText(getResources().getString(R.string.finish));
+//            for (int i = 0;i<this.getCount();i++) {
             for (final View item : list) {
+//                final View item = this.getChildAt(i);
                 // for (int i = 0; i < slideCutListView.getCount(); i++) {
                 // View item = slideCutListView.getChildAt(i);
                 ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
