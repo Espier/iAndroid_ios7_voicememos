@@ -158,7 +158,7 @@ public class SlideCutListView extends ListView {
             case MotionEvent.ACTION_MOVE: {
 
                 if (Math.abs(getScrollVelocity()) > SNAP_VELOCITY
-                        || (event.getX() - downX > mTouchSlop && itemView.getScrollX()>0 )||(downX - event.getX()> mTouchSlop && Math
+                        || (event.getX() - downX > mTouchSlop && itemView!=null && itemView.getScrollX()>0 )||(downX - event.getX()> mTouchSlop && Math
                                 .abs(event.getY() - downY) < mTouchSlop)) {
                     isSlide = true;
                 }
