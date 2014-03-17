@@ -421,6 +421,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         String exitindexs = sp.getString("indexs", "");
         if (exitindexs.equals("") || mVoiceMemoListAdapter.getCount() == 0) {
             memo_name = this.getResources().getString(R.string.record_name).toString();
+            sp.edit().putString("indexs", "1").commit();
         } else {
             for (int i = 2; i < 10000; i++) {
                 String index = "," + i + ",";
