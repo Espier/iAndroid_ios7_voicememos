@@ -16,6 +16,7 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 
+import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
@@ -490,7 +491,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         grid_width = ScalePx.scalePx(context, 24);
         time_x = getWidth() / (grid_width * 4);
         time_per_pixel = time_x * 1000 / getWidth();
-        h_block = ScalePx.scalePx(context, 176);
+        float blocak_size = getResources().getDimension(R.dimen.block_h);
+        h_block = ScalePx.scalePx(context, (int)(blocak_size));
         cicle_radius = ScalePx.scalePx(context, 7);
         // h_high_line = ScalePx.scalePx(context, 30);
 
@@ -825,6 +827,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 else {
                     x_ = (s / n) * i;
                     // x_ = v*invalidate_rate*i;
+                    //Log.e("div", s/n+"");
                 }
 
             }

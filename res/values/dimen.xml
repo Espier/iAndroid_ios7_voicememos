@@ -2,4 +2,5 @@
 <resources>
     <dimen name="layout_height">100dp</dimen>
      <dimen name="start_H_W">75dp</dimen>
+     <dimen name="block_h">176dp</dimen>
 </resources>
