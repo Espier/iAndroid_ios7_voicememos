@@ -461,7 +461,20 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         LinearLayout layout = (LinearLayout) itemView.findViewById(R.id.playlayout);
         LinearLayout sharelayout = (LinearLayout) itemView.findViewById(R.id.sharelayout);
         if (isVisible) {
-
+            
+            ImageView del = (ImageView)itemView.findViewById(R.id.deleteimage);
+            del.setImageResource(R.drawable.trash);
+            ImageView share = (ImageView)itemView.findViewById(R.id.share);
+            share.setImageResource(R.drawable.action);
+            ImageView play = (ImageView)itemView.findViewById(R.id.memos_item_play);
+            play.setImageResource(R.drawable.play);
+            
+//            itemView.del.setImageResource(R.drawable.trash);
+//            mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.action);
+//            mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
+//            mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
+//            
+//            mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
             layout.setVisibility(View.VISIBLE);
             sharelayout.setVisibility(View.VISIBLE);
         } else {

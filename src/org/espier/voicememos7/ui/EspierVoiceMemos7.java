@@ -417,22 +417,23 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private CharSequence getRecordName() {
         // TODO Auto-generated method stub
-        SharedPreferences sp = this.getSharedPreferences("espier", this.MODE_PRIVATE);
-        String exitindexs = sp.getString("indexs", "");
+        SharedPreferences sp = EspierVoiceMemos7.this.getSharedPreferences("espier", 0);
+        String exitindexs = sp.getString("memoid", "");
+        System.out.println("exitindexs    "+exitindexs);
         if (exitindexs.equals("") || mVoiceMemoListAdapter.getCount() == 0) {
             memo_name = this.getResources().getString(R.string.record_name).toString();
+            sp.edit().putString("memoid", "1").commit();
+            sp.edit().putString("name", "test").commit();
         } else {
-            for (int i = 2; i < 10000; i++) {
-                String index = "," + i + ",";
-                if (exitindexs.contains(index)) {
-                    continue;
-                } else {
-                    indexnum = i;
+            int index = Integer.parseInt(exitindexs);
+//            for (int i = 2; i < 10000; i++) {
+//                    indexnum = i;
                     memo_name = this.getResources().getString(R.string.record_name).toString()
-                            + " " + i;
-                    break;
-                }
-            }
+                            + " " + (index+1);
+                    sp.edit().putString("memoid", (index+1)+"").commit();
+//                    break;
+                
+//            }
         }
         return memo_name;
     }
@@ -1156,8 +1157,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void stop() {
         int state = mRecorder.getState();
-//        start.setBackgroundResource(R.drawable.record_red);
-        start.setImageResource(R.drawable.record_red);
+        android.widget.LinearLayout.LayoutParams ll = new android.widget.LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.start_H_W),
+                (int) getResources().getDimension(R.dimen.start_H_W));
+        start.setLayoutParams(ll);
+        start.setBackgroundResource(R.drawable.record_red);
         if (state == Recorder.RECORDING_STATE || state == Recorder.RECORDER_PAUSE_STATE) {
             mRecorder.stopRecording();
             waveView.stop();
@@ -1260,8 +1263,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
 //                    int num = sp.getInt("Counter", 1);
 //                    sp.edit().putInt("Counter", num + 1).commit();
-                    String exitstring = sp.getString("indexs", "");
-                    sp.edit().putString("indexs", exitstring + "," + indexnum + ",").commit();
+//                    String exitstring = sp.getString("indexs", "");
+                    sp.edit().putString("memeoid",  indexnum+"").commit();
                 }
                 insertVoiceMemo(name);
                 waveView.clearData();
@@ -1455,7 +1458,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 if (slideCutListView.getCount() == 0) {
                     SharedPreferences sp = EspierVoiceMemos7.this.getSharedPreferences("espier",
                             EspierVoiceMemos7.MODE_PRIVATE);
-                    sp.edit().putString("indexs", "").commit();
+                    sp.edit().putString("memoid", "").commit();
                     
                     if (emptyView != null) {
                         emptyView.setVisibility(View.VISIBLE);
@@ -1585,6 +1588,16 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     public void onDeleteItem(Intent intent, int state) {
+        if (slideCutListView.getCount() == 0) {
+            SharedPreferences sp = EspierVoiceMemos7.this.getSharedPreferences("espier",
+                    EspierVoiceMemos7.MODE_PRIVATE);
+            sp.edit().putString("memoid", "").commit();
+            
+            if (emptyView != null) {
+                emptyView.setVisibility(View.VISIBLE);
+            }
+        }
+
         if (state == MemosUtils.DELETE_WITH_CONFIRM)
             startActivityForResult(intent, state);
         else {
