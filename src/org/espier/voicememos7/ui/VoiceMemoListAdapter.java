@@ -343,7 +343,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.txtRecordName.setTag(itemname);
         String displayString = MemosUtils.Ellipsize(itemname,context);
         String viewAddr = view.toString().substring(27, view.toString().length())+"@";
-        holder.txtRecordName.setText(displayString+viewAddr);
+        holder.txtRecordName.setText(displayString);
         if (displayString.equals(itemname)) {
 
         }
@@ -911,6 +911,34 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             mPathIdx = cursor.getColumnIndexOrThrow(VoiceMemo.Memos.DATA);
         } else {
             System.out.println("cursor is null");
+        }
+    }
+    
+    public void RemoveItem(String path) {
+        List<View> listNew = new ArrayList<View>();
+        
+        for(View v:list) {
+            Log.d("adf","view="+v.toString()+",remove file path="+path);
+            ViewHolder vh = (ViewHolder)v.getTag();
+            if (!((String)vh.path.getTag()).equals(path)) {
+                listNew.add(v);
+                Log.d("asdf","add v"+v.toString()+",vh.path in list ="+ vh.path.getTag().toString());
+            }
+        }
+        list = listNew;
+        
+        for(View v:list) {
+            final ViewHolder holder = (ViewHolder) v.getTag();
+
+            Log.d("asdf",holder.path.getTag().toString());
+            final String itemname = cursor.getString(mLabelIdx);
+            final int secs = cursor.getInt(mDurationIdx);
+            final Long date = cursor.getLong(mCreateDateIdx);
+            EditText ee = (EditText)v.findViewById(R.id.memos_item_title_editable);
+            ee.setText(itemname);
+            Log.d("asdf","itemname="+itemname);
+            TextView et = (TextView)v.findViewById(R.id.memos_item_title);
+            et.setText(itemname);
         }
     }
 
