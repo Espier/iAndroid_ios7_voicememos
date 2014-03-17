@@ -508,7 +508,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         y_bottom_line = y_xaxis + h_high_line + h_block * 2;
         h_bottomLine2timetext = ScalePx.scalePx(context, 28);
         y_time_text = y_bottom_line + h_bottomLine2timetext;
-        h_db2db = ScalePx.scalePx(context, 8);
+        h_db2db =  (h_block - (-7*voicedbPaint.getFontMetrics().ascent))/8;
+        //h_db2db = ScalePx.scalePx(context, 8);
         h_db2midline = ScalePx.scalePx(context, 13);
         time_text_font_size = ScalePx.scalePx(context, 24);
 
@@ -1078,12 +1079,12 @@ public class VoiceWaveView extends View implements OnGestureListener {
         for (int i = 0; i < voice_db_list.length; i++)
         {
             canvas.drawText(voice_db_list[i], w - num_margin_right,
-                    y_mid_line + h_db2midline + i * (h_db2db + voicedbPaint.getTextSize())
-                            + voicedbPaint.getTextSize(), isCliclEditBar
+                    y_mid_line + h_db2midline + i * (h_db2db + (-voicedbPaint.getFontMetrics().ascent))
+                            +h_db2db, isCliclEditBar
                             && viewStatus == VIEW_STATUS_EDIT ? voicedbGrayPaint
                             : voicedbPaint);
             canvas.drawText(voice_db_list[i], w - num_margin_right, y_mid_line
-                    - h_db2midline - i * (h_db2db + voicedbPaint.getTextSize()),
+                    - h_db2midline - i * (h_db2db - voicedbPaint.getFontMetrics().ascent),
                     isCliclEditBar && viewStatus == VIEW_STATUS_EDIT ? voicedbGrayPaint
                             : voicedbPaint);
         }
