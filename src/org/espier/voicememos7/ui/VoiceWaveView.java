@@ -815,10 +815,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
         //
         // }
         // canvas.drawLines(points, voiceLinePaint);
-
-        for (int i = 0; i < voice_list.size(); i++)
+        float x_ = 0;
+        for (int i = 0; i < voice_list.size() && x_<=x; i++)
         {
-            float x_;
+            
             if (x >= w / 2) {
 
                 if (time < time_x / 2 * 1000) {
@@ -1225,7 +1225,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                                 temp_amp = temp_amp < 0 ? 0 : temp_amp;
 
                             }
-                            if (x >= w / 2) {
+                            if (x >= w / 2 && time>=time_x*1000/2) {
                                 voice_list.remove(0);
                             }
                             voice_list.add(temp_amp / ScalePx.scalePx(context, 320));
