@@ -291,8 +291,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         rlpDate.addRule(RelativeLayout.BELOW, R.id.txtRecordName);
         txtDate.setLayoutParams(rlpDate);
 
-        // LinearLayout buttonLayout =
-        // (LinearLayout)findViewById(R.id.buttonLayout);
+         LinearLayout buttonLayout =
+         (LinearLayout)findViewById(R.id.buttonLayout);
+         RelativeLayout.LayoutParams rl = new android.widget.RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.layout_height),
+                 (int) getResources().getDimension(R.dimen.layout_height));
+         rl.addRule(RelativeLayout.BELOW,R.id.txtDate);
+         rl.addRule(RelativeLayout.CENTER_HORIZONTAL,RelativeLayout.TRUE);
+         rl.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
+         buttonLayout.setLayoutParams(rl);
         // RelativeLayout.LayoutParams rlpButton = new
         // RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
         // LayoutParams.WRAP_CONTENT);
@@ -318,7 +324,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         aboveLayout = (RelativeLayout) findViewById(R.id.aboveLayout);
         belowLayout = (RelativeLayout) findViewById(R.id.belowLayout);
         hiddenView = (Button) findViewById(R.id.hiddenView);
+        android.widget.LinearLayout.LayoutParams ll = new android.widget.LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.start_H_W),
+                (int) getResources().getDimension(R.dimen.start_H_W));
+        
+        
         start = (ImageView) findViewById(R.id.redButton);
+        start.setLayoutParams(ll);
         start.setOnClickListener(this);
         start.setOnTouchListener(onTouchListener);
 
@@ -558,11 +569,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 stopMusic();
                 if (mRecorder.getState() == Recorder.RECORDING_STATE) {
                     mRecorder.pauseRecording();
-
+                    android.widget.LinearLayout.LayoutParams ll = new android.widget.LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.start_H_W),
+                            (int) getResources().getDimension(R.dimen.start_H_W));
+                    start.setLayoutParams(ll);
+//                    start.setBackgroundResource(R.drawable.record_red);
                     start.setBackgroundResource(R.drawable.record_red);
                     waveView.pause();
                 } else {
                     mRecorder.startRecording(this);
+                    android.widget.LinearLayout.LayoutParams ll = new android.widget.LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.start_H_W)/2,
+                            (int) getResources().getDimension(R.dimen.start_H_W)/2);
+                    start.setLayoutParams(ll);
                     start.setBackgroundResource(R.drawable.stop_red);
 
                     waveView.start();
@@ -944,12 +961,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         height = getWindowManager().getDefaultDisplay().getHeight() - top;
         width = getWindowManager().getDefaultDisplay().getWidth();
+        
         RelativeLayout.LayoutParams relP = new android.widget.RelativeLayout.LayoutParams(
                 android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
                 (int) (height * 0.9 * 4 / 7 - 30));
         relP.addRule(RelativeLayout.BELOW, R.id.txtMainTitle);
         waveView.setLayoutParams(relP);
-        RelativeLayout.LayoutParams relP2 = new android.widget.RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams relP2 = new android.widget.RelativeLayout.LayoutParams(
                 android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
                 (int) (height * 0.9 * 2.5 / 7));
         RelativeLayout playLayout = (RelativeLayout) findViewById(R.id.playlayout);
@@ -1138,7 +1156,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     private void stop() {
         int state = mRecorder.getState();
-        start.setBackgroundResource(R.drawable.record_red);
+//        start.setBackgroundResource(R.drawable.record_red);
+        start.setImageResource(R.drawable.record_red);
         if (state == Recorder.RECORDING_STATE || state == Recorder.RECORDER_PAUSE_STATE) {
             mRecorder.stopRecording();
             waveView.stop();

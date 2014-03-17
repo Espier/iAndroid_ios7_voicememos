@@ -71,6 +71,7 @@
                     android:inputType="text"
                     android:textSize="20sp"
                     android:singleLine="true"
+                    android:ellipsize="end"
                     android:textColor="@color/black" />
 
                 <TextView
