@@ -777,6 +777,11 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 final TextView idtextview = (TextView) item.findViewById(R.id.memos_item__id);
                 itemname.setVisibility(View.INVISIBLE);
 //                itemtitle.setTextSize(17);
+                ImageView deleteimage = (ImageView) item.findViewById(R.id.deleteimage);
+                int ems = MemosUtils.getEllipsizeByViewWidths(title, item.getWidth()-ScalePx.scalePx(mContext, 350));
+               System.out.println("  width "+ems);
+               itemtitle.setEnabled(false);
+                itemtitle.setEms(ems);
                 itemtitle.setText(title);
                 itemtitle.setVisibility(View.VISIBLE);
                 itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {

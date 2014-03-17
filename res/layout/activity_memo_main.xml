@@ -27,7 +27,7 @@
         <org.espier.voicememos7.ui.VoiceWaveView
             android:id="@+id/waveView"
             android:layout_width="fill_parent"
-            android:layout_height="260dip"
+            android:layout_height="200dip"
             android:layout_below="@+id/txtMainTitle"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="1dp" />
