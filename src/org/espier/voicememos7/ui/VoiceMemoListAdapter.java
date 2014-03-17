@@ -76,7 +76,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     public interface OnListViewChangedListener {
         
-        public void onAChanged(Intent intent, int state);
+        public void onDeleteItem(Intent intent, int state);
 
         public void onVoiceEditClicked(CheapSoundFile mSoundFile, VoiceMemo memos);
 
@@ -117,7 +117,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
 
     private void deleteItem(Intent intentA, int request) {
         if (mOnListViewChangedListener != null)
-            mOnListViewChangedListener.onAChanged(intentA, request);
+            mOnListViewChangedListener.onDeleteItem(intentA, request);
     }
 
     private void DisplayEditButton(boolean isDisplay) {
@@ -342,8 +342,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.txtRecordName.setFocusable(false);
         holder.txtRecordName.setTag(itemname);
         String displayString = MemosUtils.Ellipsize(itemname,context);
-//        String viewAddr = view.toString().substring(27, view.toString().length())+"@";
-        holder.txtRecordName.setText(displayString);
+        String viewAddr = view.toString().substring(27, view.toString().length())+"@";
+        holder.txtRecordName.setText(displayString+viewAddr);
         if (displayString.equals(itemname)) {
 
         }
@@ -500,7 +500,6 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             
             // if click the expanded item, ignore the click operation
             ViewHolder holder = (ViewHolder) v.getTag();
-            currentHolder = holder;
             if (holder.bgView.getScrollX()<0)
                 return;
 
@@ -516,17 +515,21 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             if (expandedPosition >= 0 && isCollapsed == false ) {
                 DisplayEditButton(true);
                 collapseAllItems();
-                
-                holder.bar.setProgress(0);
-                holder.playControl.setImageResource(R.drawable.play);
-                holder.mCurrentRemain.setText("-" + holder.duration.getText());
-                holder.mCurrentTime.setText("0:00");
+                if(currentHolder!=null)
+                {
+                    currentHolder.bar.setProgress(0);
+                    currentHolder.playControl.setImageResource(R.drawable.play);
+                    currentHolder.mCurrentRemain.setText("-" + currentHolder.duration.getText());
+                    currentHolder.mCurrentTime.setText("0:00");
+                    mRecorder.stopPlayback();
+                }
                 expandedPosition = -1;
                 isCollapsed = true;
                 setItemScroll(true);
-                mRecorder.stopPlayback();
                 return;
             }
+            
+            currentHolder = holder;
             // expand the view
             DisplayEditButton(false);
             setItemVisible(v, true);
@@ -535,6 +538,26 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             expandItem(v);
             expandedPosition =  position;
             setItemScroll(false);
+        }
+
+       
+    }
+    
+    public void ExitCurrentEditMode() {
+        if(currentHolder!=null)
+        {
+            collapseAllItems();
+        }
+        else {
+            return;
+        }
+        if(mRecorder.getState() == Recorder.IDLE_STATE || mRecorder.getState() == Recorder.PLAYING_STATE || mRecorder.getState() == Recorder.PLAYER_PAUSE_STATE)
+        {
+            currentHolder.bar.setProgress(0);
+            currentHolder.playControl.setImageResource(R.drawable.play);
+            currentHolder.mCurrentRemain.setText("-" + currentHolder.duration.getText());
+            currentHolder.mCurrentTime.setText("0:00");
+            mRecorder.stopPlayback();
         }
     }
 
@@ -572,6 +595,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         @SuppressLint("ResourceAsColor")
         @Override
         public void onClick(View arg0) {
+            Log.d("adf","click Delete view="+arg0.toString());
             holder.del.setImageResource(R.drawable.trash_gray);
             holder.share.setImageResource(R.drawable.action_gray);
             holder.playControl.setImageResource(R.drawable.play_gray);
@@ -728,7 +752,9 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             canExpanding = false;
             // show delete image textview show finish
             // textViewEdit.setText(getResources().getString(R.string.finish));
+//            for (int i = 0;i<this.getCount();i++) {
             for (final View item : list) {
+//                final View item = this.getChildAt(i);
                 // for (int i = 0; i < slideCutListView.getCount(); i++) {
                 // View item = slideCutListView.getChildAt(i);
                 ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);

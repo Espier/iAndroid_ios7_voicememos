@@ -540,6 +540,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 }
                 break;
             case R.id.redButton:
+                mVoiceMemoListAdapter.ExitCurrentEditMode();
                 start.requestFocus();
                 mediaStatus = MEDIA_STATE_RECORDING;
                 txtMainTitle.setText(getString(R.string.main_title));
@@ -1214,7 +1215,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
             @Override
             public void onClick(View v) {
-                
+                waveView.clearData();
                 dialogdismiss.sendEmptyMessage(1);
                 ScollToBottom();
                 return;
@@ -1523,7 +1524,9 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             file.delete();
         }
         mCurrentPosition = -1;
+
         mVoiceMemoListAdapter.notifyDataSetChanged();
+        
         mVoiceMemoListAdapter.collapseAllItems();
         slideCutListView.restoreItem();
         mCurrentDuration = 0;
@@ -1562,7 +1565,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     }
 
     @Override
-    public void onAChanged(Intent intent, int state) {
+    public void onDeleteItem(Intent intent, int state) {
         if (state == MemosUtils.DELETE_WITH_CONFIRM)
             startActivityForResult(intent, state);
         else {
@@ -1710,11 +1713,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         waveView.invalidate();
     }
     
-    @Override
-    public void onSlideItem(View view) {
-        Log.d("","view="+String.valueOf(view.toString()));
-        slideCutListView.scrollLeft(view);
-         }
+
     
     private class TransparentProgressDialog extends Dialog {
 
@@ -1772,6 +1771,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     public void setItemScroll(boolean canScroll) {
         slideCutListView.canScroll = canScroll;
         
+    }
+
+    @Override
+    public void onSlideItem(View view) {
+        Log.d("", "view=" + String.valueOf(view.toString()));
+        slideCutListView.scrollLeft(view);
     }
 
     @Override
