@@ -1,6 +1,7 @@
 
 package org.espier.voicememos7.ui;
 
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 
+import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.CheapSoundFile;
 import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
@@ -489,7 +491,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         grid_width = ScalePx.scalePx(context, 24);
         time_x = getWidth() / (grid_width * 4);
         time_per_pixel = time_x * 1000 / getWidth();
-        h_block = ScalePx.scalePx(context, 176);
+        float blocak_size = getResources().getDimension(R.dimen.block_h);
+        h_block = ScalePx.scalePx(context, (int)(blocak_size));
         cicle_radius = ScalePx.scalePx(context, 7);
         // h_high_line = ScalePx.scalePx(context, 30);
 
@@ -505,7 +508,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
         y_bottom_line = y_xaxis + h_high_line + h_block * 2;
         h_bottomLine2timetext = ScalePx.scalePx(context, 28);
         y_time_text = y_bottom_line + h_bottomLine2timetext;
-        h_db2db = ScalePx.scalePx(context, 8);
+        h_db2db =  (h_block-4 - (-7*voicedbPaint.getFontMetrics().ascent))/8;
+        //h_db2db = ScalePx.scalePx(context, 8);
         h_db2midline = ScalePx.scalePx(context, 13);
         time_text_font_size = ScalePx.scalePx(context, 24);
 
@@ -785,6 +789,20 @@ public class VoiceWaveView extends View implements OnGestureListener {
     private void drawVoice(Canvas canvas, float s, float offset)
     {
         int n = voice_list.size();
+        
+//        float size = (time_x*1000/2/invalidate_rate);
+//        float delt_x = w/2/size;
+//        for(int i=0;i<n;i++)
+//        {
+//            float amp = voice_list.get(n-i-1);
+//            float x_ = s-i*delt_x;
+//            amp = amp > (y_mid_line - y_top_line) * 0.9f ? (y_mid_line - y_top_line) * 0.9f : amp;
+//            canvas.drawLine(x_, y_mid_line - amp,
+//                    x_, y_mid_line + amp, voiceLinePaint);
+//        }
+        
+        
+        
         // float[] points = new float[n * 4];
         //
         // for (int i = 0; i < n; i++)
@@ -797,10 +815,10 @@ public class VoiceWaveView extends View implements OnGestureListener {
         //
         // }
         // canvas.drawLines(points, voiceLinePaint);
-
-        for (int i = 0; i < voice_list.size(); i++)
+        float x_ = 0;
+        for (int i = 0; i < voice_list.size() && x_<=x; i++)
         {
-            float x_;
+            
             if (x >= w / 2) {
 
                 if (time < time_x / 2 * 1000) {
@@ -810,6 +828,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                 else {
                     x_ = (s / n) * i;
                     // x_ = v*invalidate_rate*i;
+                    //Log.e("div", s/n+"");
                 }
 
             }
@@ -1060,12 +1079,12 @@ public class VoiceWaveView extends View implements OnGestureListener {
         for (int i = 0; i < voice_db_list.length; i++)
         {
             canvas.drawText(voice_db_list[i], w - num_margin_right,
-                    y_mid_line + h_db2midline + i * (h_db2db + voicedbPaint.getTextSize())
-                            + voicedbPaint.getTextSize(), isCliclEditBar
+                    y_mid_line + h_db2midline + i * (h_db2db + (-voicedbPaint.getFontMetrics().ascent))
+                            +h_db2db, isCliclEditBar
                             && viewStatus == VIEW_STATUS_EDIT ? voicedbGrayPaint
                             : voicedbPaint);
             canvas.drawText(voice_db_list[i], w - num_margin_right, y_mid_line
-                    - h_db2midline - i * (h_db2db + voicedbPaint.getTextSize()),
+                    - h_db2midline - i * (h_db2db - voicedbPaint.getFontMetrics().ascent),
                     isCliclEditBar && viewStatus == VIEW_STATUS_EDIT ? voicedbGrayPaint
                             : voicedbPaint);
         }
@@ -1206,7 +1225,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                                 temp_amp = temp_amp < 0 ? 0 : temp_amp;
 
                             }
-                            if (x >= w / 2) {
+                            if (x >= w / 2 && time>=time_x*1000/2) {
                                 voice_list.remove(0);
                             }
                             voice_list.add(temp_amp / ScalePx.scalePx(context, 320));
