@@ -470,9 +470,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     public void onClick(View v) {
+        TextView tv = (TextView)findViewById(R.id.editButton);
         switch (v.getId()) {
             case R.id.editredButton:// User click play button in Edit mode
             {
+                
                 if (editStatus == EDIT_STATE_INIT)
                 {
                     long fromMSeconds = waveView.getFromPlayTime();
@@ -501,6 +503,12 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             case R.id.editfinished:// User click finish button in edit mode.
             {
                 ScollToBottom();
+                mVoiceMemoListAdapter.collapseAllItems();
+                slideCutListView.restoreItem();
+                mVoiceMemoListAdapter.showOrHiddenDelete(false);
+                //keep nornal status
+                tv.setText(R.string.edit);
+                isEditable = false;
             }
                 break;
             case R.id.edittxtRecordName: {
@@ -545,8 +553,22 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 } else {
                     stop();
                 }
+                mVoiceMemoListAdapter.collapseAllItems();
+                slideCutListView.restoreItem();
+                mVoiceMemoListAdapter.showOrHiddenDelete(false);
+                //keep nornal status
+                tv.setText(R.string.edit);
+                isEditable = false;
+                
                 break;
             case R.id.redButton:
+                mVoiceMemoListAdapter.collapseAllItems();
+                slideCutListView.restoreItem();
+                mVoiceMemoListAdapter.showOrHiddenDelete(false);
+                //keep nornal status
+                tv.setText(R.string.edit);
+                isEditable = false;
+                
                 mVoiceMemoListAdapter.ExitCurrentEditMode();
                 start.requestFocus();
                 mediaStatus = MEDIA_STATE_RECORDING;
@@ -589,7 +611,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             case R.id.editButton:
                 
                 // in edit status
-                TextView tv = (TextView)findViewById(R.id.editButton);
+                
                 if (scrollleft) {
                     if (isEditable) {
                         tv.setText(R.string.edit);
