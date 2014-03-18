@@ -347,6 +347,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         if (displayString.equals(itemname)) {
 
         }
+        holder.txtRecordNameEditable.setText(displayString);
 
         if (secs == 0) {
             holder.duration.setText("");
