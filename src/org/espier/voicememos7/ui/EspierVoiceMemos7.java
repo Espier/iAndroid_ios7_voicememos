@@ -723,10 +723,23 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                
                 mVoiceMemoListAdapter.currentHolder.del.setImageResource(R.drawable.trash);
                 mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.action);
-                mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
-                mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
                 
-                mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
+                if (mRecorder.getState() == Recorder.PLAYING_STATE)
+                    mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.pause);
+                else
+                    mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
+                mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
+                final int drawableId = R.drawable.thumb; 
+                
+                int pos = mVoiceMemoListAdapter.currentHolder.bar.getThumbOffset();
+                final Drawable d = getResources().getDrawable(drawableId); 
+                d.setBounds(new Rect(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight())); 
+                 
+                mVoiceMemoListAdapter.currentHolder.bar.setThumb((d));
+                mVoiceMemoListAdapter.currentHolder.bar.setThumbOffset(pos);
+                
+//                mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
+                
             
             }
         this.changeTextViewColorBlue();
