@@ -507,8 +507,10 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 slideCutListView.restoreItem();
                 mVoiceMemoListAdapter.showOrHiddenDelete(false);
                 //keep nornal status
+                tv.setVisibility(View.VISIBLE);
                 tv.setText(R.string.edit);
                 isEditable = false;
+                slideCutListView.canScroll = true;
             }
                 break;
             case R.id.edittxtRecordName: {

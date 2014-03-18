@@ -279,7 +279,7 @@ public class SlideCutListView extends ListView {
                     
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    
+                    Log.d("adf","move="+String.valueOf(canScroll));
                     if (canScroll == false)
                         return true;
                     MotionEvent cancelEvent = MotionEvent.obtain(ev);
