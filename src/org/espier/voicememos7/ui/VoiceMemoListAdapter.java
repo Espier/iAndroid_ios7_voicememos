@@ -176,8 +176,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        return super.getView(position, convertView, parent);
-
+        return super.getView(position, convertView, parent); 
     }
     
     public MediaPlayer getCurrentMediaPlayer()
@@ -724,6 +723,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         public void onClick(View v) {
             // MemosUtils.shareMemo(mContext,
             // mCurrentPath);
+            if (mRecorder.mState == Recorder.PLAYING_STATE)
+                mRecorder.pausePlayback();
             Intent intent = new Intent(mContext, MemoShare.class);
             intent.putExtra("path", path);
             context.startActivity(intent);
