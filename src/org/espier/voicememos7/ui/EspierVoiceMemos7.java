@@ -1075,6 +1075,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
 
         final View view = this.getLayoutInflater().inflate(R.layout.items, null);
+//        ViewGroup.LayoutParams gl = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,100);
+//        view.setLayoutParams(gl);
         view.setPadding(0, 0, 0, 0);
         // view.setBackgroundColor(getResources().getColor(R.color.blue));
         view.setBackgroundDrawable(getResources().getDrawable(R.drawable.radius));
@@ -1118,6 +1120,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
         TextView ok = (TextView) view.findViewById(R.id.ok);
+        
+        
         final TextView text_note = (TextView) view.findViewById(R.id.text_note);
         RelativeLayout.LayoutParams relp =  new android.widget.RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT,android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
         relp.addRule(RelativeLayout.ALIGN_LEFT,R.id.memoname);
@@ -1184,7 +1188,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.width = ScalePx.scalePx(this, 540);
-        lp.height = ScalePx.scalePx(this, 370);
+//        lp.height = ScalePx.scalePx(this, 370);
         dialogWindow.setAttributes(lp);
         dialog.show();
     }
