@@ -669,13 +669,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     protected void onRestart() {
         super.onRestart();
         if (slideCutListView.getAdapter() == null) {
-//            cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
-//            mVoiceMemoListAdapter.changeCursor(cs);
-//            mVoiceMemoListAdapter.notifyDataSetChanged();
-//            listViewaddData();
             slideCutListView.setAdapter(mVoiceMemoListAdapter);
         }
-            
     }
 
     @Override
