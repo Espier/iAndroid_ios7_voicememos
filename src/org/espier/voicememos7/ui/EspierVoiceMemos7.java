@@ -470,9 +470,11 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
     @Override
     public void onClick(View v) {
+        TextView tv = (TextView)findViewById(R.id.editButton);
         switch (v.getId()) {
             case R.id.editredButton:// User click play button in Edit mode
             {
+                
                 if (editStatus == EDIT_STATE_INIT)
                 {
                     long fromMSeconds = waveView.getFromPlayTime();
@@ -501,6 +503,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             case R.id.editfinished:// User click finish button in edit mode.
             {
                 ScollToBottom();
+                mVoiceMemoListAdapter.collapseAllItems();
+                slideCutListView.restoreItem();
+                mVoiceMemoListAdapter.showOrHiddenDelete(false);
+                //keep nornal status
+                tv.setVisibility(View.VISIBLE);
+                tv.setText(R.string.edit);
+                isEditable = false;
+                slideCutListView.canScroll = true;
             }
                 break;
             case R.id.edittxtRecordName: {
@@ -545,8 +555,22 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 } else {
                     stop();
                 }
+                mVoiceMemoListAdapter.collapseAllItems();
+                slideCutListView.restoreItem();
+                mVoiceMemoListAdapter.showOrHiddenDelete(false);
+                //keep nornal status
+                tv.setText(R.string.edit);
+                isEditable = false;
+                
                 break;
             case R.id.redButton:
+                mVoiceMemoListAdapter.collapseAllItems();
+                slideCutListView.restoreItem();
+                mVoiceMemoListAdapter.showOrHiddenDelete(false);
+                //keep nornal status
+                tv.setText(R.string.edit);
+                isEditable = false;
+                
                 mVoiceMemoListAdapter.ExitCurrentEditMode();
                 start.requestFocus();
                 mediaStatus = MEDIA_STATE_RECORDING;
@@ -589,7 +613,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             case R.id.editButton:
                 
                 // in edit status
-                TextView tv = (TextView)findViewById(R.id.editButton);
+                
                 if (scrollleft) {
                     if (isEditable) {
                         tv.setText(R.string.edit);
@@ -699,10 +723,23 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                
                 mVoiceMemoListAdapter.currentHolder.del.setImageResource(R.drawable.trash);
                 mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.action);
-                mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
-                mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
                 
-                mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
+                if (mRecorder.getState() == Recorder.PLAYING_STATE)
+                    mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.pause);
+                else
+                    mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.play);
+                mVoiceMemoListAdapter.currentHolder.edit.setTextColor(getResources().getColor(R.color.font_color));
+                final int drawableId = R.drawable.thumb; 
+                
+                int pos = mVoiceMemoListAdapter.currentHolder.bar.getThumbOffset();
+                final Drawable d = getResources().getDrawable(drawableId); 
+                d.setBounds(new Rect(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight())); 
+                 
+                mVoiceMemoListAdapter.currentHolder.bar.setThumb((d));
+                mVoiceMemoListAdapter.currentHolder.bar.setThumbOffset(pos);
+                
+//                mVoiceMemoListAdapter.currentHolder.bar.setThumb(getResources().getDrawable(R.drawable.thumb));
+                
             
             }
         this.changeTextViewColorBlue();
