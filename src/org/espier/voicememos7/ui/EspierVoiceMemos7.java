@@ -120,6 +120,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private boolean isEditable = false;
     private boolean firstTime = true;
     TextView txtRecordName;
+    private Cursor cs;
     View emptyView;
     public final float[] BT_SELECTED = new float[] {
             1, 0, 0, 0, -100, 0,
@@ -647,6 +648,36 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
     }
 
+    
+    
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        Log.d("df","in onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
+        Log.d("df","in onStop");
+        slideCutListView.setAdapter(null);
+    }
+    
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (slideCutListView.getAdapter() == null) {
+//            cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
+//            mVoiceMemoListAdapter.changeCursor(cs);
+//            mVoiceMemoListAdapter.notifyDataSetChanged();
+//            listViewaddData();
+            slideCutListView.setAdapter(mVoiceMemoListAdapter);
+        }
+            
+    }
+
     @Override
     protected void onResume() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -718,6 +749,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 return false;
             }
         });
+        
+        
         if(mVoiceMemoListAdapter!=null&&mVoiceMemoListAdapter.currentHolder!=null
                 &&mVoiceMemoListAdapter.currentHolder.del!=null){
                
@@ -914,7 +947,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 getContentResolver().delete(memoUri, null, null);
             }
         }
-        Cursor cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
+        cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
 
         mVoiceMemoListAdapter =
                 new VoiceMemoListAdapter(EspierVoiceMemos7.this, R.layout.listview_item, cs,
