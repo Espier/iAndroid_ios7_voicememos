@@ -812,12 +812,12 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                 itemtitle.setLayoutParams(lpTitle);
                 final String title = itemname.getText().toString();
                 final TextView idtextview = (TextView) item.findViewById(R.id.memos_item__id);
-                itemname.setVisibility(View.INVISIBLE);
+                itemname.setVisibility(View.GONE);
 //                itemtitle.setTextSize(17);
                 int ems = MemosUtils.getEllipsizeByViewWidths(title, item.getWidth()-ScalePx.scalePx(mContext, 350));
                System.out.println("  width "+ems);
-               itemtitle.setEnabled(false);
-                itemtitle.setEms(ems);
+//               itemtitle.setEnabled(false);
+//                itemtitle.setEms(ems);
                 itemtitle.setText(title);
                 itemtitle.setVisibility(View.VISIBLE);
                 itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -828,8 +828,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                     public void onFocusChange(View v, boolean hasFocus) {
                         // TODO Auto-generated method stub
                         if (!hasFocus) {
-                              InputMethodManager mInputMethodManager=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                              mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//                              InputMethodManager mInputMethodManager=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+//                              mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             String newname = itemtitle.getText().toString();
                             if (!title.equals(newname)) {
                                 // memeoname nodified update momeinfo
