@@ -215,10 +215,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
              // TODO Auto-generated method stub  
              if(keyCode == KeyEvent.KEYCODE_ENTER){  
-                 InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);  
-                 if(imm.isActive()){  
-                     imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );  
-                 }  
+                     MemosUtils.hideSoftInput(v);
                      return true;  
                  }  
                  return false;  

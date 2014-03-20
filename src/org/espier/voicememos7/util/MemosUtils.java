@@ -28,6 +28,8 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.TextPaint;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import org.espier.voicememos7.R;
 import org.espier.voicememos7.model.VoiceMemo;
@@ -207,6 +209,12 @@ public class MemosUtils {
                             "HelveticaNeueLTPro-Th-time.otf");
         }   
         return mThTypeface;
+    }
+    public static void hideSoftInput(View v){
+        InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);  
+        if(imm.isActive()){  
+            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );  
+        }  
     }
     
 }

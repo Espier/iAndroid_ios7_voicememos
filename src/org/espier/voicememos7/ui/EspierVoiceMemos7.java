@@ -472,6 +472,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     @Override
     public void onClick(View v) {
         TextView tv = (TextView)findViewById(R.id.editButton);
+        MemosUtils.hideSoftInput(v);
         switch (v.getId()) {
             case R.id.editredButton:// User click play button in Edit mode
             {
@@ -614,7 +615,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             case R.id.editButton:
                 
                 // in edit status
-                
                 if (scrollleft) {
                     if (isEditable) {
                         tv.setText(R.string.edit);
