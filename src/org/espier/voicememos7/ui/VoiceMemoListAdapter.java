@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -206,6 +207,24 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         holder.position = cursor.getPosition();
         holder.btnHiddenDelete = (Button)view.findViewById(R.id.hiddenDeleteButon);
         holder.bgView = view.findViewById(R.id.memos_item_bg);
+        
+        
+        holder.txtRecordNameEditable.setOnKeyListener(new View.OnKeyListener() {
+            
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+             // TODO Auto-generated method stub  
+             if(keyCode == KeyEvent.KEYCODE_ENTER){  
+                 InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);  
+                 if(imm.isActive()){  
+                     imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );  
+                 }  
+                     return true;  
+                 }  
+                 return false;  
+            }
+        });
+        
         
         LinearLayout.LayoutParams llp = new android.widget.LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,ScalePx.scalePx(mContext, 108));
         
