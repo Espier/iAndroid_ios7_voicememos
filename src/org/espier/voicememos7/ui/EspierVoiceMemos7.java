@@ -784,7 +784,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         TextView text = (TextView) findViewById(R.id.txtRecordName);
         mainLayout.scrollTo(0, playLayout.getTop());
-
+        textViewEdit.setVisibility(View.VISIBLE);
         hiddenView.setVisibility(View.INVISIBLE);
         txtRecordName.setVisibility(View.INVISIBLE);
         waveView.setVisibility(View.INVISIBLE);
