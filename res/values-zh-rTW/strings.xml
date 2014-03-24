@@ -5,7 +5,7 @@
 	<string name="date_time_format">yy-MM-dd HH:mm</string>
 	<string name="time_format">HH:mm</string>
 	<string name="trim_voice_memo">修剪語音備忘錄</string>
-	<string name="cancel">取消</string>
+	<string name="cancel">删除</string>
 	<string name="trim_memo">修剪備忘錄</string>
 	<string name="memo_short">修剪備忘錄內容太短，修剪失敗</string>
 	<string name="share_memo">共享</string>
@@ -40,7 +40,7 @@
 	<string name="new_memo">新语音备忘录</string>
 	<string name="new_memo_name">請為此語音輸入名稱</string>
 	<string name="edit">編輯</string>
-	<string name="ok">好</string>
+	<string name="ok">存儲</string>
 	<string name="memo">語音備忘錄</string>
 	<string name="no_memo">無新錄音</string>
 	<string name="crop">修剪</string>
