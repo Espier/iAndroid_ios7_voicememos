@@ -38,7 +38,7 @@ public class MemoDelete extends Activity implements OnClickListener {
         // LinearLayout layout = (LinearLayout) findViewById(R.id.buttonlay);
         // layout.
         del = (Button) findViewById(R.id.memo_del_ok);
-        //del.setTypeface(MemosUtils.getIosThTypeface(this));
+        del.setTypeface(MemosUtils.getIosDefaultTypeface(this));
         del.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,42));
         int ems = MemosUtils.getEllipsizeByViewWidth(memoname, width);
         del.setEms(ems);
@@ -55,7 +55,7 @@ public class MemoDelete extends Activity implements OnClickListener {
           
         del.setText(getResources().getString(R.string.delete)+"\""+memoname+"\"");
         cancel = (Button) findViewById(R.id.memo_del_cancel);
-        cancel.setTypeface(MemosUtils.getIosThTypeface(this));
+        cancel.setTypeface(MemosUtils.getIosDefaultTypeface(this));
         cancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,42));
         TextPaint paint = cancel.getPaint();
         paint.setFakeBoldText(true);

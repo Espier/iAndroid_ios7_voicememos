@@ -1443,7 +1443,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         String memPath = outputFile.getAbsolutePath();
         if(isNewFile)
         {
-            String newFileNameString = mMemName+getString(R.string.copy);
+            String newFileNameString = mMemName+" "+getString(R.string.copy);
             memPath = insertVoiceMemo(outputFile, (int)(mEndPosition - mStartPosition),newFileNameString,memPath);
         }
         else {

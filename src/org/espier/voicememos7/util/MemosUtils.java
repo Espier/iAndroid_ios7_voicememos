@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MemosUtils {
-    private static Typeface mIosUltLtTypeface, mIosMdTypeface, mThTypeface;
+    private static Typeface mIosUltLtTypeface, mIosMdTypeface, mThTypeface,mDefaultTypeface;
     public static final int DELETE_WITH_CONFIRM = 2;
     public static final int DELETE_WITHOUT_CONFIRM = 3;
     private static StringBuilder sFormatBuilder = new StringBuilder();
@@ -209,6 +209,14 @@ public class MemosUtils {
                             "HelveticaNeueLTPro-Th-time.otf");
         }   
         return mThTypeface;
+    }
+    public static Typeface getIosDefaultTypeface(Context context) {
+        if (mDefaultTypeface == null) {
+            mDefaultTypeface =
+                    Typeface.createFromAsset(context.getApplicationContext().getAssets(),
+                            "Helvetica.ttf");
+        }
+        return mDefaultTypeface;
     }
     public static void hideSoftInput(View v){
         InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);  

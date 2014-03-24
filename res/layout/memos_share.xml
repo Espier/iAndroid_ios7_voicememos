@@ -8,7 +8,7 @@
 	    android:id="@+id/buttonlay"
 		android:layout_height="wrap_content" 
 		android:orientation="vertical"
-		android:background="@color/share_b">
+		android:background="@color/dialog_b_c">
 
 		<org.espier.voicememos7.ui.HorizontalListView
 		    android:id="@+id/horizontalScrollView1"
@@ -26,7 +26,7 @@
 			android:layout_width="fill_parent" android:layout_marginBottom="20dip"
 			android:layout_height="wrap_content" android:textStyle="bold"
 			android:gravity="center" 
-			 android:background="@color/share_b"
+			
 			android:textColor="@color/font_color"
 			android:text="@string/cancel" />
 	</LinearLayout>

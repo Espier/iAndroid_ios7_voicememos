@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
+import org.espier.voicememos7.util.MemosUtils;
 import org.espier.voicememos7.util.Recorder;
 import org.espier.voicememos7.util.AMRFileUtils;
 import org.espier.voicememos7.R;
@@ -65,6 +66,7 @@ public class MemoTrim extends Activity implements OnClickListener {
         
         
         btnTrimOrigin = (Button) findViewById(R.id.memo_trim_origin);
+        btnTrimOrigin.setTypeface(MemosUtils.getIosDefaultTypeface(this));
         btnTrimOrigin.setHeight(ScalePx.scalePx(this, 88));
         LinearLayout.LayoutParams lay = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -74,6 +76,7 @@ public class MemoTrim extends Activity implements OnClickListener {
         btnTrimOrigin.setOnClickListener(this);
           
         btnSaveAsNew = (Button) findViewById(R.id.trim_save_new);
+        btnSaveAsNew.setTypeface(MemosUtils.getIosDefaultTypeface(this));
         LinearLayout.LayoutParams lay2 = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
         lay2.setMargins(ScalePx.scalePx(this, 16), ScalePx.scalePx(this, 0),
@@ -83,6 +86,7 @@ public class MemoTrim extends Activity implements OnClickListener {
         btnSaveAsNew.setOnClickListener(this);
         
         btnCancel = (Button) findViewById(R.id.trim_cancel);
+        btnCancel.setTypeface(MemosUtils.getIosDefaultTypeface(this));
         LinearLayout.LayoutParams lay3 = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
         lay3.setMargins(ScalePx.scalePx(this, 16), ScalePx.scalePx(this, 10),
