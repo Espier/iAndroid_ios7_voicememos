@@ -1673,7 +1673,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         
 //        if (mVoiceMemoListAdapter.getCount()==0) {
 //            if (isEditable) {
-//                tv.setText(R.string.edit);
+//                
 //                isEditable = false;
 //            }
 //        }
@@ -1717,7 +1717,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             String memopath = intent.getStringExtra("memopath");
             deleteMemo(id, memopath);
             TextView tv = (TextView)findViewById(R.id.editButton);
-            tv.setText(R.string.finish);
+            tv.setText(R.string.edit);
         }
     }
 
