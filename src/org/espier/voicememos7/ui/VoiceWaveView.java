@@ -556,7 +556,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         float end_pos;
         num_dis = numFrames / _factor;
 
-        if (fac > 1) {
+        if (fac > 1 || clip_right_time - clip_left_time < s/w*time_x*1000) {
             s_v = s;
         }
         else {
@@ -1228,7 +1228,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                             if (x >= w / 2 && time>=time_x*1000/2) {
                                 voice_list.remove(0);
                             }
-                            voice_list.add(temp_amp / ScalePx.scalePx(context, 320));
+                            voice_list.add(temp_amp / 320);
 
                         }
 
