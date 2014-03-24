@@ -27,7 +27,7 @@
 	<string name="delete">Delete</string>
 	<string name="detail_title">Info</string>
 	<string name="back">Back</string>
-	<string name="record_name">New Record</string>
+	<string name="record_name">New Recording</string>
 	<string name="main_title">Recording</string>
 	<string name="label_title">Label</string>
 	<string name="label_custom_title">Custom</string>
@@ -50,7 +50,7 @@
 	<string name="new_memo_name">Please enter a name for this record</string>
 	<string name="edit">Edit</string>
 	<string name="ok">Save</string>
-	<string name="memo">Voice memo</string>
+	<string name="memo">Voice Memos</string>
 	<string name="no_memo">No new recordings</string>
 	<string name="crop">Trim</string>
 	<string name="trim_origin_voice">Trim origin memo</string>
