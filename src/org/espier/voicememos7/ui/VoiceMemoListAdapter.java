@@ -801,12 +801,7 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
         if (isShow) {
             canExpanding = false;
             // show delete image textview show finish
-            // textViewEdit.setText(getResources().getString(R.string.finish));
-//            for (int i = 0;i<this.getCount();i++) {
             for (final View item : list) {
-//                final View item = this.getChildAt(i);
-                // for (int i = 0; i < slideCutListView.getCount(); i++) {
-                // View item = slideCutListView.getChildAt(i);
                 ImageView delete = (ImageView) item.findViewById(R.id.deleteimage);
                 delete.setVisibility(View.VISIBLE);
                 delete.setOnClickListener(new View.OnClickListener() {
@@ -827,36 +822,52 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
                         .findViewById(R.id.memos_item_title_editable);
                 itemtitle.setLayoutParams(lpTitle);
                 final String title = itemname.getText().toString();
+                final int index = title.length();
                 final TextView idtextview = (TextView) item.findViewById(R.id.memos_item__id);
-                itemname.setVisibility(View.GONE);
-//                itemtitle.setTextSize(17);
-                int ems = MemosUtils.getEllipsizeByViewWidths(title, item.getWidth()-ScalePx.scalePx(mContext, 350));
-               System.out.println("  width "+ems);
-//               itemtitle.setEnabled(false);
-//                itemtitle.setEms(ems);
-                itemtitle.setText(title);
-                itemtitle.setVisibility(View.VISIBLE);
-                itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-                    private int time = 0;
-
+                final int ems = MemosUtils.getEllipsizeByViewWidths(title, item.getWidth()-ScalePx.scalePx(mContext, 350));
+                itemname.setClickable(true);
+                itemname.setOnClickListener(new View.OnClickListener() {
+                    
                     @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
+                    public void onClick(View v) {
                         // TODO Auto-generated method stub
-                        if (!hasFocus) {
-//                              InputMethodManager mInputMethodManager=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-//                              mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                            String newname = itemtitle.getText().toString();
-                            if (!title.equals(newname)) {
-                                // memeoname nodified update momeinfo
-                                System.out.println("(Integer)   " + (Integer) idtextview.getTag());
-                                MemosUtils.updateVoiceName(mContext, newname,
-                                        (Integer) idtextview.getTag());
-                                itemname.setText(newname);
+                        itemname.setVisibility(View.GONE);
+                        itemtitle.setEms(ems);
+                        itemtitle.setText(title);
+                        itemtitle.setSelection(index);
+                        itemtitle.setVisibility(View.VISIBLE);
+                        itemtitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+                            private int time = 0;
+
+                            @Override
+                            public void onFocusChange(View v, boolean hasFocus) {
+                                // TODO Auto-generated method stub
+                                if (!hasFocus) {
+//                                      InputMethodManager mInputMethodManager=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+//                                      mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                                    String newname = itemtitle.getText().toString();
+                                    if (!title.equals(newname)) {
+                                        // memeoname nodified update momeinfo
+                                        System.out.println("(Integer)   " + (Integer) idtextview.getTag());
+                                        MemosUtils.updateVoiceName(mContext, newname,
+                                                (Integer) idtextview.getTag());
+                                        itemname.setText(newname);
+                                        itemname.setVisibility(View.VISIBLE);
+                                        itemname.setClickable(false);
+                                        itemtitle.setVisibility(View.GONE);
+                                    }
+                                }
                             }
-                        }
+                        });
                     }
                 });
+                
+//                itemname.setVisibility(View.GONE);
+//                itemtitle.setTextSize(17);
+                  System.out.println("  width "+ems);
+//               itemtitle.setEnabled(false);
+              
             }
         } else {
             canExpanding = true;

@@ -65,11 +65,12 @@
                     android:background="@null"
                     android:textSize="20sp"
                     android:singleLine="true"
+                    android:clickable="false"
                     android:textColor="@color/black" />
 
                 <EditText
                     android:id="@+id/memos_item_title_editable"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:inputType="text"
