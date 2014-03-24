@@ -38,7 +38,7 @@ public class MemoDelete extends Activity implements OnClickListener {
         // LinearLayout layout = (LinearLayout) findViewById(R.id.buttonlay);
         // layout.
         del = (Button) findViewById(R.id.memo_del_ok);
-        del.setTypeface(MemosUtils.getIosThTypeface(this));
+        //del.setTypeface(MemosUtils.getIosThTypeface(this));
         del.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,42));
         int ems = MemosUtils.getEllipsizeByViewWidth(memoname, width);
         del.setEms(ems);
