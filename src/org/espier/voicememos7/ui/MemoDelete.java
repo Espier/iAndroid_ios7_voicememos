@@ -57,8 +57,8 @@ public class MemoDelete extends Activity implements OnClickListener {
         cancel = (Button) findViewById(R.id.memo_del_cancel);
         cancel.setTypeface(MemosUtils.getIosDefaultTypeface(this));
         cancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,42));
-        TextPaint paint = cancel.getPaint();
-        paint.setFakeBoldText(true);
+//        TextPaint paint = cancel.getPaint();
+//        paint.setFakeBoldText(true);
         
         LinearLayout.LayoutParams lay2 = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);

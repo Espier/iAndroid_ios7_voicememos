@@ -294,6 +294,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
          LinearLayout buttonLayout =
          (LinearLayout)findViewById(R.id.buttonLayout);
+         
          RelativeLayout.LayoutParams rl = new android.widget.RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.layout_height),
                  (int) getResources().getDimension(R.dimen.layout_height));
          rl.addRule(RelativeLayout.BELOW,R.id.txtDate);
@@ -363,6 +364,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         textVoiceTimeInEditMode.setLayoutParams(rlpRecordName2);
         imageViewVoiceCropInEditMode = (ImageView) findViewById(R.id.editimage);
         imageViewVoiceCropInEditMode.setLayoutParams(rlpRecordName3);
+        LinearLayout buttonLayout =
+                (LinearLayout)findViewById(R.id.editbuttonLayout);
+        RelativeLayout.LayoutParams rl = new android.widget.RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.layout_height),
+                (int) getResources().getDimension(R.dimen.layout_height));
+        rl.addRule(RelativeLayout.BELOW,R.id.layout);
+        rl.addRule(RelativeLayout.CENTER_HORIZONTAL,RelativeLayout.TRUE);
+        rl.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
+        buttonLayout.setLayoutParams(rl);
+        
         imageViewVoicePlayInEditMode = (ImageView) findViewById(R.id.editredButton);
         textViewVoiceEditFinishInEditMode = (TextView) findViewById(R.id.editfinished);
         textViewVoiceEditFinishInEditMode.setOnTouchListener(new View.OnTouchListener() {
@@ -749,8 +759,8 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         if(mVoiceMemoListAdapter!=null&&mVoiceMemoListAdapter.currentHolder!=null
                 &&mVoiceMemoListAdapter.currentHolder.del!=null){
                
-                mVoiceMemoListAdapter.currentHolder.del.setImageResource(R.drawable.trash);
-                mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.action);
+                mVoiceMemoListAdapter.currentHolder.del.setImageResource(R.drawable.deleteimage);
+                mVoiceMemoListAdapter.currentHolder.share.setImageResource(R.drawable.shareimage);
                 
                 if (mRecorder.getState() == Recorder.PLAYING_STATE)
                     mVoiceMemoListAdapter.currentHolder.playControl.setImageResource(R.drawable.pause);

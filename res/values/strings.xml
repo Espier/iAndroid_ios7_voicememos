@@ -55,7 +55,7 @@
 	<string name="no_memo">No new recordings</string>
 	<string name="crop">Trim</string>
 	<string name="trim_origin_voice">Trim Original</string>
-	<string name="trim_save_new">Save as new memo</string>
+	<string name="trim_save_new">Save As New Recording</string>
 	<string name="copy">Copy</string>
 	<string name="text_note">Filenames with special characters!</string>
 	<string name="play_height">4</string>

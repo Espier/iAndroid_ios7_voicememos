@@ -189,8 +189,9 @@
                 android:layout_height="25dip"
                 android:layout_marginLeft="10dip"
                 android:layout_marginTop="10dip"
+                android:clickable="true"
                 android:contentDescription="@string/share_memo"
-                android:src="@drawable/action" />
+                android:src="@drawable/shareimage" />
 
             <TextView
                 android:id="@+id/edit"
@@ -205,12 +206,13 @@
             <ImageView
                 android:id="@+id/del"
                 android:layout_alignParentRight="true"
+                android:clickable="true"
                 android:layout_width="25dip"
                 android:layout_height="25dip"
                 android:layout_marginRight="10dip"
                 android:layout_marginTop="10dip"
                 android:contentDescription="@string/delete"
-                android:src="@drawable/trash" />
+                android:src="@drawable/deleteimage" />
         </RelativeLayout>
     </LinearLayout>
 
