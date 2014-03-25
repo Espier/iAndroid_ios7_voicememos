@@ -484,8 +484,8 @@ class VoiceMemoListAdapter extends SimpleCursorAdapter {
             share.setImageResource(R.drawable.action);
             ImageView play = (ImageView)itemView.findViewById(R.id.memos_item_play);
             play.setImageResource(R.drawable.play);
-            SeekBar bar = (SeekBar)itemView.findViewById(android.R.id.progress);
-            bar.setThumb(mContext.getResources().getDrawable(R.drawable.thumb));
+//            SeekBar bar = (SeekBar)itemView.findViewById(android.R.id.progress);
+//            bar.setThumb(mContext.getResources().getDrawable(R.drawable.thumb));
             TextView textview = (TextView)itemView.findViewById(R.id.edit);
             textview.setTextColor(mContext.getResources().getColor(R.color.font_color));
             TextView title = (TextView)itemView.findViewById(R.id.memos_item_title);

@@ -184,6 +184,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
 
     };
+    
 
     private OnTouchListener onTouchListener = new View.OnTouchListener() {
 
@@ -840,6 +841,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private void init() {
 
         slideCutListView = (SlideCutListView) findViewById(R.id.listView);
+        
         listViewaddData();
         titlelayout = (RelativeLayout) findViewById(R.id.titlelay);
 
