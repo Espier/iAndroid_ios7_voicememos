@@ -66,6 +66,7 @@
                     android:textSize="20sp"
                     android:singleLine="true"
                     android:clickable="false"
+                    android:enabled="false"
                     android:textColor="@color/black" />
 
                 <EditText
