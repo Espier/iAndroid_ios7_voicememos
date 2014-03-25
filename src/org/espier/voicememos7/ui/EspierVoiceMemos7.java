@@ -1630,34 +1630,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             file.delete();
         }
         mCurrentPosition = -1;
-        
-
-        
-        
-        
-//        mVoiceMemoListAdapter.RemoveItem(path);
-//        
-//        
         mVoiceMemoListAdapter.notifyDataSetChanged();
         
 //        
         mVoiceMemoListAdapter.collapseAllItems();
         slideCutListView.restoreItem();
-        
-//        mVoiceMemoListAdapter.RemoveItem(path);
-        
-//        
-//        Cursor cs = managedQuery(VoiceMemo.Memos.CONTENT_URI, null, null, null, null);
-//        mVoiceMemoListAdapter.changeCursor(cs);
         mVoiceMemoListAdapter.notifyDataSetChanged();
         slideCutListView.postInvalidate();
-//
-//        mVoiceMemoListAdapter =
-//                new VoiceMemoListAdapter(EspierVoiceMemos7.this, R.layout.listview_item, cs,
-//                        new String[] {},
-//                        new int[] {});
-//        slideCutListView.setAdapter(mVoiceMemoListAdapter);
-       
         
         mCurrentDuration = 0;
         if (mVoiceMemoListAdapter.getCount() == 0) {
@@ -1667,27 +1646,6 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         }
         TextView tv = (TextView)findViewById(R.id.editButton);
         tv.setVisibility(View.VISIBLE);
-
-//        slideCutListView.setAdapter(mVoiceMemoListAdapter);
-//        
-//        
-//        
-//        if (isEditable) {
-//            Log.d("asdf","showDelete");
-//            tv.setText(R.string.finish);
-//            mVoiceMemoListAdapter.showOrHiddenDelete(false);
-//            mVoiceMemoListAdapter.showOrHiddenDelete(true);
-//            
-//        } 
-        
-        
-//        if (mVoiceMemoListAdapter.getCount()==0) {
-//            if (isEditable) {
-//                
-//                isEditable = false;
-//            }
-//        }
-            
 
     }
 
@@ -1726,8 +1684,15 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             int id = intent.getIntExtra("mCurrentMemoId", -1);
             String memopath = intent.getStringExtra("memopath");
             deleteMemo(id, memopath);
+            
             TextView tv = (TextView)findViewById(R.id.editButton);
-            tv.setText(R.string.edit);
+            System.out.println("isEditable    "+isEditable);
+            if(isEditable){
+                tv.setText(R.string.finish);
+            }else{
+                tv.setText(R.string.edit);
+            }
+            
         }
     }
 
