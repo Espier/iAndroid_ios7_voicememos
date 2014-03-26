@@ -1036,7 +1036,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
 
         height = getWindowManager().getDefaultDisplay().getHeight() - top;
         width = getWindowManager().getDefaultDisplay().getWidth();
-        
+        System.out.println("height  "+height);
         RelativeLayout.LayoutParams relP = new android.widget.RelativeLayout.LayoutParams(
                 android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
                 (int) (height * 0.9 * 4 / 7 - 30));
@@ -1045,6 +1045,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
             RelativeLayout.LayoutParams relP2 = new android.widget.RelativeLayout.LayoutParams(
                 android.widget.RelativeLayout.LayoutParams.FILL_PARENT,
                 (int) (height * 0.9 * 2.5 / 7));
+            System.out.println(" waveView  height  "+(int) (height * 0.9 * 2.5 / 7));
         RelativeLayout playLayout = (RelativeLayout) findViewById(R.id.playlayout);
         relP2.addRule(RelativeLayout.BELOW, R.id.waveView);
         playLayout.setLayoutParams(relP2);
@@ -1162,11 +1163,13 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 LinearLayout.LayoutParams.WRAP_CONTENT, ScalePx.scalePx(this, 88)));
 
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
+        cancel.setText(getResources().getString(R.string.cancel));
         cancel.setTypeface(MemosUtils.getIosThTypeface(this));
         cancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,34));
        
         TextView ok = (TextView) view.findViewById(R.id.ok);
         ok.setTypeface(MemosUtils.getIosThTypeface(this));
+        ok.setText(getResources().getString(R.string.confirmation));
         ok.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,34));
        
         

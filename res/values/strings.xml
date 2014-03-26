@@ -59,4 +59,5 @@
 	<string name="copy">Copy</string>
 	<string name="text_note">Filenames with special characters!</string>
 	<string name="play_height">4</string>
+	<string name="confirmation">Ok</string>
 </resources>

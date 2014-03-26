@@ -50,4 +50,5 @@
 	<string name="copy">副本</string>
 	<string name="text_note">檔案名含有特殊字符！</string>
 	<string name="play_height">4</string>
+	<string name="confirmation">確認</string>
 </resources>

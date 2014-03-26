@@ -514,6 +514,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         time_text_font_size = ScalePx.scalePx(context, 24);
 
         margin_lef_init = ScalePx.scalePx(context, 31);
+        System.out.println("y_top_line"+  (y_mid_line-y_top_line));
 
     }
 

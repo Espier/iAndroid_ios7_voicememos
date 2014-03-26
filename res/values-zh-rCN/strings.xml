@@ -49,4 +49,6 @@
 	<string name="trim_save_new">存储为新录音</string>
 	<string name="copy">副本</string>
 	<string name="text_note">文件名包含特殊字符！</string>
+	<string name="play_height">4</string>
+	<string name="confirmation">确认</string>
 </resources>
