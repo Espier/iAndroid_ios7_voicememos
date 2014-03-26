@@ -167,6 +167,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     float top_time_pos;
     boolean isRecording;
+    
+    private int AMP_NORMAL = 320;
 
     /**
      * @return the isEditing
@@ -383,6 +385,8 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void init()
     {
+        AMP_NORMAL = (600-ScalePx.scalePx(context, 320));
+        AMP_NORMAL = AMP_NORMAL<100?100:AMP_NORMAL;
         gestureDetector = new GestureDetector(this);
         gestureDetector.setIsLongpressEnabled(false);
         viewStatus = VIEW_STATUS_RECORD;
@@ -527,7 +531,6 @@ public class VoiceWaveView extends View implements OnGestureListener {
         
 
         margin_lef_init = ScalePx.scalePx(context, 31);
-        System.out.println("y_top_line"+  (y_mid_line-y_top_line));
 
     }
 
@@ -1242,7 +1245,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
                             if (x >= w / 2 && time>=time_x*1000/2) {
                                 voice_list.remove(0);
                             }
-                            voice_list.add(temp_amp / (600-ScalePx.scalePx(context, 320)));
+                            voice_list.add(temp_amp / AMP_NORMAL);
 
                         }
 
