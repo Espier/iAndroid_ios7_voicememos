@@ -1165,13 +1165,20 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 LinearLayout.LayoutParams.WRAP_CONTENT, ScalePx.scalePx(this, 88)));
 
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
-       
+       if(!iscurrentZH){
+           TextPaint tp = cancel.getPaint();   
+           tp.setFakeBoldText(true);  
+       }
         cancel.setText(getResources().getString(R.string.cancel));
         cancel.setTypeface(MemosUtils.getIosThTypeface(this));
         cancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,34));
        
         TextView ok = (TextView) view.findViewById(R.id.ok);
         ok.setTypeface(MemosUtils.getIosThTypeface(this));
+        if(!iscurrentZH){
+            TextPaint tp = ok.getPaint();   
+            tp.setFakeBoldText(true);  
+        }
         ok.setText(getResources().getString(R.string.confirmation));
         ok.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,34));
        
@@ -1309,9 +1316,17 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 LinearLayout.LayoutParams.WRAP_CONTENT, ScalePx.scalePx(this, 88)));
 
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
+        if(!iscurrentZH){
+            TextPaint tp = cancel.getPaint();   
+            tp.setFakeBoldText(true);  
+        }
         cancel.setTypeface(MemosUtils.getIosThTypeface(this));
         cancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,34));
         TextView ok = (TextView) view.findViewById(R.id.ok);
+        if(!iscurrentZH){
+            TextPaint tp = ok.getPaint();   
+            tp.setFakeBoldText(true);  
+        }
         ok.setTypeface(MemosUtils.getIosThTypeface(this));
         ok.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,34));
         final TextView text_note = (TextView) view.findViewById(R.id.text_note);
