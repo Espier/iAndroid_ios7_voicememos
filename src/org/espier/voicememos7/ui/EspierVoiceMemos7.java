@@ -160,6 +160,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
     private VoiceMemo currentEditMemo;
     private TextView textViewCrop;
     private TextView textViewCropCancel;
+    public  boolean iscurrentZH = true;
 
     RelativeLayout titlelayout;
     ImageView sound;
@@ -259,13 +260,14 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_memo_main);
+        iscurrentZH = MemosUtils.currentLauguageIsZH();
         init();
         txtMainTitle = (TextView) findViewById(R.id.txtMainTitle);
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         rlp.setMargins(0, ScalePx.scalePx(this, 29), 0, 0);
         txtMainTitle.setLayoutParams(rlp);
-
+        
         waveView = (VoiceWaveView) findViewById(R.id.waveView);
         RelativeLayout.LayoutParams rlpWaveView = new RelativeLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
@@ -1163,6 +1165,7 @@ public class EspierVoiceMemos7 extends Activity implements RemoveListener,
                 LinearLayout.LayoutParams.WRAP_CONTENT, ScalePx.scalePx(this, 88)));
 
         TextView cancel = (TextView) view.findViewById(R.id.cancel);
+       
         cancel.setText(getResources().getString(R.string.cancel));
         cancel.setTypeface(MemosUtils.getIosThTypeface(this));
         cancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, ScalePx.scalePx(this,34));
