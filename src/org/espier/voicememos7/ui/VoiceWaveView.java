@@ -485,14 +485,19 @@ public class VoiceWaveView extends View implements OnGestureListener {
 
     private void initView()
     {
+        float H = getLayoutParams().height;
         edit_margin_left = ScalePx.scalePx(context, 40);
         edit_margin_right = ScalePx.scalePx(context, 50);
         start_move_time_textview = ScalePx.scalePx(context, 160);
         grid_width = ScalePx.scalePx(context, 24);
         time_x = getWidth() / (grid_width * 4);
         time_per_pixel = time_x * 1000 / getWidth();
-        float blocak_size = getResources().getDimension(R.dimen.block_h);
-        h_block = ScalePx.scalePx(context, (int)(blocak_size));
+        
+        time_text_font_size = ScalePx.scalePx(context, 24);
+        
+//        float blocak_size = getResources().getDimension(R.dimen.block_h);
+//        h_block = ScalePx.scalePx(context, (int)(blocak_size));
+        h_block = (H-y_top_line-time_text_font_size-20)/2;
         cicle_radius = ScalePx.scalePx(context, 7);
         // h_high_line = ScalePx.scalePx(context, 30);
 
@@ -502,6 +507,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         // Log.e("h-l-t-d",
         // h_high_line+"--"+h_low_line+"--"+top_time_height+"--"+div_dowm);
 
+       
         y_top_line = y_xaxis + h_high_line;
         top_time_pos = y_top_line - h_low_line - div_dowm;
         y_mid_line = y_xaxis + h_high_line + h_block;
@@ -511,7 +517,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         h_db2db =  (h_block-4 - (-7*voicedbPaint.getFontMetrics().ascent))/8;
         //h_db2db = ScalePx.scalePx(context, 8);
         h_db2midline = ScalePx.scalePx(context, 13);
-        time_text_font_size = ScalePx.scalePx(context, 24);
+        
 
         margin_lef_init = ScalePx.scalePx(context, 31);
 
