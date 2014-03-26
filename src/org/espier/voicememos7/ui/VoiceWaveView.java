@@ -161,6 +161,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
     int clip_interval;
     boolean isDownToStopFling;
     int top_time_height;
+    int time_text_height;
     float temp_amp;
     int index_voice_zero;
 
@@ -421,6 +422,7 @@ public class VoiceWaveView extends View implements OnGestureListener {
         timeTextPaint.setColor(Color.WHITE);
         timeTextPaint.setAntiAlias(true);
         timeTextPaint.setTypeface(MemosUtils.getIosThTypeface(context));
+        time_text_height= -(int) (timeTextPaint.getFontMetrics().ascent + 0.5);
 
         grayLinePaint = new Paint();
         grayColor = Color.parseColor(grayColorString);
@@ -494,25 +496,30 @@ public class VoiceWaveView extends View implements OnGestureListener {
         time_per_pixel = time_x * 1000 / getWidth();
         
         time_text_font_size = ScalePx.scalePx(context, 24);
+        h_bottomLine2timetext = ScalePx.scalePx(context, 28);
         
-//        float blocak_size = getResources().getDimension(R.dimen.block_h);
-//        h_block = ScalePx.scalePx(context, (int)(blocak_size));
-        h_block = (H-y_top_line-time_text_font_size-20)/2;
-        cicle_radius = ScalePx.scalePx(context, 7);
-        // h_high_line = ScalePx.scalePx(context, 30);
-
         h_low_line = ScalePx.scalePx(context, 5);
         float div_dowm = ScalePx.scalePx(context, 8);
         h_high_line = h_low_line + top_time_height + div_dowm;
+        y_top_line = y_xaxis + h_high_line;
+        
+        
+//        float blocak_size = getResources().getDimension(R.dimen.block_h);
+//        h_block = ScalePx.scalePx(context, (int)(blocak_size));
+        h_block = (H-y_top_line-time_text_height-h_bottomLine2timetext)/2;
+        cicle_radius = ScalePx.scalePx(context, 7);
+        // h_high_line = ScalePx.scalePx(context, 30);
+
+       
         // Log.e("h-l-t-d",
         // h_high_line+"--"+h_low_line+"--"+top_time_height+"--"+div_dowm);
 
        
-        y_top_line = y_xaxis + h_high_line;
+        
         top_time_pos = y_top_line - h_low_line - div_dowm;
         y_mid_line = y_xaxis + h_high_line + h_block;
         y_bottom_line = y_xaxis + h_high_line + h_block * 2;
-        h_bottomLine2timetext = ScalePx.scalePx(context, 28);
+        
         y_time_text = y_bottom_line + h_bottomLine2timetext;
         h_db2db =  (h_block-4 - (-7*voicedbPaint.getFontMetrics().ascent))/8;
         //h_db2db = ScalePx.scalePx(context, 8);
