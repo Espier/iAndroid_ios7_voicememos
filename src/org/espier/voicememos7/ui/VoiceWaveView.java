@@ -495,9 +495,9 @@ public class VoiceWaveView extends View implements OnGestureListener {
         
         time_text_font_size = ScalePx.scalePx(context, 24);
         
-//        float blocak_size = getResources().getDimension(R.dimen.block_h);
-//        h_block = ScalePx.scalePx(context, (int)(blocak_size));
-        h_block = (H-y_top_line-time_text_font_size-20)/2;
+        float blocak_size = getResources().getDimension(R.dimen.block_h);
+        h_block = ScalePx.scalePx(context, (int)(blocak_size));
+//        h_block = (H-y_top_line-time_text_font_size-80)/2;
         cicle_radius = ScalePx.scalePx(context, 7);
         // h_high_line = ScalePx.scalePx(context, 30);
 
