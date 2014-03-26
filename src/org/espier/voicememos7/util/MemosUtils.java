@@ -224,5 +224,11 @@ public class MemosUtils {
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );  
         }  
     }
+    public static boolean currentLauguageIsZH(){       
+        //获取系统当前使用的语言  
+        String mCurrentLanguage = Locale.getDefault().getLanguage();  
+        //设置成简体中文的时候，getLanguage()返回的是zh  
+        return mCurrentLanguage.equals("zh");          
+    }  
     
 }
